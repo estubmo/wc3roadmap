@@ -6,14 +6,14 @@ current_phase: 01
 current_phase_name: foundation-schema
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-06-28T18:41:38.562Z"
+last_updated: "2026-06-28T18:47:24.811Z"
 last_activity: 2026-06-28
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 9
   completed_phases: 0
   total_plans: 8
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 01 (foundation-schema) — EXECUTING
-Plan: 2 of 8
+Plan: 3 of 8
 Status: Ready to execute
 Last activity: 2026-06-28 — Phase 01 execution started
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation-schema P02 | 4m | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - Roadmap: Phase 8 (replay parsing) confirmed v1 scope per user decision; w3champions serves .w3g files at known rate limits
 - Roadmap: QUIZ (Phase 6) kept separate from PROG (Phase 5) — distinct deliverable, fine granularity justified
 - Roadmap: PATH requirements (Phase 9) deferred to final phase; pathway overlay infrastructure lives in Phase 2 graph engine
+- [Phase ?]: Patch registry as deep module — PATCH_IDS authoritative source for all schema patchId fields
+- [Phase ?]: Private _PATCHES array with readonly public view — callers use getPatch() or PATCH_IDS, never direct indexing
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-28T18:41:38.528Z
+Last session: 2026-06-28T18:47:17.985Z
 Stopped at: Phase 1 context gathered
 Resume file: .planning/phases/01-foundation-schema/01-CONTEXT.md
