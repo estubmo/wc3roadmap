@@ -41,10 +41,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. The project builds, deploys, and carries a GPL-3.0 license; TanStack Start and all core dependencies are pinned to known-working versions with an explicit upgrade policy documented
   6. `CONTEXT.md` exists capturing the ubiquitous domain language (node, nodeType, mastery state, pathway, signal, patch, threshold) and `docs/adr/` holds at least the foundational ADRs (stack choice, content/engine decoupling, patch-version primitive, GPL-3.0) — the deep-module + ADR discipline is in place before feature phases begin
 
-**Plans**: 8 plans
+**Plans**: 1/8 plans executed
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Scaffold TanStack Start app, pin deps, wire content-collections + nitro + Vitest [wave 1]
+- [x] 01-01-PLAN.md — Scaffold TanStack Start app, pin deps, wire content-collections + nitro + Vitest [wave 1]
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -196,7 +196,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Schema | 0/? | Not started | - |
+| 1. Foundation & Schema | 1/8 | In Progress|  |
 | 2. Graph Engine | 0/? | Not started | - |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |

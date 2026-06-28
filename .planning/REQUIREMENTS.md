@@ -15,7 +15,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [ ] **DATA-03**: Each node carries `patch_context`, `last_reviewed` date, and a `meta_volatile` flag
 - [ ] **DATA-04**: Patch version is a system-wide primitive — content, build orders, mastery thresholds, parsed replays, and progress records are all tagged with the WC3 patch they apply to
 - [ ] **DATA-05**: Graph edges are soft prerequisites (suggested order via arrows); nodes are never hard-locked
-- [ ] **DATA-06**: Node content stored as version-controlled MDX/JSON files in the repo (content-collections pipeline), enabling easy updates and future community PRs
+- [x] **DATA-06**: Node content stored as version-controlled MDX/JSON files in the repo (content-collections pipeline), enabling easy updates and future community PRs
 - [ ] **DATA-07**: Content schema validated in CI so malformed nodes fail the build
 
 ### Content
@@ -85,7 +85,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 ### Project / Open Source
 
 - [ ] **OSS-01**: Project is released under GPL-3.0 (required by the wc3v fork) with public code and content
-- [ ] **OSS-02**: Data model and content pipeline are extensible (add nodes, races, sources, pathways without rework)
+- [x] **OSS-02**: Data model and content pipeline are extensible (add nodes, races, sources, pathways without rework)
 
 ## v2 Requirements
 
@@ -140,10 +140,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-03 | Phase 1 | Pending |
 | DATA-04 | Phase 1 | Pending |
 | DATA-05 | Phase 1 | Pending |
-| DATA-06 | Phase 1 | Pending |
+| DATA-06 | Phase 1 | Complete |
 | DATA-07 | Phase 1 | Pending |
 | OSS-01 | Phase 1 | Pending |
-| OSS-02 | Phase 1 | Pending |
+| OSS-02 | Phase 1 | Complete |
 | GRAPH-01 | Phase 2 | Pending |
 | GRAPH-02 | Phase 2 | Pending |
 | GRAPH-05 | Phase 2 | Pending |
@@ -186,6 +186,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-05 | Phase 9 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 49 total (note: original count of 46 was understated; actual count from defined requirements is 49)
 - Mapped to phases: 49 ✓
 - Unmapped: 0 ✓
