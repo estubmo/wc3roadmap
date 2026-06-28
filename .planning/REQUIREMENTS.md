@@ -135,13 +135,61 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated during roadmap creation) | — | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
+| DATA-05 | Phase 1 | Pending |
+| DATA-06 | Phase 1 | Pending |
+| DATA-07 | Phase 1 | Pending |
+| OSS-01 | Phase 1 | Pending |
+| OSS-02 | Phase 1 | Pending |
+| GRAPH-01 | Phase 2 | Pending |
+| GRAPH-02 | Phase 2 | Pending |
+| GRAPH-05 | Phase 2 | Pending |
+| GRAPH-06 | Phase 2 | Pending |
+| CONT-01 | Phase 3 | Pending |
+| CONT-02 | Phase 3 | Pending |
+| CONT-03 | Phase 3 | Pending |
+| GRAPH-03 | Phase 3 | Pending |
+| GRAPH-04 | Phase 3 | Pending |
+| AUTH-01 | Phase 4 | Pending |
+| AUTH-02 | Phase 4 | Pending |
+| AUTH-03 | Phase 4 | Pending |
+| AUTH-04 | Phase 4 | Pending |
+| PROG-01 | Phase 5 | Pending |
+| PROG-02 | Phase 5 | Pending |
+| PROG-03 | Phase 5 | Pending |
+| PROG-04 | Phase 5 | Pending |
+| PROG-05 | Phase 5 | Pending |
+| QUIZ-01 | Phase 6 | Pending |
+| QUIZ-02 | Phase 6 | Pending |
+| QUIZ-03 | Phase 6 | Pending |
+| AUTO-01 | Phase 7 | Pending |
+| AUTO-02 | Phase 7 | Pending |
+| AUTO-03 | Phase 7 | Pending |
+| AUTO-04 | Phase 7 | Pending |
+| AUTO-05 | Phase 7 | Pending |
+| REPLAY-01 | Phase 8 | Pending |
+| REPLAY-02 | Phase 8 | Pending |
+| REPLAY-03 | Phase 8 | Pending |
+| REPLAY-04 | Phase 8 | Pending |
+| REPLAY-05 | Phase 8 | Pending |
+| REPLAY-06 | Phase 8 | Pending |
+| REPLAY-07 | Phase 8 | Pending |
+| REPLAY-08 | Phase 8 | Pending |
+| PATH-01 | Phase 9 | Pending |
+| PATH-02 | Phase 9 | Pending |
+| PATH-03 | Phase 9 | Pending |
+| PATH-04 | Phase 9 | Pending |
+| CONT-04 | Phase 9 | Pending |
+| CONT-05 | Phase 9 | Pending |
 
 **Coverage:**
-- v1 requirements: 46 total
-- Mapped to phases: 0 ⚠️ (roadmap pending)
-- Unmapped: 46 ⚠️
+- v1 requirements: 49 total (note: original count of 46 was understated; actual count from defined requirements is 49)
+- Mapped to phases: 49 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-28*
-*Last updated: 2026-06-28 after initial definition*
+*Last updated: 2026-06-28 after roadmap creation*
