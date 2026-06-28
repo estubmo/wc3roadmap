@@ -1,0 +1,81 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright (C) 2026 WC3 Roadmap contributors */
+
+/*
+ * Design system — Direction 0 "Modern" (see docs/adr/0001-visual-design-direction.md).
+ * Dark obsidian base, single warm-gold accent, faction colors reserved for the
+ * node graph as semantic data encoding only.
+ *
+ * WIRING (styling phase): install Tailwind v4 + the three Fontsource fonts,
+ * then import this file from src/routes/__root.tsx. See ADR 0001 §Consequences.
+ */
+
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/jetbrains-mono";
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  /* Obsidian base — off-black, never pure #000 */
+  --color-obsidian-950: #0a0a0d;
+  --color-obsidian-900: #101015;
+  --color-obsidian-850: #15151c;
+  --color-obsidian-800: #1c1c25;
+  --color-obsidian-700: #262631;
+  --color-obsidian-600: #34343f;
+
+  /* Single page accent: warm runed gold */
+  --color-rune-300: #f4d99b;
+  --color-rune-400: #ecc472;
+  --color-rune-500: #d9a441;
+  --color-rune-600: #b9852c;
+
+  /* Faction tints — semantic data encoding inside the graph ONLY (ADR 0001) */
+  --color-faction-human: #6ea8ff;
+  --color-faction-orc: #e0593f;
+  --color-faction-nightelf: #59d6c2;
+  --color-faction-undead: #9d7bd8;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-obsidian-950);
+  color: #e9e8ee;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-rune-500) 30%, transparent);
+  color: #fff;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-obsidian-700) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

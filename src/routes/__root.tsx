@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 WC3 Roadmap contributors
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+// Global design system — Direction 0 "Modern" (see docs/adr/0001-visual-design-direction.md).
+import appCss from "#/styles/app.css?url";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,6 +16,12 @@ export const Route = createRootRoute({
       },
       {
         title: "WC3 Learning Roadmap",
+      },
+    ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: appCss,
       },
     ],
   }),
