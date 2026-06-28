@@ -37,7 +37,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. The patch-version field appears on node, mastery threshold, and progress schema definitions — it is not a late add, it is present from the first schema commit
   5. The project builds, deploys, and carries a GPL-3.0 license; TanStack Start and all core dependencies are pinned to known-working versions with an explicit upgrade policy documented
   6. `CONTEXT.md` exists capturing the ubiquitous domain language (node, nodeType, mastery state, pathway, signal, patch, threshold) and `docs/adr/` holds at least the foundational ADRs (stack choice, content/engine decoupling, patch-version primitive, GPL-3.0) — the deep-module + ADR discipline is in place before feature phases begin
-**Plans**: TBD
+**Plans**: 8 plans
+- [ ] 01-01-PLAN.md — Scaffold TanStack Start app, pin deps, wire content-collections + nitro + Vitest [wave 1]
+- [ ] 01-02-PLAN.md — Patch registry deep module (PATCHES, CURRENT_PATCH, PATCH_IDS, getPatch) [wave 2]
+- [ ] 01-03-PLAN.md — CONTEXT.md domain language + foundational ADRs 001-003 + upgrade policy [wave 2]
+- [ ] 01-04-PLAN.md — GPL-3.0 LICENSE + variant decision checkpoint + SPDX convention + ADR 004 [wave 2]
+- [ ] 01-05-PLAN.md — Three Zod schemas (node, masteryThreshold, progressRecord) with patchId [wave 3]
+- [ ] 01-06-PLAN.md — content-collections nodes collection (build-time validation) + seed node [wave 3]
+- [ ] 01-07-PLAN.md — CI validation (prereq resolution, acyclicity, patchId) + GitHub Actions [wave 4]
+- [ ] 01-08-PLAN.md — Live Vercel deploy from day one [wave 5]
 
 ### Phase 2: Graph Engine
 **Goal**: Interactive React Flow canvas renders seed nodes from static JSON with correct memoization conventions, three-state mastery visualization, and a guided-pathway default view — no auth or DB required
