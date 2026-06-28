@@ -9,6 +9,7 @@ The project is built in nine phases that follow a strict content-first, dependen
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -27,123 +28,164 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Foundation & Schema
+
 **Goal**: Typed, Zod-validated content schema with MECHANIC/CONCEPTUAL node taxonomy and patch-version primitive is established as the single source of truth; CI rejects malformed content; project licensed GPL-3.0 with pinned TanStack Start dependencies; architecture foundations (`CONTEXT.md` domain language + `docs/adr/`) scaffolded
 **Depends on**: Nothing (first phase)
 **Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, DATA-05, DATA-06, DATA-07, OSS-01, OSS-02
 **Success Criteria** (what must be TRUE):
+
   1. A developer can add a new node by creating a JSON/MDX file — CI validates it automatically against the Zod schema and fails the build with a clear error if fields are missing or malformed
   2. MECHANIC and CONCEPTUAL are distinct first-class enum values in the node schema; downstream code can switch on `nodeType` without ambiguity
   3. Every node schema field for `patch_context`, `last_reviewed`, and `meta_volatile` is required (not optional/nullable) — a node missing any of them fails CI
   4. The patch-version field appears on node, mastery threshold, and progress schema definitions — it is not a late add, it is present from the first schema commit
   5. The project builds, deploys, and carries a GPL-3.0 license; TanStack Start and all core dependencies are pinned to known-working versions with an explicit upgrade policy documented
   6. `CONTEXT.md` exists capturing the ubiquitous domain language (node, nodeType, mastery state, pathway, signal, patch, threshold) and `docs/adr/` holds at least the foundational ADRs (stack choice, content/engine decoupling, patch-version primitive, GPL-3.0) — the deep-module + ADR discipline is in place before feature phases begin
+
 **Plans**: 8 plans
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Scaffold TanStack Start app, pin deps, wire content-collections + nitro + Vitest [wave 1]
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Patch registry deep module (PATCHES, CURRENT_PATCH, PATCH_IDS, getPatch) [wave 2]
 - [ ] 01-03-PLAN.md — CONTEXT.md domain language + foundational ADRs 001-003 + upgrade policy [wave 2]
 - [ ] 01-04-PLAN.md — GPL-3.0 LICENSE + variant decision checkpoint + SPDX convention + ADR 004 [wave 2]
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-05-PLAN.md — Three Zod schemas (node, masteryThreshold, progressRecord) with patchId [wave 3]
 - [ ] 01-06-PLAN.md — content-collections nodes collection (build-time validation) + seed node [wave 3]
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 01-07-PLAN.md — CI validation (prereq resolution, acyclicity, patchId) + GitHub Actions [wave 4]
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 01-08-PLAN.md — Live Vercel deploy from day one [wave 5]
 
 ### Phase 2: Graph Engine
+
 **Goal**: Interactive React Flow canvas renders seed nodes from static JSON with correct memoization conventions, three-state mastery visualization, and a guided-pathway default view — no auth or DB required
 **Depends on**: Phase 1
 **Requirements**: GRAPH-01, GRAPH-02, GRAPH-05, GRAPH-06
 **Success Criteria** (what must be TRUE):
+
   1. A user can pan, zoom, and click any node on the graph without visible frame drops — React DevTools Profiler confirms fewer than 3 re-renders per custom node component during a pan gesture
   2. Nodes display three visually distinct mastery states (untouched / in-progress / mastered) using mocked data — the graph is the source of truth for visual state
   3. First-load shows a guided pathway view with 8–12 highlighted nodes, not the full graph; the full graph is accessible via an explicit "Explore full map" action only
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 3: Content Pipeline & Node Panel
+
 **Goal**: MDX content pipeline processes node files with citations and application notes; clicking a node opens a lazy-loading detail panel; the citation template enforces "how to apply" siblings; search and filter work on the graph
 **Depends on**: Phase 2
 **Requirements**: CONT-01, CONT-02, CONT-03, GRAPH-03, GRAPH-04
 **Success Criteria** (what must be TRUE):
+
   1. Clicking a node opens a detail panel showing learning content, inline citations that link to real sources, and a required "How to apply in your next game" section — content loads lazily per node without a full-page reload
   2. Updating a node's content requires only editing its MDX file and deploying — no graph engine or component code changes are needed
   3. A node MDX file without a `howToApply` section or with a citation missing its `applicationNote` field fails the CI build — the template enforces the structure before any content reaches production
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 4: Auth & Database
+
 **Goal**: Users can sign in with Battle.net OAuth; sessions persist across browser refreshes; every server function that reads or writes user data derives the user identity from the server-side session, never from client input
 **Depends on**: Phase 1
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04
 **Success Criteria** (what must be TRUE):
+
   1. A user can click "Sign in with Battle.net", authenticate on battle.net, and return to the app recognized by their BattleTag — the first server function written follows the `getSession()` → ownership-check pattern before touching any input parameter
   2. Refreshing the browser does not log the user out — the session cookie survives a normal browser refresh
   3. Calling a user-data server function directly (e.g., via curl or Postman) with a different user's resource ID returns an authorization error, not data — client-supplied user IDs are ignored in favor of the session principal
   4. The progress key stored in the database is a stable internal account identifier (UUID from the `users` table) that survives a BattleTag display-name change without breaking progress records
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 5: Progress Tracking
+
 **Goal**: Logged-in users can manually mark per-node mastery state and have it persist server-side; pre-login progress from localStorage merges on first sign-in; no gamification mechanics exist anywhere in the UI
 **Depends on**: Phase 4
 **Requirements**: PROG-01, PROG-02, PROG-03, PROG-04, PROG-05
 **Success Criteria** (what must be TRUE):
+
   1. A logged-in user can manually mark any node as in-progress or mastered, and that state is reflected in the graph immediately and persists across browser sessions and devices
   2. Progress a user accumulated before logging in (stored in localStorage) is merged into their server-side record on first sign-in — no prior progress is silently discarded
   3. Mastery states are visually updated in the graph after marking without a full-page reload — the graph re-renders the affected node only
   4. The progress UI contains no XP points, streak counters, or global leaderboards — the only progress indicator is the user's own mastery state per node, framed as personal skill growth
   5. Clearing localStorage as an authenticated user and reopening the app shows the same server-persisted mastery states as before — client-side state is a cache, not the source of truth
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 6: Self-Assessment Quizzes
+
 **Goal**: CONCEPTUAL nodes offer short recall-based quizzes that drive that node's mastery state to mastered on passing; MECHANIC nodes never surface a quiz
 **Depends on**: Phase 3, Phase 5
 **Requirements**: QUIZ-01, QUIZ-02, QUIZ-03
 **Success Criteria** (what must be TRUE):
+
   1. A CONCEPTUAL node's detail panel shows a "Take Assessment" button that launches a short quiz (3–5 questions); a MECHANIC node's panel has no such button
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 7: w3champions Auto-Detection
+
 **Goal**: Authenticated users can link their w3champions ladder data and have coarse signals (MMR tier, games volume, matchup W/L trends) auto-advance eligible MECHANIC nodes; the sync is user-triggered, rate-limit-respecting, and never blocks manual tracking
 **Depends on**: Phase 5
 **Requirements**: AUTO-01, AUTO-02, AUTO-03, AUTO-04, AUTO-05
 **Success Criteria** (what must be TRUE):
+
   1. A logged-in user can trigger "Sync with w3champions" from their profile and see "Last synced: Xm ago" after it completes — the sync uses their BattleTag from their Battle.net identity, no separate linking step required
   2. After a successful sync, MECHANIC nodes for which coarse signals qualify automatically advance in mastery state — the change is labeled "auto-detected from w3champions" and is visible as distinct from manual check-off
   3. Triggering the sync twice within the cache TTL returns cached data and does not make a second API call — the app respects TanStack Query stale-while-revalidate and the DB TTL layer
   4. A user who has no linked data, whose sync fails, or who skips the feature entirely can still track all progress manually and take quizzes — auto-detection is an enhancement, not a prerequisite
   5. CONCEPTUAL nodes never advance from a sync result — the `detectMasterySignals()` pure function only emits updates for nodes with `nodeType === 'mechanical'`
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 8: Replay Parsing
+
 **Goal**: Users can upload a `.w3g` replay or trigger auto-pull from w3champions and receive fine-grained mechanical signal analysis — build-order timing, APM/eAPM, control-group usage, hero timing — mapped to MECHANIC node mastery against patch-aware thresholds, with actionable feedback
 **Depends on**: Phase 4, Phase 5
 **Requirements**: REPLAY-01, REPLAY-02, REPLAY-03, REPLAY-04, REPLAY-05, REPLAY-06, REPLAY-07, REPLAY-08
 **Success Criteria** (what must be TRUE):
+
   1. A user can upload a `.w3g` replay file from their WC3 replay folder and receive a breakdown of their build-order timing, APM, eAPM approximation, hero buy timing, control-group usage, and expansion timing — all extracted by w3gjs with the semantic signal layer
   2. The analysis feedback is actionable: each signal is presented as "you executed X at time Y; the target for this mechanic node is Z" — raw numbers alone are not returned without context
   3. Signals that meet patch-aware mastery thresholds automatically advance the relevant MECHANIC node toward mastered — the source is labeled "replay-detected" and the WC3 build number is stored alongside the result
   4. The wc3v fork integration provides advanced analysis output (supply curves, precise expansion detection, compare-to-pro signals) as an additional analysis layer on top of w3gjs base signals
   5. Users can trigger auto-pull of recent w3champions replays from their profile (after rate-limit confirmation via the w3champions API token); parsed results are cached by gameId so the same replay is never re-parsed
+
 **Plans**: TBD
 
 ### Phase 9: Guided Pathways & Launch
+
 **Goal**: The guided pathway overlay ships as the default landing view with a Beginner Fundamentals track; the minimum publishable content gate (~25 fully-authored nodes) is met; a citation review pass confirms no decorative science; staleness indicators surface on meta-volatile nodes
 **Depends on**: Phase 2, Phase 5
 **Requirements**: PATH-01, PATH-02, PATH-03, PATH-04, CONT-04, CONT-05
 **Success Criteria** (what must be TRUE):
+
   1. A first-time visitor lands on the Beginner Fundamentals guided pathway by default — they see an ordered, highlighted subset of 8–12 nodes with a progress indicator, not the raw full graph
   2. As a user masters nodes in the pathway, the pathway completion progress bar advances — the progress is visually tied to their mastery state, not to page visits
   3. At least 25 race-agnostic fundamentals nodes are fully authored with real peer-reviewed citations, concrete "how to apply in your next game" sections, and attributed WC3 player wisdom before the app is publicly announced
   4. A citation review audit confirms every citation on every launched node supports a specific verifiable claim and pairs it with a concrete WC3 drill — any node failing this audit is withheld from launch
   5. Meta-volatile nodes that have not been reviewed against the current WC3 patch display a visible staleness indicator in their detail panel so users can calibrate their trust appropriately
+
 **Plans**: TBD
 **UI hint**: yes
 
