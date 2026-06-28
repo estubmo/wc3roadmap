@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 01
 current_phase_name: foundation-schema
-status: executing
-stopped_at: Completed 01-07-PLAN.md (CI validation layer)
-last_updated: "2026-06-28T19:59:56.171Z"
+status: verifying
+stopped_at: Completed 01-08-PLAN.md (Vercel live deploy)
+last_updated: "2026-06-28T21:03:54.816Z"
 last_activity: 2026-06-28
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 9
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 8
-  completed_plans: 7
-  percent: 0
+  completed_plans: 8
+  percent: 11
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 
 Phase: 01 (foundation-schema) — EXECUTING
 Plan: 8 of 8
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-28 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation-schema P01-05 | 7 | 2 tasks | 6 files |
 | Phase 01-foundation-schema P06 | 2m | 2 tasks | 2 files |
 | Phase 01-foundation-schema P07 | 5min | 3 tasks | 6 files |
+| Phase 01 P08 | 15min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-schema]: detectCycles skips edges to unknown nodes — missing refs are validatePrerequisiteIds domain
 - [Phase 01-foundation-schema]: validatePatchIds accepts validIds as parameter for pure testability without PATCH_IDS import
 - [Phase 01-foundation-schema]: CI step order: build:content before validate is mandatory (RESEARCH Pitfall 4 — generated module dependency)
+- [Phase ?]: vercel.json omitted — nitro() plugin provides zero-config Vercel detection (RESEARCH Pitfall 3)
+- [Phase ?]: Deploy-early: live URL at D-12 (Phase 1) to surface deploy friction before feature work
 
 ### Pending Todos
 
@@ -111,6 +114,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-28T19:59:56.163Z
-Stopped at: Completed 01-07-PLAN.md (CI validation layer)
+Last session: 2026-06-28T21:03:54.809Z
+Stopped at: Completed 01-08-PLAN.md (Vercel live deploy)
 Resume file: None

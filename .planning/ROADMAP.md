@@ -15,7 +15,7 @@ The project is built in nine phases that follow a strict content-first, dependen
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Schema** - Zod content schema, MECHANIC/CONCEPTUAL taxonomy, patch-version primitive, CI validation, GPL-3.0 license
+- [x] **Phase 1: Foundation & Schema** - Zod content schema, MECHANIC/CONCEPTUAL taxonomy, patch-version primitive, CI validation, GPL-3.0 license (completed 2026-06-28)
 - [ ] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only)
 - [ ] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter
 - [ ] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization
@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. The project builds, deploys, and carries a GPL-3.0 license; TanStack Start and all core dependencies are pinned to known-working versions with an explicit upgrade policy documented
   6. `CONTEXT.md` exists capturing the ubiquitous domain language (node, nodeType, mastery state, pathway, signal, patch, threshold) and `docs/adr/` holds at least the foundational ADRs (stack choice, content/engine decoupling, patch-version primitive, GPL-3.0) — the deep-module + ADR discipline is in place before feature phases begin
 
-**Plans**: 7/8 plans executed
+**Plans**: 8/8 plans complete
 **Wave 1**
 
 - [x] 01-01-PLAN.md — Scaffold TanStack Start app, pin deps, wire content-collections + nitro + Vitest [wave 1]
@@ -63,7 +63,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 01-08-PLAN.md — Live Vercel deploy from day one [wave 5]
+- [x] 01-08-PLAN.md — Live Vercel deploy from day one [wave 5]
 
 ### Phase 2: Graph Engine
 
@@ -196,7 +196,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Schema | 7/8 | In Progress|  |
+| 1. Foundation & Schema | 8/8 | Complete   | 2026-06-28 |
 | 2. Graph Engine | 0/? | Not started | - |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |
