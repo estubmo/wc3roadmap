@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2026 WC3 Roadmap contributors
+#
+# CI workflow — validates content schema and builds the app on every PR.
+# Required check: this job must pass before a branch can be merged.
+#
+# Step ordering is mandatory (see RESEARCH Pitfall 4):
+#   build:content  — generates .content-collections/generated/index.js
+#   typecheck      — tsc --noEmit (catches TypeScript errors early)
+#   validate       — cross-document checks that require the generated module
+#   build          — full Vite build (re-runs content-collections schema validation)
+#
+# Secrets: NONE referenced here. Vercel deployment is handled by the Vercel
+# GitHub App (configured in plan 01-08). No tokens are logged or echoed.
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate Content & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # npm ci installs from the committed lockfile — reproducible, no drift (T-01-CI).
+      - name: Install dependencies
+        run: npm ci
+
+      # Must run before validate — generates .content-collections/generated/index.js
+      # which the validate script imports. Skipping this step causes "Cannot find
+      # module 'content-collections'" at runtime (RESEARCH Pitfall 4).
+      - name: Generate content
+        run: npm run build:content
+
+      # Type-check after content generation so generated types are available.
+      - name: Type check
+        run: npm run typecheck
+
+      # Cross-document validation: prereq-id resolution, patchId integrity, acyclicity.
+      # Exits non-zero on any error — build is blocked (D-13, DATA-05, DATA-07).
+      - name: Validate content
+        run: npm run validate
+
+      # Full app build — also re-runs content-collections per-document schema validation
+      # and the "## How to Apply" section check in the transform. Belt-and-suspenders.
+      - name: Build
+        run: npm run build
