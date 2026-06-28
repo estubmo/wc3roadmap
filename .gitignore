@@ -1,1 +1,34 @@
+# Planning research cache
 .planning/research/.cache/
+
+# Generated content collections types — always regenerated at build time
+.content-collections/
+
+# Environment secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+
+# Vite
+.vite/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
