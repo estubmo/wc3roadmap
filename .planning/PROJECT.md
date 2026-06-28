@@ -38,11 +38,13 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - [ ] Node content distills wisdom from recognized WC3 players/guides/content-creators
 - [ ] Comprehensive content at launch (most nodes have real, researched content)
 - [ ] Content stored as decoupled, version-controlled data (JSON/MDX) independent of the graph/UI engine — easy to update as the meta shifts
-- [ ] Meta-sensitive nodes (e.g. specific build orders) flagged/datable so balance-patch staleness is manageable
+- [ ] Patch-version awareness across the ENTIRE system — content nodes, build orders, mastery thresholds, replays, and progress are all tagged with the WC3 patch they apply to, so the system stays correct across balance patches
 - [ ] Guided Pathways / Learning Tracks overlay on the graph (e.g. "Beginner Basics") that highlight an ordered subset of nodes — a guided on-ramp over free-form exploration
-- [ ] User accounts via Battle.net / w3champions OAuth
+- [ ] User accounts via Battle.net OAuth (returns BattleTag identity)
 - [ ] Progress tracking per node (mark / show mastery state)
-- [ ] Auto-detect mastery from w3champions ladder data — scoped to foundational/mechanic nodes only (objective proxies, e.g. "build order executed under 4:00")
+- [ ] Coarse auto-detection from the w3champions API (games-played volume, MMR tier, matchup W/L trends) — the only signals that API exposes
+- [ ] `.w3g` replay parsing to extract fine-grained mechanical signals (build-order timings, expansion timing, APM, hotkey/control-group use) for objective mechanical-node mastery (e.g. "build order executed under 4:00")
+- [ ] Auto-detect mastery scoped to foundational/mechanic nodes (coarse from API + fine from replays); conceptual nodes never auto-detected
 - [ ] Manual check-off + short self-assessment quizzes for conceptual/strategic nodes (avoids gaming a noisy metric)
 - [ ] Easily extensible content + data model (add nodes, races, sources, pathways over time)
 
@@ -59,7 +61,8 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - **Domain**: Competitive Warcraft III (Reforged / classic ladder via w3champions). Race-agnostic RTS fundamentals (macro, micro, mechanics, decision-making) plus the four races (Human, Orc, Undead, Night Elf).
 - **Evidence base**: Learning design grounded in motor-skill acquisition, deliberate practice, and competitive/sport psychology research — surfaced as clickable citations per node.
 - **Content sourcing**: Node content to be researched against peer-reviewed sources and authoritative WC3 creators (likely a `/deep-research`-driven authoring pipeline during build).
-- **w3champions**: External community ladder platform — the integration target for identity (OAuth) and progress auto-detection. API capabilities are an open feasibility question.
+- **w3champions**: External community ladder platform. Identity comes from Battle.net OAuth (BattleTag); the w3champions API is a separate BattleTag-keyed lookup that exposes coarse outcome stats only (MMR, W/L by race/season, match history). Fine-grained mechanical signals come from `.w3g` replay parsing, not the API. API rate limits are undocumented — cache aggressively (TanStack Query).
+- **Replay parsing**: `.w3g` replay files are parsed to extract objective mechanical signals (build timings, expansion timing, APM, control-group/hotkey use). This is the engine behind mechanical-node auto-mastery and must be patch-version aware (replay format + build-order correctness vary by patch).
 - **Curation model**: Content authored/curated by the project owners for v1; designed so community contribution can be added later.
 - **Meta volatility**: WC3 balance patches shift the strategic meta quickly. Content/UI decoupling and node-level dating exist specifically to keep updates cheap. Foundational mechanics/psychology are stable; race/matchup specifics are volatile.
 - **Mastery measurement**: Ladder data (MMR/APM/W-L) is a weak proxy for *conceptual* mastery and is easy to game. Auto-detection is therefore deliberately limited to objective mechanical signals; understanding is validated by self-assessment, not metric-chasing.
@@ -72,7 +75,8 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - **Design bar**: Must be elegant, intuitive, and beautifully designed — this is a stated product priority, not an afterthought.
 - **Extensibility**: Architecture must make adding nodes, races, and sources easy without rework — User priority ("make changes along the way").
 - **Openness**: Free and open source — no paywalls, code/content public.
-- **Feasibility risk**: Battle.net / w3champions OAuth existence and whether w3champions exposes enough data to auto-detect skill mastery are unverified — research must confirm; manual tracking is the fallback.
+- **Feasibility risk**: Battle.net OAuth is confirmed; w3champions API rate limits/stability are undocumented (treat as fragile). `.w3g` replay parsing feasibility/maturity for the current patch is the new key unknown — needs a spike. Manual tracking + self-assessment is the fallback if auto-detection underdelivers.
+- **Patch versioning**: Patch version is a cross-cutting concern, not a single feature — it touches the content schema, replay parser, mastery thresholds, and progress records. Must be designed in from the data-model phase, not bolted on.
 - **Operational cost/limits**: Even as a free OSS project, the web app + database + w3champions API calls have real hosting costs and likely API rate limits — research must surface these so the architecture (caching via TanStack Query, sync cadence) respects them.
 
 ## Key Decisions
@@ -90,6 +94,9 @@ The learning content actually makes people better at WC3 — science-backed, eff
 | Curated content for v1, community contribution later | Quality control now; extensibility preserved in data model | — Pending |
 | No AI product feature in v1 | TanStack AI was a misunderstanding; keep v1 focused | — Pending |
 | Auto-detect limited to foundational/mechanic nodes; conceptual nodes use manual + self-assessment quizzes | Ladder data is a weak, gameable proxy for conceptual mastery (Gemini critique #1) | — Pending |
+| Two-tier auto-detection: coarse from w3champions API + fine from `.w3g` replay parsing | w3champions API exposes outcome stats only (research finding); replay parsing is required for build-timing/APM/expansion signals — user accepted the added scope | — Pending |
+| Patch-version is a system-wide primitive (content, build orders, thresholds, replays, progress) | WC3 meta shifts on balance patches; tagging everything by patch keeps correctness across patches and lets the UI show staleness — user decision | — Pending |
+| Battle.net OAuth for identity; w3champions accessed as a BattleTag-keyed API lookup (not an OAuth provider) | Research finding: w3champions is not an OAuth provider; Battle.net returns BattleTag which keys the w3c API | — Pending |
 | Content decoupled from graph engine as version-controlled JSON/MDX, with node-level dating | WC3 meta shifts on balance patches; hard-coded content would be a maintenance trap (Gemini critique #2) | — Pending |
 | Add Guided Pathways / Learning Tracks overlay on the free-form graph | A sprawling graph overwhelms novices ("analysis paralysis"); guided tracks give structure without losing exploration (Gemini critique #3) | — Pending |
 | Every citation paired with "how to apply in your next game" | Science cited without tight, practical application reads as pseudo-intellectual (Gemini critique #5) | — Pending |
