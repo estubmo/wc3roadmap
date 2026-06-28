@@ -43,7 +43,8 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - [ ] User accounts via Battle.net OAuth (returns BattleTag identity)
 - [ ] Progress tracking per node (mark / show mastery state)
 - [ ] Coarse auto-detection from the w3champions API (games-played volume, MMR tier, matchup W/L trends) — the only signals that API exposes
-- [ ] `.w3g` replay parsing to extract fine-grained mechanical signals (build-order timings, expansion timing, APM, hotkey/control-group use) for objective mechanical-node mastery (e.g. "build order executed under 4:00")
+- [ ] `.w3g` replay parsing (w3gjs base + forked wc3v analysis) to extract fine-grained mechanical signals (build-order timings, expansion timing, APM/eAPM, hotkey/control-group use, hero/item builds, supply/economy curves) for objective mechanical-node mastery
+- [ ] Replay ingest both ways: manual `.w3g` upload and auto-pull from the w3champions replay endpoint
 - [ ] Auto-detect mastery scoped to foundational/mechanic nodes (coarse from API + fine from replays); conceptual nodes never auto-detected
 - [ ] Manual check-off + short self-assessment quizzes for conceptual/strategic nodes (avoids gaming a noisy metric)
 - [ ] Easily extensible content + data model (add nodes, races, sources, pathways over time)
@@ -62,7 +63,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - **Evidence base**: Learning design grounded in motor-skill acquisition, deliberate practice, and competitive/sport psychology research — surfaced as clickable citations per node.
 - **Content sourcing**: Node content to be researched against peer-reviewed sources and authoritative WC3 creators (likely a `/deep-research`-driven authoring pipeline during build).
 - **w3champions**: External community ladder platform. Identity comes from Battle.net OAuth (BattleTag); the w3champions API is a separate BattleTag-keyed lookup that exposes coarse outcome stats only (MMR, W/L by race/season, match history). Fine-grained mechanical signals come from `.w3g` replay parsing, not the API. API rate limits are undocumented — cache aggressively (TanStack Query).
-- **Replay parsing**: `.w3g` replay files are parsed to extract objective mechanical signals (build timings, expansion timing, APM, control-group/hotkey use). This is the engine behind mechanical-node auto-mastery and must be patch-version aware (replay format + build-order correctness vary by patch).
+- **Replay parsing**: `.w3g` replay files are parsed to extract objective mechanical signals (build timings, expansion timing, APM/eAPM, control-group/hotkey use, hero/item builds, supply/economy curves). Stack: **w3gjs** (MIT, v4.x) as the base parser — it already decodes unit/building/item IDs and gives ~80% of signals in a Node server function — plus a **fork of wc3v (jblanchette/wc3v, GPL-3.0)** for sophisticated analysis (supply curves, battle detection, compare-to-pro, creep routing). Replays are ingested two ways: manual `.w3g` upload AND auto-pull from w3champions' replay endpoint (`GET api.w3champions.com/api/replays/{gameId}`, ~50/hr rate limit, token available). Parsing must be patch-version aware (object-ID maps + build-order correctness vary by patch).
 - **Curation model**: Content authored/curated by the project owners for v1; designed so community contribution can be added later.
 - **Meta volatility**: WC3 balance patches shift the strategic meta quickly. Content/UI decoupling and node-level dating exist specifically to keep updates cheap. Foundational mechanics/psychology are stable; race/matchup specifics are volatile.
 - **Mastery measurement**: Ladder data (MMR/APM/W-L) is a weak proxy for *conceptual* mastery and is easy to game. Auto-detection is therefore deliberately limited to objective mechanical signals; understanding is validated by self-assessment, not metric-chasing.
@@ -74,7 +75,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - **Graph visualization**: Interactive node graph is the centerpiece; React Flow is the likely fit in a React/TanStack world — confirm during research.
 - **Design bar**: Must be elegant, intuitive, and beautifully designed — this is a stated product priority, not an afterthought.
 - **Extensibility**: Architecture must make adding nodes, races, and sources easy without rework — User priority ("make changes along the way").
-- **Openness**: Free and open source — no paywalls, code/content public.
+- **Openness**: Free and open source under **GPL-3.0** (strong copyleft) — no paywalls, code/content public. License is GPL-3.0 specifically because the project forks/integrates wc3v (jblanchette/wc3v), which is GPL-3.0; user accepted this.
 - **Feasibility risk**: Battle.net OAuth is confirmed; w3champions API rate limits/stability are undocumented (treat as fragile). `.w3g` replay parsing feasibility/maturity for the current patch is the new key unknown — needs a spike. Manual tracking + self-assessment is the fallback if auto-detection underdelivers.
 - **Patch versioning**: Patch version is a cross-cutting concern, not a single feature — it touches the content schema, replay parser, mastery thresholds, and progress records. Must be designed in from the data-model phase, not bolted on.
 - **Operational cost/limits**: Even as a free OSS project, the web app + database + w3champions API calls have real hosting costs and likely API rate limits — research must surface these so the architecture (caching via TanStack Query, sync cadence) respects them.
@@ -96,6 +97,12 @@ The learning content actually makes people better at WC3 — science-backed, eff
 | Auto-detect limited to foundational/mechanic nodes; conceptual nodes use manual + self-assessment quizzes | Ladder data is a weak, gameable proxy for conceptual mastery (Gemini critique #1) | — Pending |
 | Two-tier auto-detection: coarse from w3champions API + fine from `.w3g` replay parsing | w3champions API exposes outcome stats only (research finding); replay parsing is required for build-timing/APM/expansion signals — user accepted the added scope | — Pending |
 | Patch-version is a system-wide primitive (content, build orders, thresholds, replays, progress) | WC3 meta shifts on balance patches; tagging everything by patch keeps correctness across patches and lets the UI show staleness — user decision | — Pending |
+| Replay stack = w3gjs (MIT) base + forked wc3v (GPL-3.0) analysis | w3gjs gives ~80% of signals fast; wc3v adds the sophisticated "learn the most" analysis the user wants | — Pending |
+| Project licensed GPL-3.0 | Forking GPL-3.0 wc3v forces copyleft; user accepted — aligned with free OSS public-good goal | — Pending |
+| Replay ingest = manual upload + auto-pull from w3champions replay endpoint | w3champions DOES serve `.w3g` files (research-verified); both paths maximize coverage | — Pending |
+| v1 content = race-agnostic core fully fleshed; race branches deferred to v1.x | Avoid the "comprehensive at launch" shipping trap; depth over breadth | — Pending |
+| Minimum publishable gate: ~25 fully-authored nodes before launch | Gives content authoring a finish line; ~20-30 is where guided pathways become meaningful | — Pending |
+| Desktop-first, mobile-readable for v1 | Interactive React Flow graph is hard on touch; mobile renders content readably | — Pending |
 | Battle.net OAuth for identity; w3champions accessed as a BattleTag-keyed API lookup (not an OAuth provider) | Research finding: w3champions is not an OAuth provider; Battle.net returns BattleTag which keys the w3c API | — Pending |
 | Content decoupled from graph engine as version-controlled JSON/MDX, with node-level dating | WC3 meta shifts on balance patches; hard-coded content would be a maintenance trap (Gemini critique #2) | — Pending |
 | Add Guided Pathways / Learning Tracks overlay on the free-form graph | A sprawling graph overwhelms novices ("analysis paralysis"); guided tracks give structure without losing exploration (Gemini critique #3) | — Pending |
