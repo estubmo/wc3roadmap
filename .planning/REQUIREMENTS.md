@@ -16,7 +16,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **DATA-04**: Patch version is a system-wide primitive — content, build orders, mastery thresholds, parsed replays, and progress records are all tagged with the WC3 patch they apply to
 - [x] **DATA-05**: Graph edges are soft prerequisites (suggested order via arrows); nodes are never hard-locked
 - [x] **DATA-06**: Node content stored as version-controlled MDX/JSON files in the repo (content-collections pipeline), enabling easy updates and future community PRs
-- [ ] **DATA-07**: Content schema validated in CI so malformed nodes fail the build
+- [x] **DATA-07**: Content schema validated in CI so malformed nodes fail the build
 
 ### Content
 
@@ -141,7 +141,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-04 | Phase 1 | Complete |
 | DATA-05 | Phase 1 | Complete |
 | DATA-06 | Phase 1 | Complete |
-| DATA-07 | Phase 1 | Pending |
+| DATA-07 | Phase 1 | Complete |
 | OSS-01 | Phase 1 | Complete |
 | OSS-02 | Phase 1 | Complete |
 | GRAPH-01 | Phase 2 | Pending |
