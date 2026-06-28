@@ -84,7 +84,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Project / Open Source
 
-- [ ] **OSS-01**: Project is released under GPL-3.0 (required by the wc3v fork) with public code and content
+- [x] **OSS-01**: Project is released under GPL-3.0 (required by the wc3v fork) with public code and content
 - [x] **OSS-02**: Data model and content pipeline are extensible (add nodes, races, sources, pathways without rework)
 
 ## v2 Requirements
@@ -142,7 +142,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-05 | Phase 1 | Pending |
 | DATA-06 | Phase 1 | Complete |
 | DATA-07 | Phase 1 | Pending |
-| OSS-01 | Phase 1 | Pending |
+| OSS-01 | Phase 1 | Complete |
 | OSS-02 | Phase 1 | Complete |
 | GRAPH-01 | Phase 2 | Pending |
 | GRAPH-02 | Phase 2 | Pending |
