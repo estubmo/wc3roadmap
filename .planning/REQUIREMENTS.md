@@ -1,0 +1,147 @@
+# Requirements: WC3 Learning Roadmap
+
+**Defined:** 2026-06-28
+**Core Value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy.
+
+## v1 Requirements
+
+Requirements for initial release. Each maps to roadmap phases.
+v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-specific branches deferred to v2). Minimum publishable gate: **~25 fully-authored nodes**.
+
+### Content Data Model
+
+- [ ] **DATA-01**: Node taxonomy distinguishes MECHANIC vs CONCEPTUAL nodes, baked into the schema from day one
+- [ ] **DATA-02**: Node content schema is Zod-validated and decoupled from the graph/UI engine (graph receives only display-essential data; full content loads lazily per node)
+- [ ] **DATA-03**: Each node carries `patch_context`, `last_reviewed` date, and a `meta_volatile` flag
+- [ ] **DATA-04**: Patch version is a system-wide primitive — content, build orders, mastery thresholds, parsed replays, and progress records are all tagged with the WC3 patch they apply to
+- [ ] **DATA-05**: Graph edges are soft prerequisites (suggested order via arrows); nodes are never hard-locked
+- [ ] **DATA-06**: Node content stored as version-controlled MDX/JSON files in the repo (content-collections pipeline), enabling easy updates and future community PRs
+- [ ] **DATA-07**: Content schema validated in CI so malformed nodes fail the build
+
+### Content
+
+- [ ] **CONT-01**: Each relevant node has visible inline citations to real peer-reviewed / scientific sources (motor learning, deliberate practice, sport/competitive psychology) linking to the source
+- [ ] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
+- [ ] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
+- [ ] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
+- [ ] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
+
+### Graph UI
+
+- [ ] **GRAPH-01**: Interactive node graph with pan / zoom / click (React Flow / @xyflow), non-linear exploration
+- [ ] **GRAPH-02**: Node mastery states shown visually in the graph (untouched / learning / mastered)
+- [ ] **GRAPH-03**: Clicking a node opens a detail panel with its content, citations, and "next game" section (content lazy-loaded)
+- [ ] **GRAPH-04**: Search / filter nodes by race, skill type (macro/micro/mental), difficulty, and mastery state
+- [ ] **GRAPH-05**: Desktop-first interactive graph; mobile renders node content readably (simplified / read-only graph acceptable)
+- [ ] **GRAPH-06**: Graph performs smoothly at the v1 node count (memoization conventions established from the first prototype)
+
+### Guided Pathways
+
+- [ ] **PATH-01**: Guided Pathways overlay highlights an ordered subset of nodes on the graph
+- [ ] **PATH-02**: At least one "Beginner Fundamentals" pathway ships at launch
+- [ ] **PATH-03**: The default landing view is a guided pathway, not the full sprawling graph (novice anti-overwhelm)
+- [ ] **PATH-04**: Pathway shows completion progress as the user masters its nodes
+
+### Authentication
+
+- [ ] **AUTH-01**: User can sign in with Battle.net OAuth (returns BattleTag identity)
+- [ ] **AUTH-02**: Session persists across browser refresh
+- [ ] **AUTH-03**: Server functions enforce session-based authorization on all user-data access (not just input-shape validation)
+- [ ] **AUTH-04**: A stable account identifier is used as the progress key (survives BattleTag display changes)
+
+### Progress Tracking
+
+- [ ] **PROG-01**: Per-node mastery state is tracked per user
+- [ ] **PROG-02**: Progress persists server-side, tied to the account
+- [ ] **PROG-03**: Pre-login progress is stored in localStorage and merges on sign-in
+- [ ] **PROG-04**: User can manually mark any node's mastery state
+- [ ] **PROG-05**: No XP, streaks, or leaderboards (deliberate — avoids gaming the metric)
+
+### Self-Assessment Quizzes
+
+- [ ] **QUIZ-01**: CONCEPTUAL nodes have a short self-assessment quiz (3–5 recall-based questions)
+- [ ] **QUIZ-02**: Passing a node's quiz drives that conceptual node toward "mastered"
+- [ ] **QUIZ-03**: Quizzes test understanding, not surface recall
+
+### w3champions Auto-Detection (Coarse)
+
+- [ ] **AUTO-01**: User links their w3champions data via BattleTag from Battle.net login
+- [ ] **AUTO-02**: Coarse signals from the w3champions API (games-played volume, MMR tier, matchup W/L trends) auto-advance eligible MECHANIC nodes
+- [ ] **AUTO-03**: Auto-detection only ever advances MECHANIC nodes — never CONCEPTUAL ones
+- [ ] **AUTO-04**: w3champions API calls are cached and rate-limit-respecting (TanStack Query stale-while-revalidate)
+- [ ] **AUTO-05**: Auto-detection enhances but never blocks progress — manual/quiz tracking works without a linked account
+
+### Replay Parsing (Fine Mechanical Signals)
+
+- [ ] **REPLAY-01**: Parse `.w3g` replays with w3gjs to extract mechanical signals (build-order timings, APM/eAPM, control-group/hotkey use, hero/item build timing, unit/upgrade timeline)
+- [ ] **REPLAY-02**: A semantic-signal layer turns w3gjs output into meaningful WC3 events mapped to specific mechanic nodes
+- [ ] **REPLAY-03**: Integrate a fork of wc3v (GPL-3.0) for advanced analysis (supply/economy curves, battle detection, compare-to-pro)
+- [ ] **REPLAY-04**: User can manually upload a `.w3g` replay for analysis
+- [ ] **REPLAY-05**: System can auto-pull replays from the w3champions replay endpoint (`/api/replays/{gameId}`)
+- [ ] **REPLAY-06**: Replay-derived signals auto-mark MECHANIC node mastery against patch-aware thresholds (e.g. "build order executed under target time")
+- [ ] **REPLAY-07**: Replay analysis returns actionable feedback ("you did X at time Y; target is Z")
+- [ ] **REPLAY-08**: Replay parsing is patch-version aware (object-ID maps and thresholds resolve by patch)
+
+### Project / Open Source
+
+- [ ] **OSS-01**: Project is released under GPL-3.0 (required by the wc3v fork) with public code and content
+- [ ] **OSS-02**: Data model and content pipeline are extensible (add nodes, races, sources, pathways without rework)
+
+## v2 Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Race-Specific Content
+
+- **RACE-01**: Human-specific branch nodes
+- **RACE-02**: Orc-specific branch nodes
+- **RACE-03**: Undead-specific branch nodes
+- **RACE-04**: Night Elf-specific branch nodes
+- **RACE-05**: Race-specific guided pathways (e.g. "Undead Macro track")
+
+### Community & Sharing
+
+- **COMM-01**: In-app community content contribution UI (wiki-style, moderated) on top of the GitHub PR pipeline
+- **COMM-02**: Shareable progress map (static image / URL of mastered nodes)
+- **COMM-03**: Multiple advanced guided pathways beyond the beginner track
+
+### Advanced Detection
+
+- **ADET-01**: Finer matchup-specific auto-detection as signals/thresholds mature
+- **ADET-02**: Replay-based personalized weakness detection and node recommendations
+
+### Reach
+
+- **REACH-01**: Mobile-native interactive graph
+- **REACH-02**: Public API exposing mastery data for other WC3 tools
+
+## Out of Scope
+
+Explicitly excluded. Documented to prevent scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| XP / points for completing nodes | Goodhart's Law — rewards consumption, not mastery; defeats the learning purpose |
+| Streaks / daily-login gamification | Measures app visits, not improvement; WC3 progress happens in-game |
+| Global "nodes mastered" leaderboard | Rewards gaming the system, not real WC3 skill; harmful to the mission |
+| Hard prerequisite locking | WC3 learning is non-linear; locking frustrates players jumping in mid-graph (use soft edges + pathways) |
+| In-app AI chat tutor | TanStack AI was a misunderstanding; risks hallucinated "facts" undermining curated, cited content |
+| Social feed / activity stream | Adds social-graph complexity; encourages shallow engagement over deep learning |
+| Community wiki editing (in v1) | Quality risk to science-backed content; v1 is curated, contribution deferred to v2 |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| (populated during roadmap creation) | — | Pending |
+
+**Coverage:**
+- v1 requirements: 46 total
+- Mapped to phases: 0 ⚠️ (roadmap pending)
+- Unmapped: 46 ⚠️
+
+---
+*Requirements defined: 2026-06-28*
+*Last updated: 2026-06-28 after initial definition*
