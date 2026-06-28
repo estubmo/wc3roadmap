@@ -2,7 +2,7 @@
 
 A free, open-source interactive node graph of Warcraft III / RTS learning concepts, structured around science-backed pedagogy and the distilled wisdom of the most recognized WC3 players and content creators. Race-agnostic fundamentals form the core of the graph, with race-specific branches layered on top. Every node carries visible per-node citations drawn from motor learning, deliberate practice, and competitive-psychology research. Players sign in with their Battle.net / w3champions identity and the app auto-detects skill mastery from real w3champions ladder data to track progress as they learn.
 
-**Live:** _pending first Vercel deploy_
+**Live:** https://wc3roadmap.vercel.app
 
 ## License
 
