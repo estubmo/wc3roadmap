@@ -10,11 +10,11 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Content Data Model
 
-- [ ] **DATA-01**: Node taxonomy distinguishes MECHANIC vs CONCEPTUAL nodes, baked into the schema from day one
-- [ ] **DATA-02**: Node content schema is Zod-validated and decoupled from the graph/UI engine (graph receives only display-essential data; full content loads lazily per node)
-- [ ] **DATA-03**: Each node carries `patch_context`, `last_reviewed` date, and a `meta_volatile` flag
+- [x] **DATA-01**: Node taxonomy distinguishes MECHANIC vs CONCEPTUAL nodes, baked into the schema from day one
+- [x] **DATA-02**: Node content schema is Zod-validated and decoupled from the graph/UI engine (graph receives only display-essential data; full content loads lazily per node)
+- [x] **DATA-03**: Each node carries `patch_context`, `last_reviewed` date, and a `meta_volatile` flag
 - [x] **DATA-04**: Patch version is a system-wide primitive — content, build orders, mastery thresholds, parsed replays, and progress records are all tagged with the WC3 patch they apply to
-- [ ] **DATA-05**: Graph edges are soft prerequisites (suggested order via arrows); nodes are never hard-locked
+- [x] **DATA-05**: Graph edges are soft prerequisites (suggested order via arrows); nodes are never hard-locked
 - [x] **DATA-06**: Node content stored as version-controlled MDX/JSON files in the repo (content-collections pipeline), enabling easy updates and future community PRs
 - [ ] **DATA-07**: Content schema validated in CI so malformed nodes fail the build
 
@@ -135,11 +135,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
+| DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Complete |
-| DATA-05 | Phase 1 | Pending |
+| DATA-05 | Phase 1 | Complete |
 | DATA-06 | Phase 1 | Complete |
 | DATA-07 | Phase 1 | Pending |
 | OSS-01 | Phase 1 | Complete |
