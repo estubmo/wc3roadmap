@@ -85,6 +85,8 @@ All values derive from `src/styles/app.css` (`@theme` block). Do not hardcode he
 
 **Faction colors** (`--color-faction-{human,orc,nightelf,undead}`): the faction tint hook is implemented in Phase 2 for MECHANIC/CONCEPTUAL node type encoding (see Node Visual Language below), but v1 content is all `race: agnostic` so tints remain dormant. Build the CSS variable hook; do not apply any faction color to agnostic nodes.
 
+**Distribution ratio:** ~90% of pixels are obsidian tokens (dominant `obsidian-950` + secondaries `obsidian-800/900/600`), <10% is rune-gold accent — reserved strictly for the uses enumerated below. Rune-gold must never exceed accent scale.
+
 **Accent reserved for (explicit list):**
 1. Mastered-node fill tint (`color-mix(in oklab, var(--color-rune-500) 15%, var(--color-obsidian-800))`)
 2. Mastered-node border (2px solid `--color-rune-500`)
