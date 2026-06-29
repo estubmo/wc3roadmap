@@ -19,7 +19,7 @@
  *   No window.innerWidth check — enforced by acceptance grep.
  */
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, ClientOnly } from "@tanstack/react-router";
 import { allNodes } from "content-collections";
 import { GraphDisplayNodeSchema } from "#/schemas/graph";
 import type { GraphDisplayNode } from "#/schemas/graph";
@@ -27,6 +27,8 @@ import { PathwaySchema } from "#/schemas/pathway";
 import type { Pathway } from "#/schemas/pathway";
 import { RoadmapGraph } from "#/components/graph/RoadmapGraph";
 import { MobileNodeList } from "#/components/graph/MobileNodeList";
+import { FilterBar } from "#/components/graph/FilterBar";
+import { NodeDetailPanel } from "#/components/graph/NodeDetailPanel";
 // Pathway JSON — bundled by Vite at build time; works in SSR + client contexts.
 // Validated at runtime via PathwaySchema.safeParse (T-02-16 mitigation).
 import pathwayRaw from "../../pathways/beginner-fundamentals.json";
@@ -132,7 +134,7 @@ function Home() {
     <main style={{ backgroundColor: "var(--color-obsidian-950)" }}>
       {/* 56px app control bar — SSR-safe structural element.
           Height is consumed by calc(100dvh - 56px) on the canvas wrapper below.
-          Content: app identity (left). Pathway details live inside RoadmapGraph. */}
+          Content: app identity (left) + FilterBar (D-09, fills remaining width). */}
       <div
         style={{
           height: "56px",
@@ -149,10 +151,16 @@ function Home() {
             fontSize: "15px",
             fontWeight: 600,
             lineHeight: 1,
+            flexShrink: 0,
           }}
         >
           WC3 Roadmap
         </span>
+
+        {/* FilterBar — D-09/D-10 search input + four facet groups.
+            Fills remaining top-bar width; dispatches to graph-store.
+            useShallow slice subscription inside FilterBar (Pitfall 3). */}
+        <FilterBar />
       </div>
 
       {/* Desktop canvas — hidden below md breakpoint (CSS-only, Pitfall 4).
@@ -170,6 +178,13 @@ function Home() {
       <div className="block md:hidden">
         <MobileNodeList nodes={nodes} pathway={pathway} />
       </div>
+
+      {/* Panel layer — client-only, mounted once above both desktop + mobile.
+          NodeDetailPanel reads selectedNodeId from graph-store; no props needed.
+          Single mount point per RESEARCH §Q5 "Home owns the panel layer". */}
+      <ClientOnly fallback={null}>
+        <NodeDetailPanel />
+      </ClientOnly>
     </main>
   );
 }
