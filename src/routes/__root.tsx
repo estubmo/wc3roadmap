@@ -4,6 +4,7 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Global design system — Direction 0 "Modern" (see docs/adr/0001-visual-design-direction.md).
 import appCss from "#/styles/app.css?url";
+import { SiteHeader } from "#/components/SiteHeader";
 
 // ---------------------------------------------------------------------------
 // QueryClient — module-scope singleton (not inside RootDocument).
@@ -61,7 +62,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
          * provider would be incorrect.
          */}
         <QueryClientProvider client={queryClient}>
-          {children}
+          {/* SiteHeader mounts above {children}; the content wrapper below
+              clears the fixed 48px bar with padding-top so the graph canvas
+              is not hidden behind the header (UI-SPEC §SiteHeader). */}
+          <SiteHeader />
+          <div style={{ paddingTop: "48px" }}>{children}</div>
         </QueryClientProvider>
         <Scripts />
       </body>
