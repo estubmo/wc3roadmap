@@ -13,6 +13,7 @@
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource-variable/outfit";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@xyflow/react/dist/style.css";
 @import "tailwindcss";
 
 @theme {
