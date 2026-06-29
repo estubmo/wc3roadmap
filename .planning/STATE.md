@@ -6,14 +6,14 @@ current_phase: 04
 current_phase_name: auth-database
 status: executing
 stopped_at: Completed 04-auth-database/04-03-PLAN.md
-last_updated: "2026-06-29T18:26:52.142Z"
+last_updated: "2026-06-29T18:39:15.722Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
   completed_phases: 3
   total_plans: 34
-  completed_plans: 31
+  completed_plans: 32
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 04 (auth-database) — EXECUTING
-Plan: 5 of 7
+Plan: 6 of 7
 Status: Ready to execute
 Last activity: 2026-06-29 — Phase 04 execution started
 
@@ -82,6 +82,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P01 | 5m | 3 tasks | 7 files |
 | Phase 04-auth-database P03 | 40m | 3 tasks | 5 files |
 | Phase 04 P04 | 10m | 2 tasks | 3 files |
+| Phase 04-auth-database P05 | 9m | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,9 @@ Recent decisions affecting current work:
 - [Phase ?]: getUserProfileHandler exported as named fn for testability without TanStack Start runtime
 - [Phase ?]: AuthedContext type exported from auth-middleware.ts — typed handler params
 - [Phase ?]: authMiddleware.options.server() is correct test call for registered middleware handler (not .server() chaining method)
+- [Phase ?]: onOpenRegion callback on SignInButton decouples button from dialog state
+- [Phase ?]: DiceBear 9.x initials URL resolves Pitfall 2 (no Battle.net avatar API)
+- [Phase ?]: RegionSelector onInteractOutside preventDefault blocks outside-click; ESC allowed
 
 ### Pending Todos
 
@@ -159,6 +163,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T18:26:28.620Z
+Last session: 2026-06-29T18:38:59.880Z
 Stopped at: Completed 04-auth-database/04-03-PLAN.md
 Resume file: None
