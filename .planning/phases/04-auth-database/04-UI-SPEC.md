@@ -56,8 +56,9 @@ Exceptions:
 ## Typography
 
 All weights use Outfit Variable (body/UI) or Space Grotesk Variable (heading/display).
-Maximum 2 weights used in this phase: regular (400) and semibold (600).
-Label weight (500) is the single exception — shadcn's `font-medium` used for interactive label text.
+Maximum 3 weights used in this phase: regular (400), medium (500), and semibold (600).
+Weight-500 (medium) is used exclusively for interactive label text per shadcn UI standard practice.
+Weight-600 is reserved for headings. Weight-400 is reserved for body text.
 
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
@@ -69,6 +70,8 @@ Label weight (500) is the single exception — shadcn's `font-medium` used for i
 ---
 
 ## Color
+
+Color distribution: 60% dominant (obsidian-950 background), 30% secondary (header/panel/border grays), 10% accent (rune-500 primary CTA).
 
 All values use CSS custom properties declared in `src/styles/app.css @theme`. No hardcoded hex in component files — use `var(--color-*)` inline styles or Tailwind arbitrary value `[var(--color-*)]`.
 
@@ -95,6 +98,8 @@ Accent NOT used for: dropdown menu items, region selector options, avatar, Battl
 ---
 
 ## Component Inventory
+
+Primary visual focal point: The fixed header with the gold-accented "Sign in with Battle.net" button.
 
 New components introduced in Phase 4. All from the official shadcn registry — no third-party blocks.
 
