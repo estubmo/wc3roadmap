@@ -85,8 +85,8 @@ describe("nodeContentQueryOptions — queryKey", () => {
 describe("nodeContentQueryOptions — queryFn", () => {
   it("queryFn returns the node object for a known node id", async () => {
     const opts = nodeContentQueryOptions("map-control");
-    // queryFn is synchronous; call with a minimal TanStack Query context
-    const result = await (opts as { queryFn: () => unknown }).queryFn();
+    // queryFn is async; call with a minimal TanStack Query context
+    const result = await (opts as unknown as { queryFn: () => unknown }).queryFn();
     expect(result).toBeDefined();
     expect((result as { id: string }).id).toBe("map-control");
   });
@@ -94,7 +94,7 @@ describe("nodeContentQueryOptions — queryFn", () => {
   it("queryFn throws for an unknown node id", async () => {
     const opts = nodeContentQueryOptions("completely-unknown-node-xyz");
     await expect(
-      () => (opts as { queryFn: () => unknown }).queryFn()
+      () => (opts as unknown as { queryFn: () => unknown }).queryFn()
     ).rejects.toThrow();
   });
 });
