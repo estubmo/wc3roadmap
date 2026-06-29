@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 04
 current_phase_name: auth-database
-status: executing
+status: verifying
 stopped_at: Completed 04-auth-database/04-06-PLAN.md
-last_updated: "2026-06-29T18:45:31.568Z"
+last_updated: "2026-06-29T18:52:15.467Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 34
-  completed_plans: 33
-  percent: 33
+  completed_plans: 34
+  percent: 44
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 
 Phase: 04 (auth-database) — EXECUTING
 Plan: 7 of 7
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-29 — Phase 04 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -84,6 +84,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P04 | 10m | 2 tasks | 3 files |
 | Phase 04-auth-database P05 | 9m | 3 tasks | 3 files |
 | Phase 04-auth-database P06 | 2m | 2 tasks | 2 files |
+| Phase 04-auth-database P07 | 6m | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -144,6 +145,8 @@ Recent decisions affecting current work:
 - [Phase ?]: RegionSelector onInteractOutside preventDefault blocks outside-click; ESC allowed
 - [Phase ?]: SiteHeader returns React fragment wrapping header + RegionSelector — dialog ownership stays in component
 - [Phase ?]: isPending renders null (empty slot) to prevent CTA flash on refresh (AUTH-02 / T-04-06b)
+- [Phase ?]: ADR 007: principal-keyed authedServerFn convention is the auditable standard for all user-data server functions
+- [Phase ?]: ADR 008: global Battle.net OAuth endpoint (Assumption A1) with documented per-region fallback; LOW-MEDIUM confidence; EU/KR spike required before live rollout
 
 ### Pending Todos
 
@@ -166,6 +169,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T18:45:31.561Z
+Last session: 2026-06-29T18:52:07.737Z
 Stopped at: Completed 04-auth-database/04-06-PLAN.md
 Resume file: None

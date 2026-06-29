@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Schema** - Zod content schema, MECHANIC/CONCEPTUAL taxonomy, patch-version primitive, CI validation, GPL-3.0 license (completed 2026-06-28)
 - [x] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only) (completed 2026-06-29)
 - [x] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter (completed 2026-06-29)
-- [ ] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization
+- [x] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization (completed 2026-06-29)
 - [ ] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification
 - [ ] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state
 - [ ] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard
@@ -163,7 +163,7 @@ Plans:
   3. Calling a user-data server function directly (e.g., via curl or Postman) with a different user's resource ID returns an authorization error, not data — client-supplied user IDs are ignored in favor of the session principal
   4. The progress key stored in the database is a stable internal account identifier (UUID from the `users` table) that survives a BattleTag display-name change without breaking progress records
 
-**Plans**: 6/7 plans executed
+**Plans**: 7/7 plans complete
 
 Plans:
 **Wave 1**
@@ -186,7 +186,7 @@ Plans:
 **Wave 5** *(blocked on Wave 4)*
 
 - [x] 04-06-PLAN.md — SiteHeader compose + __root mount + end-of-phase OAuth/session-persistence verification [wave 5]
-- [ ] 04-07-PLAN.md — D-14 docs: CONTEXT.md domain terms + ADR 007 (authorization) + ADR 008 (Battle.net integration) [wave 5]
+- [x] 04-07-PLAN.md — D-14 docs: CONTEXT.md domain terms + ADR 007 (authorization) + ADR 008 (Battle.net integration) [wave 5]
 
 **UI hint**: yes
 
@@ -277,7 +277,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
-| 4. Auth & Database | 6/7 | In Progress|  |
+| 4. Auth & Database | 7/7 | Complete   | 2026-06-29 |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
