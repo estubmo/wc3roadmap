@@ -248,18 +248,15 @@ describe("getUserProfile — principal-keyed DB query (D-12/D-13)", () => {
       users: { id: "id_column_ref" },
     }));
 
-    // getUserProfile must exist (GREEN phase); importing it here drives the
-    // TDD RED fail when the file is absent.
-    const { getUserProfile } = await import("#/server/user-profile");
+    // Import the extracted handler (exported for testability without TanStack Start
+    // server runtime — same pattern as mapBattlenetProfile in auth.ts).
+    // This import drives the TDD RED fail when user-profile.ts is absent.
+    const { getUserProfileHandler } = await import("#/server/user-profile");
 
-    // Access the stored server handler directly — the TanStack Start server fn
-    // runtime stores it as options.serverFn. This lets us test the handler
-    // in isolation without the full TanStack Start HTTP/middleware stack.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handler = (getUserProfile as any).options?.serverFn as (ctx: { context: { principal: typeof principalA } }) => Promise<unknown>;
-
-    // Invoke with principal A's context (session-derived)
-    await handler({ context: { principal: principalA } });
+    // Invoke the handler directly with principal A's context (session-derived).
+    // In production the authMiddleware injects this context; here we supply it
+    // directly to test the handler in isolation.
+    await getUserProfileHandler({ context: { principal: principalA } });
 
     // The DB query was keyed by principal A's id
     expect(findFirstMock).toHaveBeenCalledTimes(1);

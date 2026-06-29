@@ -34,6 +34,18 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth, type User } from "#/lib/auth";
 
 // ---------------------------------------------------------------------------
+// AuthedContext — type helper for handler functions using authedServerFn
+// ---------------------------------------------------------------------------
+
+/**
+ * The context shape injected by authMiddleware.
+ *
+ * Import in handler functions to type the `context` destructure:
+ *   `async function myHandler({ context }: AuthedContext) { ... }`
+ */
+export type AuthedContext = { context: { principal: User } };
+
+// ---------------------------------------------------------------------------
 // authMiddleware — D-11: 401 gate before any user-data handler
 // ---------------------------------------------------------------------------
 
