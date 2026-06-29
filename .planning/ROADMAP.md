@@ -78,7 +78,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
 
-**Plans**: 4/10 plans executed
+**Plans**: 5/10 plans executed
 **UI hint**: yes
 
 Plans:
@@ -91,7 +91,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 02-04-PLAN.md — Pure dagre layout + ancestor-chain BFS engine + tests [wave 2]
-- [ ] 02-05-PLAN.md — Beginner Fundamentals pathway data file + CI referential-integrity check [wave 2]
+- [x] 02-05-PLAN.md — Beginner Fundamentals pathway data file + CI referential-integrity check [wave 2]
 - [ ] 02-06-PLAN.md — Memoized custom node component + mastery badge (D-04/D-05/D-06) [wave 2]
 - [ ] 02-07-PLAN.md — SSR-safe mobile node list + pathway banner (D-11/D-12) [wave 2]
 
@@ -223,7 +223,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
-| 2. Graph Engine | 4/10 | In Progress|  |
+| 2. Graph Engine | 5/10 | In Progress|  |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |

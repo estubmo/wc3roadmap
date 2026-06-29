@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: Graph Engine
 status: executing
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-06-29T01:36:25.210Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-06-29T01:41:24.376Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 02 execution started
 progress:
   total_phases: 9
   completed_phases: 1
   total_plans: 18
-  completed_plans: 12
+  completed_plans: 13
   percent: 11
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 02 (Graph Engine) — EXECUTING
-Plan: 5 of 10
+Plan: 6 of 10
 Status: Ready to execute
 Last activity: 2026-06-29 — Phase 02 execution started
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-graph-engine P02 | 6m | 3 tasks | 6 files |
 | Phase 02-graph-engine P03 | 7min | 2 tasks | 14 files |
 | Phase 02-graph-engine P04 | 6m | 2 tasks | 4 files |
+| Phase 02-graph-engine P05 | 8min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,9 @@ Recent decisions affecting current work:
 - [Phase ?]: PathwaySchema uses .min(1) on all fields and steps array — validated pathway data contract (D-10)
 - [Phase ?]: computeLayout uses named imports { Graph, layout } from @dagrejs/dagre over default import for explicitness
 - [Phase ?]: graph-layout.ts uses relative ../schemas/graph import — vitest config lacks alias resolver for #/ prefix
+- [Phase 02-graph-engine]: 8-step beginner pathway (supply-management → army-positioning) follows prereq DAG; roots before dependents
+- [Phase 02-graph-engine]: validatePathwayStepIds pure fn mirrors validatePrerequisiteIds — no fs/content-collections imports, fully unit-testable
+- [Phase 02-graph-engine]: Pathway integrity check wired into validate-content.ts main() as 4th validator — no new npm script, no CI workflow edit
 
 ### Pending Todos
 
@@ -122,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T01:36:25.205Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-06-29T01:46:00Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
