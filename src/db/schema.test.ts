@@ -10,6 +10,7 @@
  * without a live DB connection (AUTH-04 stable-UUID key, D-05/D-06 fields).
  */
 import { describe, it, expect } from "vitest";
+import { getTableName } from "drizzle-orm";
 import {
   users,
   sessions,
@@ -45,8 +46,7 @@ describe("schema exports", () => {
 
 describe("users table", () => {
   it("has DB table name 'user' (better-auth convention)", () => {
-    // Drizzle stores the table name on the ._['_'].name property
-    expect((users as unknown as { _: { name: string } })._?.name).toBe("user");
+    expect(getTableName(users)).toBe("user");
   });
 
   it("has id column (stable UUID progress key — AUTH-04)", () => {
@@ -84,7 +84,7 @@ describe("users table", () => {
 
 describe("sessions table", () => {
   it("has DB table name 'session'", () => {
-    expect((sessions as unknown as { _: { name: string } })._?.name).toBe("session");
+    expect(getTableName(sessions)).toBe("session");
   });
 
   it("has userId FK column", () => {
@@ -102,7 +102,7 @@ describe("sessions table", () => {
 
 describe("accounts table", () => {
   it("has DB table name 'account'", () => {
-    expect((accounts as unknown as { _: { name: string } })._?.name).toBe("account");
+    expect(getTableName(accounts)).toBe("account");
   });
 
   it("has userId FK column", () => {
@@ -120,9 +120,7 @@ describe("accounts table", () => {
 
 describe("verifications table", () => {
   it("has DB table name 'verification'", () => {
-    expect((verifications as unknown as { _: { name: string } })._?.name).toBe(
-      "verification"
-    );
+    expect(getTableName(verifications)).toBe("verification");
   });
 
   it("has identifier column", () => {
