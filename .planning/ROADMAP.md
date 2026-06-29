@@ -120,7 +120,7 @@ Plans:
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
 
-**Plans**: 7/9 plans executed
+**Plans**: 8/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -145,7 +145,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 03-08-PLAN.md — NodePanelContent (pinned How-to-Apply + body + citations) + NodeDetailPanel (drawer/sheet) [wave 5]
+- [x] 03-08-PLAN.md — NodePanelContent (pinned How-to-Apply + body + citations) + NodeDetailPanel (drawer/sheet) [wave 5]
 
 **Wave 6** *(blocked on Wave 5)*
 
@@ -252,7 +252,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
-| 3. Content Pipeline & Node Panel | 7/9 | In Progress|  |
+| 3. Content Pipeline & Node Panel | 8/9 | In Progress|  |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
