@@ -78,13 +78,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
 
-**Plans**: 10 plans
+**Plans**: 1/10 plans executed
 **UI hint**: yes
 
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Tooling bootstrap: graph deps install, shadcn init (button/badge/tooltip), @xyflow CSS import [wave 1]
+- [x] 02-01-PLAN.md — Tooling bootstrap: graph deps install, shadcn init (button/badge/tooltip), @xyflow CSS import [wave 1]
 - [ ] 02-02-PLAN.md — GraphDisplayNode + Pathway Zod schemas + tests, ADR 005, CONTEXT.md glossary [wave 1]
 - [ ] 02-03-PLAN.md — 10–15 seed MDX nodes (DAG) + mocked mastery map [wave 1]
 
@@ -223,7 +223,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
-| 2. Graph Engine | 0/? | Not started | - |
+| 2. Graph Engine | 1/10 | In Progress|  |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
