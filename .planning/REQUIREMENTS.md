@@ -32,7 +32,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **GRAPH-02**: Node mastery states shown visually in the graph (untouched / learning / mastered)
 - [ ] **GRAPH-03**: Clicking a node opens a detail panel with its content, citations, and "next game" section (content lazy-loaded)
 - [ ] **GRAPH-04**: Search / filter nodes by race, skill type (macro/micro/mental), difficulty, and mastery state
-- [ ] **GRAPH-05**: Desktop-first interactive graph; mobile renders node content readably (simplified / read-only graph acceptable)
+- [x] **GRAPH-05**: Desktop-first interactive graph; mobile renders node content readably (simplified / read-only graph acceptable)
 - [x] **GRAPH-06**: Graph performs smoothly at the v1 node count (memoization conventions established from the first prototype)
 
 ### Guided Pathways
@@ -146,7 +146,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OSS-02 | Phase 1 | Complete |
 | GRAPH-01 | Phase 2 | Complete |
 | GRAPH-02 | Phase 2 | Complete |
-| GRAPH-05 | Phase 2 | Pending |
+| GRAPH-05 | Phase 2 | Complete |
 | GRAPH-06 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Pending |
 | CONT-02 | Phase 3 | Pending |
