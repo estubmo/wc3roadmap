@@ -81,6 +81,17 @@ export interface RoadmapGraphProps {
   nodes: GraphDisplayNode[];
   /** Active pathway — drives spotlight dimming and fitView on mount. */
   pathway: Pathway;
+  /**
+   * When `true`, the graph mounts in explore mode: all nodes are at 100%
+   * opacity and the camera is fitted to the full graph rather than the
+   * pathway subset. The "Back to pathway" toggle is still available.
+   *
+   * Defaults to `false` (guided-pathway spotlight mode).
+   *
+   * Use this on preview routes that need to demonstrate the full-graph or
+   * mastery-state surfaces without requiring a manual "Explore full map" click.
+   */
+  initialExploring?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -91,14 +102,14 @@ export interface RoadmapGraphProps {
 // be exported directly — consumers must go through the <RoadmapGraph> wrapper.
 // ---------------------------------------------------------------------------
 
-function GraphCanvas({ nodes: rawNodes, pathway }: RoadmapGraphProps) {
+function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGraphProps) {
   const { fitView, setNodes } = useReactFlow();
 
   // ------------------------------------------------------------------
   // State: whether "Explore full map" is active
   // ------------------------------------------------------------------
 
-  const [exploring, setExploring] = useState(false);
+  const [exploring, setExploring] = useState(initialExploring ?? false);
 
   // ------------------------------------------------------------------
   // Derived: set of pathway node IDs (fast membership tests)
@@ -158,13 +169,20 @@ function GraphCanvas({ nodes: rawNodes, pathway }: RoadmapGraphProps) {
   // ------------------------------------------------------------------
 
   useEffect(() => {
-    fitView({
-      nodes: pathway.steps.map((id) => ({ id })),
-      padding: 0.2,
-      duration: 800,
-    });
+    if (initialExploring) {
+      // Explore mode: fit to ALL nodes — no pathway filter so the full graph
+      // is framed and all mastery states are visible without manual interaction.
+      fitView({ padding: 0.15, duration: 800 });
+    } else {
+      // Guided-pathway mode: fit camera to pathway steps only (D-08, D-09)
+      fitView({
+        nodes: pathway.steps.map((id) => ({ id })),
+        padding: 0.2,
+        duration: 800,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentionally empty — runs once on mount
+  }, []); // intentionally empty — runs once on mount; initialExploring is an init value
 
   // ------------------------------------------------------------------
   // setNodes when exploring state or displayNodes change
@@ -269,10 +287,11 @@ function GraphCanvas({ nodes: rawNodes, pathway }: RoadmapGraphProps) {
           minZoom={0.25}
           maxZoom={2.0}
           fitView
-          fitViewOptions={{
-            nodes: pathway.steps.map((id) => ({ id })),
-            padding: 0.2,
-          }}
+          fitViewOptions={
+            initialExploring
+              ? { padding: 0.15 }
+              : { nodes: pathway.steps.map((id) => ({ id })), padding: 0.2 }
+          }
           onNodeMouseEnter={handleNodeMouseEnter}
           onNodeMouseLeave={handleNodeMouseLeave}
           onNodeClick={handleNodeClick}
@@ -308,7 +327,11 @@ function GraphCanvas({ nodes: rawNodes, pathway }: RoadmapGraphProps) {
  *
  * Usage:
  * ```tsx
+ * // Guided-pathway spotlight (default)
  * <RoadmapGraph nodes={graphDisplayNodes} pathway={beginnerPathway} />
+ *
+ * // Start in full-map / explore mode
+ * <RoadmapGraph nodes={graphDisplayNodes} pathway={beginnerPathway} initialExploring />
  * ```
  */
 export function RoadmapGraph(props: RoadmapGraphProps) {

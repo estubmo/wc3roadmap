@@ -73,14 +73,15 @@ function PreviewMasteryStates() {
     );
   }
 
-  // RoadmapGraph injects mastery state via getMockMastery on every node.
-  // The seed corpus distributes mastered / in-progress / untouched across nodes
-  // (mock-mastery.ts), ensuring all three states are legible simultaneously.
+  // Starts in explore mode (initialExploring=true) so all nodes are at 100% opacity
+  // on mount — all three mastery states (mastered / in-progress / untouched) are
+  // simultaneously legible without a manual "Explore full map" click.
+  // RoadmapGraph injects mastery state via getMockMastery on every node (mock-mastery.ts).
   // Both MECHANIC and CONCEPTUAL nodes are present in the seed corpus.
   // Hover any node to see the prerequisite-chain edge highlight (rune-400).
   return (
     <div style={{ height: "100dvh", backgroundColor: "var(--color-obsidian-950)" }}>
-      <RoadmapGraph nodes={nodes} pathway={pathway} />
+      <RoadmapGraph nodes={nodes} pathway={pathway} initialExploring />
     </div>
   );
 }

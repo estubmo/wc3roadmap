@@ -73,11 +73,13 @@ function PreviewFullMap() {
     );
   }
 
-  // Starts in guided-pathway mode. Click "Explore full map" to reveal all nodes
-  // at 100% opacity with "Back to pathway" visible. Pan/zoom/click for Profiler check.
+  // Starts in explore mode (initialExploring=true): all nodes visible at 100% opacity,
+  // camera fitted to the full graph on mount. "Back to pathway" is available via the
+  // PathwayBanner toggle. Pan/zoom/click interactions are live for the Profiler check
+  // (success criterion 1 — no frame drops during drag, <3 GraphNode re-renders).
   return (
     <div style={{ height: "100dvh", backgroundColor: "var(--color-obsidian-950)" }}>
-      <RoadmapGraph nodes={nodes} pathway={pathway} />
+      <RoadmapGraph nodes={nodes} pathway={pathway} initialExploring />
     </div>
   );
 }
