@@ -81,16 +81,38 @@ const nodes = defineCollection({
     ),
   }),
   transform: async (document, context) => {
-    // Enforce the required How-to-Apply section in every node body (D-03).
-    // The transform throws → content-collections exits non-zero → build fails.
+    // CONT-02: Enforce the required How-to-Apply section FIRST so CI enforcement
+    // fires before any split — a missing heading is a build error regardless of split.
     if (!document.content.includes("## How to Apply")) {
       throw new Error(
         `Node "${document.id}": missing required "## How to Apply" section in MDX body (D-03).` +
           ` Every node must include a "## How to Apply" heading with concrete in-game guidance.`
       );
     }
-    const mdx = await compileMDX(context, document);
-    return { ...document, mdx };
+
+    // D-13: Split body prose from the "## How to Apply" section.
+    // Both chunks are compiled to MDX independently so the panel can pin
+    // mdxHowToApply at the top (D-12) while mdx renders the theory below.
+    const HOW_TO_APPLY_RE = /^## How to Apply\s*/m;
+    const splitIdx = document.content.search(HOW_TO_APPLY_RE);
+    const bodyRaw = document.content.slice(0, splitIdx).trim();
+    const howToApplyRaw = document.content.slice(splitIdx).trim();
+
+    // Pitfall 2 guard: body must have prose before the ## How to Apply heading.
+    if (bodyRaw.length === 0) {
+      throw new Error(
+        `Node "${document.id}": content body is empty before "## How to Apply".` +
+          ` Add introductory prose above the How to Apply section.`
+      );
+    }
+
+    // Compile body and How-to-Apply section separately.
+    // Assumption A1: compileMDX accepts a partial document with only `content` replaced.
+    // If A1 fails, fall back to a cloned object (see comment below).
+    const mdx = await compileMDX(context, { ...document, content: bodyRaw });
+    const mdxHowToApply = await compileMDX(context, { ...document, content: howToApplyRaw });
+
+    return { ...document, mdx, mdxHowToApply };
   },
 });
 
