@@ -163,7 +163,31 @@ Plans:
   3. Calling a user-data server function directly (e.g., via curl or Postman) with a different user's resource ID returns an authorization error, not data — client-supplied user IDs are ignored in favor of the session principal
   4. The progress key stored in the database is a stable internal account identifier (UUID from the `users` table) that survives a BattleTag display-name change without breaking progress records
 
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Tooling bootstrap: install better-auth/drizzle/neon (pinned), shadcn dropdown-menu/avatar/dialog, drizzle.config.ts, .env.example [wave 1]
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 04-02-PLAN.md — Drizzle schema (users/sessions/accounts/verifications + identity fields), db singleton, smoke test, [BLOCKING] schema push to Neon [wave 2]
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 04-03-PLAN.md — betterAuth instance (Battle.net generic-OAuth, 30-day rolling sessions), auth-client, auth handler route, profile-mapping test [wave 3]
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 04-04-PLAN.md — authedServerFn deep module + first user-data server fn + cross-user authorization test (AUTH-03 centerpiece) [wave 4]
+- [ ] 04-05-PLAN.md — Auth UI leaf components: SignInButton (gold CTA), RegionSelector (gateway capture), UserDropdown [wave 4]
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 04-06-PLAN.md — SiteHeader compose + __root mount + end-of-phase OAuth/session-persistence verification [wave 5]
+- [ ] 04-07-PLAN.md — D-14 docs: CONTEXT.md domain terms + ADR 007 (authorization) + ADR 008 (Battle.net integration) [wave 5]
+
 **UI hint**: yes
 
 ### Phase 5: Progress Tracking
@@ -253,7 +277,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
-| 4. Auth & Database | 0/? | Not started | - |
+| 4. Auth & Database | 0/7 | Planned | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
