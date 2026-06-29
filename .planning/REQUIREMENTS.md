@@ -21,7 +21,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 ### Content
 
 - [x] **CONT-01**: Each relevant node has visible inline citations to real peer-reviewed / scientific sources (motor learning, deliberate practice, sport/competitive psychology) linking to the source
-- [ ] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
+- [x] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
 - [x] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
 - [ ] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
 - [ ] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
@@ -149,7 +149,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GRAPH-05 | Phase 2 | Complete |
 | GRAPH-06 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Complete |
-| CONT-02 | Phase 3 | Pending |
+| CONT-02 | Phase 3 | Complete |
 | CONT-03 | Phase 3 | Complete |
 | GRAPH-03 | Phase 3 | Complete |
 | GRAPH-04 | Phase 3 | Complete |

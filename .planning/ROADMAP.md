@@ -120,7 +120,7 @@ Plans:
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
 
-**Plans**: 1/9 plans executed
+**Plans**: 2/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -130,7 +130,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 03-02-PLAN.md — CitationSchema discriminated union (node.ts + content-collections.ts) + D-13 How-to-Apply split + migrate 13 seed MDX [wave 2]
+- [x] 03-02-PLAN.md — CitationSchema discriminated union (node.ts + content-collections.ts) + D-13 How-to-Apply split + migrate 13 seed MDX [wave 2]
 - [ ] 03-03-PLAN.md — GraphDisplayNode projection extension (skillType + tags) + ADR-006 + loader projection [wave 2]
 
 **Wave 3** *(blocked on Wave 2)*
@@ -252,7 +252,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
-| 3. Content Pipeline & Node Panel | 1/9 | In Progress|  |
+| 3. Content Pipeline & Node Panel | 2/9 | In Progress|  |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
