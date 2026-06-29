@@ -167,16 +167,13 @@ function NodeDetailPanelInner() {
  * MDXContent) only renders on the client. Fallback is null — no SSR
  * skeleton for the panel (the panel only appears after user interaction).
  *
- * Usage: mount once in the route's Home component, adjacent to the responsive
- * graph/mobile containers. The panel reads selectedNodeId from the graph store;
- * the graph canvas wires onNodeClick → setSelectedNode(node.id).
+ * Usage: mount once in the route's Home component, adjacent to the graph
+ * container. The panel reads selectedNodeId from the graph store; the graph
+ * canvas wires onNodeClick → setSelectedNode(node.id) on all viewports.
  *
  * Example:
- *   <div className="hidden md:block" style={{ height: "calc(100dvh - 56px)" }}>
+ *   <div style={{ height: "calc(100dvh - 56px)" }}>
  *     <RoadmapGraph nodes={nodes} pathway={pathway} />
- *   </div>
- *   <div className="block md:hidden">
- *     <MobileNodeList nodes={nodes} pathway={pathway} />
  *   </div>
  *   <NodeDetailPanel />  ← mounts here; reads its own state from store
  */

@@ -2,7 +2,7 @@
 // Copyright (C) 2026 WC3 Roadmap contributors
 
 /**
- * Index route — home page with responsive graph/list render.
+ * Index route — home page rendering the interactive node graph on all viewports.
  *
  * Loader:
  *   - Projects allNodes from content-collections to GraphDisplayNode[]
@@ -12,11 +12,15 @@
  *   - Parses pathways/beginner-fundamentals.json via PathwaySchema.safeParse
  *     (T-02-16: invalid JSON → empty-state fallback, not a crash).
  *
- * Responsive switch (CSS-only — Pitfall 4 / GRAPH-05):
- *   - Desktop (≥768px): `hidden md:block` canvas wrapper, height calc(100dvh - 56px).
- *   - Mobile (<768px):  `block md:hidden` node-card list.
- *   Both wrappers are SSR-rendered; CSS hides the one that doesn't apply.
- *   No window.innerWidth check — enforced by acceptance grep.
+ * Render:
+ *   - RoadmapGraph (the @xyflow/react canvas) renders on ALL viewports — desktop
+ *     and mobile both use the interactive graph. React Flow's native touch
+ *     support handles mobile pan/pinch-zoom; tap → onNodeClick → setSelectedNode
+ *     opens the responsive NodeDetailPanel (right drawer on desktop, bottom sheet
+ *     on mobile). No window.innerWidth check — the canvas is breakpoint-agnostic.
+ *   - The MobileNodeList card list is retired from this route (still used by the
+ *     /preview/mobile dev route). FilterBar mounts in the top bar on all widths;
+ *     NodeDetailPanel mounts once at the Home level inside <ClientOnly>.
  */
 
 import { createFileRoute, ClientOnly } from "@tanstack/react-router";
@@ -26,7 +30,6 @@ import type { GraphDisplayNode } from "#/schemas/graph";
 import { PathwaySchema } from "#/schemas/pathway";
 import type { Pathway } from "#/schemas/pathway";
 import { RoadmapGraph } from "#/components/graph/RoadmapGraph";
-import { MobileNodeList } from "#/components/graph/MobileNodeList";
 import { FilterBar } from "#/components/graph/FilterBar";
 import { NodeDetailPanel } from "#/components/graph/NodeDetailPanel";
 // Pathway JSON — bundled by Vite at build time; works in SSR + client contexts.
@@ -163,20 +166,14 @@ function Home() {
         <FilterBar />
       </div>
 
-      {/* Desktop canvas — hidden below md breakpoint (CSS-only, Pitfall 4).
-          Both this div and the mobile div below are always SSR-rendered;
-          Tailwind CSS hides the one that doesn't apply. */}
-      <div
-        className="hidden md:block"
-        style={{ height: "calc(100dvh - 56px)" }}
-      >
+      {/* Interactive node graph — rendered on ALL viewports (desktop + mobile).
+          RoadmapGraph wraps the @xyflow/react canvas in <ClientOnly>; React Flow
+          has native touch support (single-finger pan, two-finger pinch-zoom,
+          tap → onNodeClick → setSelectedNode opens the mobile bottom sheet).
+          The filter dim and pathway spotlight apply identically on both
+          breakpoints. (MobileNodeList card list retired from the route.) */}
+      <div style={{ height: "calc(100dvh - 56px)" }}>
         <RoadmapGraph nodes={nodes} pathway={pathway} />
-      </div>
-
-      {/* Mobile node-card list — hidden at md breakpoint and above.
-          MobileNodeList is SSR-safe plain HTML (no @xyflow/react import). */}
-      <div className="block md:hidden">
-        <MobileNodeList nodes={nodes} pathway={pathway} />
       </div>
 
       {/* Panel layer — client-only, mounted once above both desktop + mobile.
