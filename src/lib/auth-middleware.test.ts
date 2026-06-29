@@ -205,3 +205,70 @@ describe("cross-user authorization (D-12/D-13, success criterion 3)", () => {
     expect(capturedQueryId).not.toContain(principalB.id);
   });
 });
+
+// ---------------------------------------------------------------------------
+// getUserProfile — D-12/D-13: principal-keyed DB query (success criterion 3)
+//
+// This test verifies that getUserProfile's handler queries the DB by
+// context.principal.id (session-derived), never by any client-supplied value.
+//
+// getUserProfile takes NO input parameter — there is no userId to forge.
+// This test encodes that structural guarantee as an executable regression
+// and is the Task 2 companion to the authMiddleware cross-user test above.
+// ---------------------------------------------------------------------------
+
+describe("getUserProfile — principal-keyed DB query (D-12/D-13)", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.clearAllMocks();
+  });
+
+  it("calls db.query.users.findFirst with eq(users.id, principal.id), never with a forged id", async () => {
+    // Track eq() calls to assert what the query was keyed by
+    const eqCalls: Array<[unknown, unknown]> = [];
+    vi.doMock("drizzle-orm", () => ({
+      eq: vi.fn().mockImplementation((col: unknown, val: unknown) => {
+        eqCalls.push([col, val]);
+        return { __col: col, __val: val };
+      }),
+    }));
+
+    const findFirstMock = vi.fn().mockResolvedValue({
+      id: principalA.id,
+      name: principalA.name,
+    });
+    vi.doMock("#/lib/db", () => ({
+      db: {
+        _: { fullSchema: {} },
+        query: { users: { findFirst: findFirstMock } },
+      },
+    }));
+
+    vi.doMock("#/db/schema", () => ({
+      users: { id: "id_column_ref" },
+    }));
+
+    // getUserProfile must exist (GREEN phase); importing it here drives the
+    // TDD RED fail when the file is absent.
+    const { getUserProfile } = await import("#/server/user-profile");
+
+    // Access the stored server handler directly — the TanStack Start server fn
+    // runtime stores it as options.serverFn. This lets us test the handler
+    // in isolation without the full TanStack Start HTTP/middleware stack.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handler = (getUserProfile as any).options?.serverFn as (ctx: { context: { principal: typeof principalA } }) => Promise<unknown>;
+
+    // Invoke with principal A's context (session-derived)
+    await handler({ context: { principal: principalA } });
+
+    // The DB query was keyed by principal A's id
+    expect(findFirstMock).toHaveBeenCalledTimes(1);
+    const calledWith = eqCalls[0];
+    expect(calledWith).toBeDefined();
+    expect(calledWith?.[1]).toBe(principalA.id);
+
+    // The DB query was NEVER keyed by principal B's id (the forged target).
+    // Since getUserProfile accepts NO userId input, there is no attack surface.
+    expect(calledWith?.[1]).not.toBe(principalB.id);
+  });
+});
