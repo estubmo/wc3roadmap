@@ -78,7 +78,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
 
-**Plans**: 7/10 plans executed
+**Plans**: 8/10 plans executed
 **UI hint**: yes
 
 Plans:
@@ -97,7 +97,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-08-PLAN.md — Edge-highlight subsystem: Zustand store + animated custom edge (D-03) [wave 3]
+- [x] 02-08-PLAN.md — Edge-highlight subsystem: Zustand store + animated custom edge (D-03) [wave 3]
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -223,7 +223,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
-| 2. Graph Engine | 7/10 | In Progress|  |
+| 2. Graph Engine | 8/10 | In Progress|  |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
