@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Schema** - Zod content schema, MECHANIC/CONCEPTUAL taxonomy, patch-version primitive, CI validation, GPL-3.0 license (completed 2026-06-28)
 - [x] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only) (completed 2026-06-29)
-- [ ] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter
+- [x] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter (completed 2026-06-29)
 - [ ] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization
 - [ ] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification
 - [ ] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state
@@ -120,7 +120,7 @@ Plans:
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
 
-**Plans**: 8/9 plans executed
+**Plans**: 9/9 plans complete
 **UI hint**: yes
 
 Plans:
@@ -149,7 +149,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5)*
 
-- [ ] 03-09-PLAN.md — Wire onNodeClick + filter dim + mount FilterBar/panel + human-verify checkpoint [wave 6]
+- [x] 03-09-PLAN.md — Wire onNodeClick + filter dim + mount FilterBar/panel + human-verify checkpoint [wave 6]
 
 ### Phase 4: Auth & Database
 
@@ -252,7 +252,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
-| 3. Content Pipeline & Node Panel | 8/9 | In Progress|  |
+| 3. Content Pipeline & Node Panel | 9/9 | Complete   | 2026-06-29 |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |

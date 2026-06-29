@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 03
 current_phase_name: content-pipeline-node-panel
-status: executing
+status: verifying
 stopped_at: Phase 3 context gathered
-last_updated: "2026-06-29T12:01:30.154Z"
+last_updated: "2026-06-29T12:28:13.168Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 03 execution started
 progress:
   total_phases: 9
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 27
-  completed_plans: 26
-  percent: 22
+  completed_plans: 27
+  percent: 33
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 
 Phase: 03 (content-pipeline-node-panel) — EXECUTING
 Plan: 9 of 9
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-29 — Phase 03 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -77,6 +77,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-content-pipeline-node-panel P05 | 2min | 1 tasks | 2 files |
 | Phase 03-content-pipeline-node-panel P07 | 6min | 2 tasks | 2 files |
 | Phase 03 P08 | 6min | 2 tasks | 2 files |
+| Phase 03-content-pipeline-node-panel P09 | 22m | 4 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,8 @@ Recent decisions affecting current work:
 - [Phase ?]: .planning/phases/03-content-pipeline-node-panel/03-06-SUMMARY.md
 - [Phase ?]: NodeDetailPanel plan
 - [Phase ?]: NodeDetailPanel plan
+- [Phase 03]: Plan 03-09: filter dim must be applied to React Flow controlled nodes prop (filteredDisplayNodes), not just setNodes effect — prop is authoritative and re-syncs internal store each render
+- [Phase 03]: Plan 03-09: mobile renders interactive RoadmapGraph (React Flow) on all viewports; MobileNodeList retired from Home route (retained for /preview/mobile)
 
 ### Pending Todos
 
@@ -142,6 +145,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T12:01:22.232Z
+Last session: 2026-06-29T12:27:51.326Z
 Stopped at: Phase 3 context gathered
 Resume file: .planning/phases/03-content-pipeline-node-panel/03-CONTEXT.md
