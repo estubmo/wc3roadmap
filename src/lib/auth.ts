@@ -161,6 +161,12 @@ export const auth = betterAuth({
             ? (region as string)
             : "us";
 
+          // Temporary diagnostic — confirms the hook fires and what it writes.
+          // Safe to remove once the OAuth round-trip is verified end to end.
+          console.info(
+            `[auth] user.create.before -> battleTag=${battleTag} gateway=${gateway} bnetSub=${bnetSub}`,
+          );
+
           return { data: { ...user, battleTag, bnetSub, gateway } };
         },
       },
@@ -178,14 +184,22 @@ export const auth = betterAuth({
   // ---------------------------------------------------------------------------
   user: {
     additionalFields: {
-      /** Canonical BattleTag "Name#1234" — w3champions key (D-06). Refreshed on every login. */
-      battleTag: { type: "string", required: true, input: false },
-      /** Region/gateway "us" | "eu" | "kr" — from UI selector, not OAuth (D-05/D-07). */
-      gateway: { type: "string", required: true, input: false },
+      // NOTE: required:false + defaultValue (not required:true). better-auth runs
+      // its additionalFields required-check DURING OAuth provisioning — before the
+      // databaseHooks.user.create.before hook that actually populates these
+      // input:false columns — so required:true throws `<field>_is_required`
+      // before the hook can run. The DB columns are still NOT NULL (schema.ts);
+      // the defaultValue guarantees a non-null insert and the create hook below
+      // overwrites it with the real server-derived value. input:false (D-05)
+      // is unchanged — clients still cannot set these via the API.
+      /** Canonical BattleTag "Name#1234" — w3champions key (D-06). Set by the create hook from user.name. */
+      battleTag: { type: "string", required: false, input: false, defaultValue: "" },
+      /** Region/gateway "us" | "eu" | "kr" — from RegionSelector via OAuth additionalData (D-05/D-07). */
+      gateway: { type: "string", required: false, input: false, defaultValue: "us" },
       /** Generated avatar URL (nullable — no avatar from Battle.net OAuth, Pitfall 2). */
       avatarUrl: { type: "string", required: false, input: false },
-      /** Stable Battle.net sub from OAuth — for deduplication across re-auths. */
-      bnetSub: { type: "string", required: true, input: false },
+      /** Stable Battle.net sub from OAuth — for deduplication across re-auths. Set by the create hook. */
+      bnetSub: { type: "string", required: false, input: false, defaultValue: "" },
     },
   },
 
