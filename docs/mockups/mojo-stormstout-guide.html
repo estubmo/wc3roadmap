@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WarCraft III Mastery Roadmap — Mojo StormStout's Strategy Guide</title>
+<meta name="description" content="A step-by-step roadmap to mastering WarCraft III: The Frozen Throne, in the style of the classic Battle.net strategy guide." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --gold:        #d8b54a;
+    --gold-bright: #f3d886;
+    --gold-dim:    #9c7e30;
+    --gold-deep:   #5e4a18;
+    --parch:       #e8d9b0;
+    --ink:         #cdbf9a;
+    --muted:       #9b8d6b;
+    --navy:        #16294e;
+    --navy-2:      #0c1830;
+    --navy-line:   #2f4c84;
+    --steel:       #2a4a86;
+    --steel-2:     #16294e;
+    --black:       #05070d;
+    --panel:       #0a0e18;
+    --panel-2:     #0f1626;
+    --green:       #6fd08a;
+    --red:         #b33a2e;
+    --frame:       #2c4781;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    color: var(--ink);
+    line-height: 1.55;
+    min-height: 100vh;
+    /* dark dungeon stone wall */
+    background-color: #211e18;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 2px, transparent 2px 86px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 2px, transparent 2px 120px),
+      radial-gradient(1400px 700px at 50% -5%, #34301f 0%, transparent 60%),
+      linear-gradient(180deg, #2c281f 0%, #1a1812 100%);
+    background-blend-mode: multiply, normal, normal, screen, normal;
+  }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { color: var(--gold-bright); text-decoration: underline; }
+
+  .cinzel { font-family: 'Cinzel', serif; }
+
+  /* gold gothic heading text */
+  .goldtext {
+    font-family: 'Cinzel', serif; font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--gold);
+    background: linear-gradient(180deg, #f7e4a4 0%, #d8b54a 45%, #a07f2c 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 1px 0 rgba(0,0,0,.6);
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.5));
+  }
+
+  /* ============ TOP BAR ============ */
+  .topbar {
+    position: sticky; top: 0; z-index: 60;
+    background: linear-gradient(180deg, #0a0c12 0%, #05070d 100%);
+    border-bottom: 2px solid #000;
+    box-shadow: 0 2px 0 #3a3120, 0 6px 16px rgba(0,0,0,.6);
+  }
+  .topbar-inner {
+    max-width: 1180px; margin: 0 auto; padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .wordmark {
+    font-family: 'Cinzel Decorative', 'Cinzel', serif; font-weight: 900;
+    font-size: 26px; letter-spacing: .02em; line-height: 1;
+    color: #c4392c;
+    background: linear-gradient(180deg, #f0a23c 0%, #c4392c 55%, #7d1f17 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 3px rgba(0,0,0,.7);
+    filter: drop-shadow(0 0 6px rgba(196,57,44,.35));
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .wordmark small { font-size: 12px; font-family: 'Cinzel', serif; -webkit-text-fill-color: #b89a52; color:#b89a52; letter-spacing:.18em; }
+  .topnav { display: flex; gap: 26px; }
+  .topnav a {
+    font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: .16em;
+    color: #b89a52; text-transform: uppercase;
+  }
+  .topnav a:hover { color: var(--gold-bright); text-decoration: none; text-shadow: 0 0 10px rgba(243,216,134,.5); }
+  .topnav a.active { color: var(--gold-bright); }
+
+  /* ============ LAYOUT ============ */
+  .shell { max-width: 1180px; margin: 26px auto 60px; padding: 0 16px; display: grid; grid-template-columns: 168px 1fr; gap: 22px; align-items: start; }
+
+  /* left rail nav buttons (WC3 blue beveled) */
+  .rail { position: sticky; top: 86px; display: flex; flex-direction: column; gap: 9px; }
+  .rail-btn {
+    display: block; text-align: center; cursor: pointer;
+    font-family: 'Cinzel', serif; font-weight: 700; font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: #e7eefc;
+    padding: 11px 8px; border-radius: 5px;
+    background: linear-gradient(180deg, #3f6bb8 0%, #244a8c 45%, #142c5c 100%);
+    border: 1px solid #0a1730;
+    box-shadow: inset 0 1px 0 rgba(150,190,255,.55), inset 0 -2px 4px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.5);
+    text-shadow: 0 1px 2px rgba(0,0,0,.8);
+    transition: .12s; line-height: 1.15;
+  }
+  .rail-btn:hover { background: linear-gradient(180deg, #5586d6 0%, #2d5aa6 45%, #1a3870 100%); color: #fff; text-decoration: none; }
+  .rail-btn .n { display:block; font-size: 9px; color: #aac6f5; letter-spacing:.12em; }
+  .rail-crest {
+    margin-top: 6px; text-align: center; padding: 10px;
+    border-top: 1px solid #3a3120;
+    font-family:'Cinzel',serif; font-size: 10px; letter-spacing:.2em; color: var(--gold-dim); text-transform: uppercase;
+  }
+
+  /* ============ FRAMED CONTENT (the "scroll") ============ */
+  .scroll-frame {
+    background:
+      linear-gradient(180deg, rgba(20,30,60,.25), rgba(0,0,0,0)),
+      var(--black);
+    border: 2px solid var(--frame);
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 2px #000,
+      0 0 0 4px #6b5520,
+      inset 0 0 60px rgba(0,0,0,.7),
+      0 18px 50px rgba(0,0,0,.6);
+    padding: 0 0 34px;
+    position: relative;
+  }
+  .scroll-frame::before {
+    content: ""; position: absolute; inset: 6px; border: 1px solid rgba(120,150,210,.18); border-radius: 6px; pointer-events: none;
+  }
+
+  /* ornate banner header (blue bar w/ gold title) */
+  .banner {
+    margin: 0 0 0; padding: 18px 20px 22px; text-align: center;
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(70,110,190,.35), transparent 60%),
+      linear-gradient(180deg, #14274d 0%, #0b1830 100%);
+    background-color: #0b1830;
+    border-bottom: 1px solid var(--navy-line);
+  }
+  .hero-title { font-size: clamp(26px, 4.4vw, 44px); margin: 6px 0 6px; }
+  .hero-sub { color: var(--muted); font-style: italic; max-width: 640px; margin: 0 auto; font-size: 16px; }
+  .hero-rule { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 8px auto 2px; color: var(--gold-dim); }
+  .hero-rule::before, .hero-rule::after { content: ""; height: 1px; width: 90px; background: linear-gradient(90deg, transparent, var(--gold-dim)); }
+  .hero-rule::after { background: linear-gradient(90deg, var(--gold-dim), transparent); }
+  .hero-rule span { font-family:'Cinzel',serif; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; }
+
+  /* progress as a resource bar */
+  .progressbar { padding: 16px 26px 4px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .pbar-meta { font-family:'Cinzel',serif; font-size: 12px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+  .pbar-meta b { color: var(--gold-bright); }
+  .pbar-track {
+    flex: 1; min-width: 200px; height: 16px; border-radius: 3px;
+    background: linear-gradient(180deg, #07101f, #0c1a30);
+    border: 1px solid #000; box-shadow: inset 0 1px 3px rgba(0,0,0,.8), inset 0 0 0 1px rgba(80,110,180,.2);
+    overflow: hidden;
+  }
+  .pbar-track > i {
+    display: block; height: 100%; width: 0%;
+    background: linear-gradient(180deg, #f6e09a 0%, #d8b54a 50%, #9c7e30 100%);
+    box-shadow: 0 0 12px rgba(216,181,74,.6), inset 0 1px 0 rgba(255,255,255,.5);
+    transition: width .45s ease;
+  }
+  .btn-reset {
+    font-family:'Cinzel',serif; font-weight:700; font-size: 11px; letter-spacing:.1em; text-transform: uppercase;
+    color: #d9c7a0; cursor: pointer; padding: 8px 14px; border-radius: 5px;
+    background: linear-gradient(180deg, #3a3a3f, #1c1c20); border: 1px solid #000;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(0,0,0,.5);
+  }
+  .btn-reset:hover { color: #fff; }
+
+  .legend { padding: 6px 26px 14px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--muted); align-items:center; font-style: italic; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .gem { width: 13px; height: 13px; transform: rotate(45deg); border: 1px solid #000; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .gem.core { background: linear-gradient(135deg, #f3d886, #9c7e30); }
+  .gem.opt  { background: linear-gradient(135deg, #6f93d6, #1a3870); }
+  .gem.done { background: linear-gradient(135deg, #9be6ad, #2f8a4c); }
+
+  /* ============ ROADMAP ============ */
+  .roadmap { padding: 8px 26px 0; position: relative; }
+  .spine {
+    position: absolute; left: 50%; top: 70px; bottom: 20px; width: 4px; transform: translateX(-50%);
+    background: linear-gradient(180deg, var(--gold-deep), var(--gold-dim));
+    box-shadow: 0 0 0 1px #000, 0 0 12px rgba(216,181,74,.25);
+    z-index: 0; border-radius: 2px;
+  }
+  .milestone { position: relative; z-index: 1; }
+
+  /* milestone banner header */
+  .ms-head { display: flex; align-items: center; justify-content: center; gap: 0; margin: 40px 0 26px; position: relative; }
+  .ms-bar {
+    position: relative; display: inline-flex; align-items: center; gap: 14px;
+    padding: 12px 30px; min-width: min(560px, 90%); justify-content: center;
+    background: linear-gradient(180deg, #2a4d8e 0%, #16294e 55%, #0c1830 100%);
+    border: 1px solid #0a1730; border-radius: 6px;
+    box-shadow: inset 0 1px 0 rgba(140,180,255,.45), inset 0 -3px 6px rgba(0,0,0,.5), 0 4px 10px rgba(0,0,0,.55);
+  }
+  .ms-bar::before, .ms-bar::after {
+    content: "✦"; color: var(--gold); font-size: 14px; opacity: .85; filter: drop-shadow(0 1px 0 #000);
+  }
+  .ms-num {
+    position: absolute; left: 50%; top: -22px; transform: translateX(-50%);
+    width: 40px; height: 40px; display: grid; place-items: center;
+    font-family:'Cinzel',serif; font-weight: 800; font-size: 16px; color: #2a1c00;
+    background: radial-gradient(circle at 50% 35%, #f7e4a4, #d8b54a 60%, #8a6c22);
+    border-radius: 50%; border: 2px solid #2a1c00;
+    box-shadow: 0 0 0 2px var(--gold-deep), 0 0 16px rgba(216,181,74,.5);
+    display: none;
+  }
+  .ms-titletext { font-family:'Cinzel',serif; font-weight: 800; font-size: 19px; letter-spacing: .04em; color: #f3e3b4; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
+  .ms-sub { display:block; font-family:'EB Garamond',serif; font-style: italic; font-weight: 400; font-size: 13px; letter-spacing: 0; color: #9fb6e0; margin-top: 1px; }
+  .ms-step { font-family:'Cinzel',serif; font-size: 11px; letter-spacing:.18em; color: var(--gold); text-transform: uppercase; }
+
+  .row { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: start; margin-bottom: 14px; }
+  .branch { display: flex; flex-direction: column; gap: 12px; }
+  .branch.left { align-items: flex-end; }
+  .branch.right { align-items: flex-start; }
+  .connector { position: relative; }
+  .connector::before { content: ""; position: absolute; top: 24px; height: 3px; background: linear-gradient(90deg, var(--gold-deep), var(--gold-dim)); box-shadow: 0 0 6px rgba(216,181,74,.3); }
+  .row.to-left .connector::before { left: 0; right: 50%; }
+  .row.to-right .connector::before { left: 50%; right: 0; }
+
+  /* node = WC3 stone/gold panel button */
+  .node {
+    position: relative; width: 100%; max-width: 380px; cursor: pointer; text-align: left;
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 13px 15px;
+    color: var(--parch); font-family: inherit;
+    background:
+      linear-gradient(180deg, rgba(40,58,96,.30), rgba(0,0,0,.15)),
+      linear-gradient(180deg, #161b28 0%, #0c1018 100%);
+    border: 1px solid #000; border-radius: 7px;
+    box-shadow:
+      inset 0 0 0 1px var(--navy-line),
+      inset 0 1px 0 rgba(120,150,210,.25),
+      0 3px 8px rgba(0,0,0,.55);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .node:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1px var(--gold), inset 0 1px 0 rgba(255,235,170,.3), 0 0 16px rgba(216,181,74,.25), 0 5px 12px rgba(0,0,0,.6); }
+  .node.optional { box-shadow: inset 0 0 0 1px #3a5db0, inset 0 1px 0 rgba(120,150,210,.25), 0 3px 8px rgba(0,0,0,.55); }
+  .node.done { box-shadow: inset 0 0 0 1px #2f8a4c, inset 0 1px 0 rgba(150,230,170,.3), 0 0 14px rgba(60,160,90,.3), 0 3px 8px rgba(0,0,0,.55); }
+  .node .check {
+    width: 22px; height: 22px; flex: none; margin-top: 1px; transform: rotate(45deg);
+    background: linear-gradient(135deg, #1a2030, #0a0e18); border: 1px solid #000;
+    box-shadow: inset 0 0 0 1px rgba(216,181,74,.4);
+    display: grid; place-items: center;
+  }
+  .node .check b { transform: rotate(-45deg); color: transparent; font-size: 13px; font-weight: 900; line-height: 1; }
+  .node.done .check { background: linear-gradient(135deg, #9be6ad, #2f8a4c); box-shadow: inset 0 0 0 1px #1a5e32; }
+  .node.done .check b { color: #06351c; }
+  .node-body { flex: 1; min-width: 0; }
+  .node-title { font-family:'Cinzel',serif; font-weight: 700; font-size: 15px; color: var(--gold-bright); letter-spacing:.02em; line-height: 1.25; }
+  .node.done .node-title { color: #8fb89a; }
+  .node-sub { font-size: 14px; color: var(--muted); font-style: italic; margin-top: 2px; line-height: 1.3; }
+  .node .tag { display: inline-block; margin-top: 8px; font-family:'Cinzel',serif; font-size: 9.5px; font-weight: 700; letter-spacing:.14em; text-transform: uppercase; color: #7e9bd6; }
+  .node.optional .tag { color: #7e9bd6; }
+
+  /* ============ DRAWER (quest panel) ============ */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 90; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: min(470px, 100%); z-index: 100;
+    transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column;
+    background:
+      linear-gradient(180deg, rgba(20,32,62,.5), rgba(0,0,0,0) 30%),
+      var(--black);
+    border-left: 2px solid var(--frame);
+    box-shadow: -4px 0 0 #6b5520, -24px 0 60px rgba(0,0,0,.6);
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head {
+    padding: 22px 26px 18px; position: relative;
+    background: linear-gradient(180deg, #1c386e 0%, #0c1830 100%);
+    border-bottom: 1px solid var(--navy-line);
+  }
+  .drawer-head .kicker { font-family:'Cinzel',serif; font-size: 11px; letter-spacing:.2em; text-transform: uppercase; color: var(--gold); }
+  .drawer-head h2 { font-family:'Cinzel',serif; font-weight: 800; font-size: 24px; margin: 6px 0 0; color: #f3e3b4; text-shadow: 0 1px 2px rgba(0,0,0,.8); }
+  .drawer-close {
+    position: absolute; top: 16px; right: 18px; width: 34px; height: 34px; cursor: pointer; font-size: 18px; line-height: 1;
+    color: #d9c7a0; background: linear-gradient(180deg, #3a3a3f, #1c1c20); border: 1px solid #000; border-radius: 5px;
+  }
+  .drawer-close:hover { color: #fff; }
+  .drawer-body { padding: 22px 26px 36px; overflow-y: auto; flex: 1; }
+  .drawer-body p { color: var(--ink); margin: 0 0 16px; font-size: 16px; }
+  .drawer-body h3 { font-family:'Cinzel',serif; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--gold); margin: 22px 0 10px; }
+  .drawer-body ul { margin: 0 0 16px; padding: 0; list-style: none; }
+  .drawer-body li { position: relative; padding: 9px 0 9px 26px; font-size: 15.5px; color: var(--parch); border-bottom: 1px solid rgba(120,150,210,.12); }
+  .drawer-body li:last-child { border-bottom: none; }
+  .drawer-body li::before { content: "✦"; position: absolute; left: 2px; top: 9px; color: var(--gold); font-size: 11px; }
+  .pill { display: inline-block; font-family:'Cinzel',serif; font-size: 10.5px; font-weight: 600; letter-spacing:.08em; text-transform: uppercase; padding: 4px 11px; margin: 0 6px 6px 0; color: #9fb6e0; border: 1px solid var(--navy-line); border-radius: 999px; background: rgba(20,32,62,.4); }
+  .drawer-foot { padding: 16px 26px; border-top: 1px solid var(--navy-line); }
+  .btn-done {
+    width: 100%; padding: 13px; cursor: pointer; border-radius: 6px;
+    font-family:'Cinzel',serif; font-weight: 800; font-size: 14px; letter-spacing:.06em; text-transform: uppercase; color: #2a1c00;
+    background: linear-gradient(180deg, #f6e09a 0%, #d8b54a 50%, #9c7e30 100%);
+    border: 1px solid #2a1c00;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 3px 8px rgba(0,0,0,.5);
+  }
+  .btn-done:hover { filter: brightness(1.06); }
+  .btn-done.is-done { color: #d7f0de; background: linear-gradient(180deg, #2f6b44, #163b28); border-color: #0c2417; box-shadow: inset 0 1px 0 rgba(150,230,170,.3), 0 3px 8px rgba(0,0,0,.5); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 28px 20px 50px; font-style: italic; }
+  footer .crest { font-family:'Cinzel',serif; font-style: normal; letter-spacing:.22em; text-transform: uppercase; font-size: 11px; color: var(--gold-dim); margin-bottom: 6px; }
+  footer code { font-family: ui-monospace, monospace; color: var(--ink); font-style: normal; }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { position: static; flex-direction: row; flex-wrap: wrap; }
+    .rail-btn { flex: 1 1 auto; }
+    .rail-crest { display: none; }
+  }
+  @media (max-width: 680px) {
+    .topnav { display: none; }
+    .roadmap { padding: 8px 12px 0; }
+    .spine, .connector { display: none; }
+    .row { grid-template-columns: 1fr; }
+    .branch.left, .branch.right { align-items: stretch; }
+    .node { max-width: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="wordmark cinzel">WARCRAFT&nbsp;III<small>THE FROZEN THRONE</small></div>
+    <nav class="topnav">
+      <a href="#" class="active">Strategy Guide</a>
+      <a href="#race">Races</a>
+      <a href="#climb">The Climb</a>
+    </nav>
+  </div>
+</div>
+
+<div class="shell">
+  <!-- left rail -->
+  <aside class="rail" id="rail"></aside>
+
+  <!-- framed content -->
+  <div class="scroll-frame">
+    <div class="banner">
+      <div class="hero-rule"><span>Mojo StormStout's</span></div>
+      <h1 class="hero-title goldtext">WarCraft III Mastery Roadmap</h1>
+      <p class="hero-sub">A consolidated path from your first melee game to grandmaster-level ladder play. Click any topic for what to drill, then claim it complete — your progress is kept by the spirits of <code>localStorage</code>.</p>
+    </div>
+
+    <div class="progressbar">
+      <span class="pbar-meta">Progress&nbsp; <b id="pct">0%</b></span>
+      <div class="pbar-track"><i id="barFill"></i></div>
+      <span class="pbar-meta" id="count">0 / 0</span>
+      <button class="btn-reset" id="resetBtn">Reset</button>
+    </div>
+    <div class="legend">
+      <span><i class="gem core"></i> Core lesson</span>
+      <span><i class="gem opt"></i> Optional / advanced</span>
+      <span><i class="gem done"></i> Mastered</span>
+    </div>
+
+    <main class="roadmap">
+      <div class="spine"></div>
+      <div id="map"></div>
+    </main>
+  </div>
+</div>
+
+<footer>
+  <div class="crest">⚔ For the Alliance · For the Horde · For Kalimdor · For the Scourge ⚔</div>
+  Progress stored locally in your browser · Built for ladder grinders · GLHF
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div class="kicker" id="dKicker">Topic</div>
+    <h2 id="dTitle">Title</h2>
+    <button class="drawer-close" id="dClose" aria-label="Close">×</button>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+  <div class="drawer-foot">
+    <button class="btn-done" id="dDone">Mark as mastered</button>
+  </div>
+</aside>
+
+<script>
+/* =========================================================================
+   ROADMAP DATA
+   ========================================================================= */
+const DATA = [
+  {
+    id: "fundamentals", title: "Fundamentals", sub: "Get comfortable with the game",
+    nodes: [
+      { id: "interface", title: "Interface & Camera", sub: "UI, minimap, camera control",
+        desc: "Before strategy, you need fluency with the cockpit. Learn to read the minimap reflexively and keep your camera where the action is.",
+        points: ["Read minimap constantly: blips = combat, dots = units","Use camera hotkeys / spacebar to jump to events","Recognize the command card layout for each unit","Understand the resource bar: gold, lumber, food, upkeep"], tags:["Foundation"] },
+      { id: "hotkeys", title: "Hotkeys & Control Groups", sub: "QWER, build menus, 1-9 groups",
+        desc: "WC3 is a hotkey game. Mouse-clicking the command card is a habit you must kill early. Bind everything to the keyboard.",
+        points: ["Learn QWER muscle memory for every unit you use","Assign control groups: heroes on 1, army on 2-3, casters separated","Double-tap a control group to center camera on it","Consider a custom hotkey layout (Grid / WarKeys)","Town hall on its own group for fast worker production"], tags:["Foundation"] },
+      { id: "upkeep", title: "The Upkeep System", sub: "Why food caps matter",
+        desc: "WC3's signature mechanic. Crossing food thresholds taxes your income — this shapes army size and timing windows for the entire game.",
+        points: ["No Upkeep: 0-50 food, 100% gold income","Low Upkeep: 51-80 food, 70% income","High Upkeep: 81-100 food, 40% income","Plan pushes BEFORE crossing into high upkeep","Expansions exist partly to fund a high-upkeep army"], tags:["Core mechanic"] },
+    ]
+  },
+  {
+    id: "economy", title: "Economy & Macro", sub: "Never stop producing",
+    nodes: [
+      { id: "workers", title: "Worker Saturation", sub: "5 on gold, lumber as needed",
+        desc: "Macro is the engine of the whole game. The biggest beginner leak is idle production buildings and a stalled worker count.",
+        points: ["~5 workers on a gold mine is standard saturation","Pump workers continuously in the early game","Keep your town hall queue never idle","Balance lumber vs gold to your build's needs"], tags:["Macro"] },
+      { id: "expansions", title: "Expanding (Fast Expand)", sub: "Second base timing",
+        desc: "A second mine doubles your income ceiling. Knowing WHEN it's safe vs greedy separates leagues.",
+        points: ["Scout for safety before committing to an expo","Human Fast Expand (FE) with Militia defense is a staple","Towers / a defensive structure protect a new base","Punish a greedy expand with timing attacks"], tags:["Macro"] },
+      { id: "production", title: "Production Cycles", sub: "Spend down to zero",
+        desc: "Floating resources do nothing. Build a rhythm: whenever you have the gold, queue a unit or building. Banked resources = lost army.",
+        points: ["Add production buildings as income grows","Keep gold low — reinvest constantly","Multiple barracks to spend a saturated economy","Tie production to control groups for one-key reinforcement"], tags:["Macro"] },
+    ]
+  },
+  {
+    id: "heroes", title: "Heroes", sub: "The heart of WarCraft III",
+    nodes: [
+      { id: "herobasics", title: "Hero Roles & Leveling", sub: "STR / AGI / INT, XP",
+        desc: "Heroes are what make WC3 unique. They snowball through experience and items, and a dead hero can lose the game outright.",
+        points: ["Three attributes: Strength (tanky), Agility (DPS/armor), Intelligence (caster)","Heroes gain XP from kills — last-hit creeps and units","Level 6 ultimate is a major power spike","Never feed a hero kill — retreat low heroes"], tags:["Foundation"] },
+      { id: "heroitems", title: "Items & Charged Items", sub: "Tomes, potions, wands",
+        desc: "Items multiply a hero's impact. Salves, mana potions, and stat tomes are bought or dropped by creeps — manage them actively.",
+        points: ["Healing Salve / Clarity Potion sustain through creeping","Town Portal Scroll: defend, gank, or escape instantly","Charged items (Wand of healing, etc.) for burst utility","Stat tomes are permanent — grab them when safe","Use hero inventory hotkeys, not clicks"], tags:["Core"] },
+      { id: "herocombos", title: "Ability Combos & Micro", sub: "Cast order, focus",
+        desc: "Top players chain hero abilities with army micro — a Storm Bolt to lock down, then focus-fire the target before it can act.",
+        points: ["Stun/disable first, then focus damage","Sequence multi-hero casts (Stomp then Nova)","Auto-cast vs manual cast — know when to micromanage","Save escape/defensive ults for the right moment"], tags:["Advanced"] },
+    ]
+  },
+  {
+    id: "creeping", title: "Creeping", sub: "Farm XP, gold & items",
+    nodes: [
+      { id: "creeproutes", title: "Creep Routing", sub: "Which camps, what order",
+        desc: "Creeping is PvE that fuels your hero and economy. Efficient routes get levels and items without exposing you to the enemy.",
+        points: ["Hit green/easy camps first, scale up with hero level","Know which camps drop items vs charges vs permanents","Avoid over-creeping into danger zones","Stack and pull aggro to fight on your terms"], tags:["Core"] },
+      { id: "creepjack", title: "Creepjacking", sub: "Ambush the farming enemy",
+        desc: "Catch the opponent mid-creep when their hero is low and units are scattered. High reward — and you must defend against it too.",
+        points: ["Scout enemy creep patterns and timings","Strike when their hero/units are damaged by the camp","Block escape paths with units or abilities","Conversely: creep near your base / with vision to stay safe"], tags:["Advanced"], optional:true },
+    ]
+  },
+  {
+    id: "combat", title: "Combat & Micro", sub: "Win the fights you take",
+    nodes: [
+      { id: "armortype", title: "Armor & Damage Types", sub: "The counter system",
+        desc: "WC3 combat is rock-paper-scissors under the hood. Piercing wrecks unarmored, magic shreds heavy — composition wins before micro does.",
+        points: ["Damage: Normal, Piercing, Magic, Siege, Chaos","Armor: Light, Medium, Heavy, Fortified, Unarmored","Piercing > Light/Unarmored; Siege > buildings/Fortified","Magic > Heavy; build your army to exploit enemy armor"], tags:["Core mechanic"] },
+      { id: "microtech", title: "Focus Fire & Kiting", sub: "Surround, retreat, target",
+        desc: "Mechanical skill in the fight: pick off key targets, pull wounded units out, and use terrain. Small edges compound across a battle.",
+        points: ["Focus-fire casters and wounded units first","Kite melee with ranged units (hit-and-run)","Pull low-HP units to the back to deny kills","Surround fleeing enemies to block their escape","Use chokes and high ground to your advantage"], tags:["Advanced"] },
+      { id: "casters", title: "Spellcaster Management", sub: "Dispel, AoE, mana",
+        desc: "Casters define late-game teamfights. Dispels remove buffs/summons, AoE punishes clumps, and mana burn cripples enemy heroes.",
+        points: ["Dispel enemy buffs & summons (Priest, Spell Breaker, etc.)","AoE spells reward you for clumped enemy armies","Spread your own army vs enemy AoE","Manage caster mana — they're fragile, keep them back"], tags:["Advanced"], optional:true },
+    ]
+  },
+  {
+    id: "race", title: "Pick Your Race", sub: "Learn one deeply first",
+    nodes: [
+      { id: "human", title: "Human Alliance", sub: "Versatile, FE, Militia",
+        desc: "The most flexible race. Strong fast-expand, powerful tier-3 casters (Priests, Sorceresses), and Militia for early defense. Forgiving to learn.",
+        points: ["Signature: Militia (workers become soldiers temporarily)","Heroes: Archmage (Brilliance Aura), Mountain King, Paladin","Tower-heavy defense, Footmen + Rifle + Priest mid-game","Tier 3: Knights, Gryphons, Spell Breakers"], tags:["Race"] },
+      { id: "orc", title: "Orc Horde", sub: "Aggressive, micro-heavy",
+        desc: "The micro race. Burst damage, the Blademaster's harassment, and Shaman/Witch Doctor support. Rewards aggressive, mechanically sharp players.",
+        points: ["Signature: Burrows (defense + worker shelter), Spirit Walkers","Heroes: Blademaster (Mirror Image/Wind Walk), Far Seer, Tauren Chieftain","Grunts + Raiders + Shaman/Witch Doctor core","Bloodlust, Ensnare, Healing Wards as force multipliers"], tags:["Race"] },
+      { id: "nightelf", title: "Night Elf Sentinels", sub: "Mobile, tricky, Wisps",
+        desc: "The trickster race. Mobile bases (Ancients uproot), powerful early heroes, and strong harass with Huntresses & Archers.",
+        points: ["Signature: Wisp economy, uprootable Ancients, Moon Wells","Heroes: Demon Hunter, Priestess of the Moon, Keeper of the Grove","Archers + Huntresses early, Dryads/Bears mid-late","Shadowmeld, blink micro, Mountain Giants as tanks"], tags:["Race"] },
+      { id: "undead", title: "Undead Scourge", sub: "Map control, expansions",
+        desc: "The map-control race. Blight, summons, and the strongest creeping with Death Knight + Lich. High skill ceiling, punishing for beginners.",
+        points: ["Signature: Blight, Acolytes summon then mine, Ziggurats","Heroes: Death Knight (Coil/Nova), Lich, Crypt Lord, Dreadlord","Ghouls + Crypt Fiends core, Destroyers/Frost Wyrms late","Statues for hero sustain, fast-expansion oriented"], tags:["Race"] },
+    ]
+  },
+  {
+    id: "builds", title: "Build Orders", sub: "Openings on autopilot",
+    nodes: [
+      { id: "bostandard", title: "Standard Opening", sub: "Hero-first creeping",
+        desc: "Memorize a clean opener for your race so the first 4 minutes are automatic and you can spend attention on scouting and decisions.",
+        points: ["First hero out ASAP, start creeping immediately","Continuous worker production through the opener","Tech timing: when to hit tier 2 / first expansion","Practice your BO vs AI until it's reflexive"], tags:["Core"] },
+      { id: "boscout", title: "Build-Order Adaptation", sub: "React to scouting",
+        desc: "A build order is a starting point, not a script. The strong player deviates the moment scouting reveals an aggressive opening or a greedy expand.",
+        points: ["Scout by ~minute 1-2 to read their opening","Add defense if you smell a rush/all-in","Punish greed with your own timing attack","Don't blindly follow a BO into a loss"], tags:["Advanced"] },
+    ]
+  },
+  {
+    id: "scouting", title: "Scouting & Map Control", sub: "Information wins games",
+    nodes: [
+      { id: "scout", title: "Active Scouting", sub: "Worker, hero, units",
+        desc: "You can't react to what you can't see. Constant, cheap scouting tells you their tech, army, and expansion plans before they hurt you.",
+        points: ["Early worker/hero scout of the enemy base","Re-scout to track tech and expansion timing","Watch for army movements toward your base","Race-specific scouts: Orc Wolves, NE Owl, etc."], tags:["Core"] },
+      { id: "vision", title: "Vision & Map Awareness", sub: "Wards, towers, watch points",
+        desc: "Control of key map points — expansions, taverns, important creep and merc camps — lets you fight on your terms and deny the enemy.",
+        points: ["Hold vision on contested expansions","Control the Tavern, Goblin Lab, Mercenary camps","Sentry Wards / observers where available","Deny enemy item & merc camps"], tags:["Advanced"], optional:true },
+    ]
+  },
+  {
+    id: "matchups", title: "Matchup Knowledge", sub: "Every matchup is a puzzle",
+    nodes: [
+      { id: "comps", title: "Compositions & Counters", sub: "What beats what",
+        desc: "Each matchup has known strong compositions and tech paths. Learning them turns blind play into informed decisions about what to build and when.",
+        points: ["Learn the standard comp for your race in each matchup","Identify the counter when the enemy goes a known build","Tech-switch when your composition is being countered","Mix units — pure armies are easy to hard-counter"], tags:["Core"] },
+      { id: "matchupreps", title: "Studying Matchups", sub: "Replays & VODs",
+        desc: "The fastest way to learn a matchup is to watch a strong player navigate it. Study pro replays for your race and steal their decisions wholesale.",
+        points: ["Watch pro replays/VODs for your specific matchup","Note their build, timings, and reaction to scouting","Mimic, then understand WHY each decision was made","Follow casters/streamers of your main race"], tags:["Optional"], optional:true },
+    ]
+  },
+  {
+    id: "mechanics", title: "Mechanics & APM", sub: "Speed serves the plan",
+    nodes: [
+      { id: "apm", title: "Effective APM", sub: "Spread your attention",
+        desc: "Raw APM isn't the goal — multitasking is. Macro at home while you micro a fight, and creep while you scout. Speed buys parallel actions.",
+        points: ["Keep producing while microing a fight","Cycle: army → base → minimap → repeat","Hotkey discipline removes wasted clicks","Use control groups + camera hotkeys to teleport attention"], tags:["Advanced"] },
+    ]
+  },
+  {
+    id: "climb", title: "The Climb", sub: "Turn knowledge into rank",
+    nodes: [
+      { id: "ladder", title: "Ladder & 1v1 Practice", sub: "Play, lose, learn",
+        desc: "Improvement comes from volume on the 1v1 ladder. Pick one race, one main strategy, and grind games — consistency beats variety while learning.",
+        points: ["Commit to one race and one core strategy first","Play 1v1 ladder regularly — quantity matters early","Don't tilt; treat losses as data","Warm up vs AI / custom games before ranked"], tags:["Core"] },
+      { id: "replays", title: "Replay Review", sub: "Find your own mistakes",
+        desc: "The highest-leverage habit. Reviewing your own losses surfaces leaks — idle production, late expansions, bad fights — you can't feel in real time.",
+        points: ["Review every loss: where did it actually go wrong?","Look for idle production buildings & worker stalls","Check expansion and tech timings vs the opponent","Fix ONE thing per session, then drill it"], tags:["Core"] },
+      { id: "mental", title: "Mindset & Consistency", sub: "Play your best every game",
+        desc: "WC3 is mentally taxing. Managing tilt, taking breaks, and playing the long game on improvement matter as much as any build order.",
+        points: ["Avoid tilt-queueing after frustrating losses","Take breaks; fatigue tanks your APM and decisions","Set process goals (review reps), not just rank goals","Improvement is non-linear — trust the volume"], tags:["Optional"], optional:true },
+    ]
+  },
+];
+
+/* =========================================================================
+   RENDER
+   ========================================================================= */
+const STORE_KEY = "wc3-roadmap-progress-v1";
+let done = JSON.parse(localStorage.getItem(STORE_KEY) || "{}");
+
+const map = document.getElementById("map");
+const rail = document.getElementById("rail");
+const allNodes = [];
+
+DATA.forEach((ms, i) => {
+  allNodes.push(...ms.nodes);
+
+  // left rail jump button
+  const rb = document.createElement("a");
+  rb.className = "rail-btn";
+  rb.href = "#" + ms.id;
+  rb.innerHTML = `<span class="n">${String(i + 1).padStart(2, "0")}</span>${ms.title}`;
+  rail.appendChild(rb);
+
+  // milestone section
+  const wrap = document.createElement("section");
+  wrap.className = "milestone";
+  wrap.id = ms.id;
+
+  const head = document.createElement("div");
+  head.className = "ms-head";
+  head.innerHTML = `
+    <div class="ms-bar">
+      <div>
+        <div class="ms-step">Chapter ${String(i + 1).padStart(2, "0")}</div>
+        <div class="ms-titletext">${ms.title}<span class="ms-sub">${ms.sub}</span></div>
+      </div>
+    </div>`;
+  wrap.appendChild(head);
+
+  ms.nodes.forEach((node, j) => {
+    const side = j % 2 === 0 ? "left" : "right";
+    const row = document.createElement("div");
+    row.className = "row " + (side === "left" ? "to-left" : "to-right");
+    const left = document.createElement("div"); left.className = "branch left";
+    const conn = document.createElement("div"); conn.className = "connector";
+    const right = document.createElement("div"); right.className = "branch right";
+    (side === "left" ? left : right).appendChild(makeNode(node));
+    row.appendChild(left); row.appendChild(conn); row.appendChild(right);
+    wrap.appendChild(row);
+  });
+
+  map.appendChild(wrap);
+});
+
+function makeNode(node) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "node" + (node.optional ? " optional" : "") + (done[node.id] ? " done" : "");
+  btn.dataset.id = node.id;
+  btn.innerHTML = `
+    <span class="check"><b>✓</b></span>
+    <span class="node-body">
+      <span class="node-title">${node.title}</span>
+      <span class="node-sub">${node.sub}</span>
+      ${node.tags ? `<span class="tag">${node.tags[0]}</span>` : ""}
+    </span>`;
+  btn.addEventListener("click", () => openDrawer(node));
+  return btn;
+}
+
+/* ---------- Drawer ---------- */
+const overlay = document.getElementById("overlay");
+const drawer = document.getElementById("drawer");
+const dKicker = document.getElementById("dKicker");
+const dTitle = document.getElementById("dTitle");
+const dBody = document.getElementById("dBody");
+const dDone = document.getElementById("dDone");
+let current = null;
+
+function openDrawer(node) {
+  current = node;
+  dKicker.textContent = node.optional ? "Optional · Advanced Lesson" : "Core Lesson";
+  dTitle.textContent = node.title;
+  dBody.innerHTML = `
+    <p>${node.desc}</p>
+    <div>${(node.tags || []).map(t => `<span class="pill">${t}</span>`).join("")}</div>
+    <h3>What to drill</h3>
+    <ul>${node.points.map(p => `<li>${p}</li>`).join("")}</ul>`;
+  syncDoneBtn();
+  overlay.classList.add("open");
+  drawer.classList.add("open");
+  drawer.setAttribute("aria-hidden", "false");
+}
+function closeDrawer() {
+  overlay.classList.remove("open");
+  drawer.classList.remove("open");
+  drawer.setAttribute("aria-hidden", "true");
+  current = null;
+}
+function syncDoneBtn() {
+  const isDone = !!done[current.id];
+  dDone.textContent = isDone ? "✓ Mastered — click to undo" : "Mark as mastered";
+  dDone.classList.toggle("is-done", isDone);
+}
+
+dDone.addEventListener("click", () => {
+  if (!current) return;
+  if (done[current.id]) delete done[current.id]; else done[current.id] = true;
+  localStorage.setItem(STORE_KEY, JSON.stringify(done));
+  const el = map.querySelector(`.node[data-id="${current.id}"]`);
+  if (el) el.classList.toggle("done", !!done[current.id]);
+  syncDoneBtn();
+  updateProgress();
+});
+
+overlay.addEventListener("click", closeDrawer);
+document.getElementById("dClose").addEventListener("click", closeDrawer);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
+/* ---------- Progress ---------- */
+const pct = document.getElementById("pct");
+const count = document.getElementById("count");
+const barFill = document.getElementById("barFill");
+const total = allNodes.length;
+
+function updateProgress() {
+  const d = allNodes.filter(n => done[n.id]).length;
+  const p = total ? Math.round((d / total) * 100) : 0;
+  pct.textContent = p + "%";
+  count.textContent = `${d} / ${total} mastered`;
+  barFill.style.width = p + "%";
+}
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!confirm("Reset all progress?")) return;
+  done = {};
+  localStorage.removeItem(STORE_KEY);
+  map.querySelectorAll(".node.done").forEach(n => n.classList.remove("done"));
+  updateProgress();
+});
+
+updateProgress();
+</script>
+</body>
+</html>
