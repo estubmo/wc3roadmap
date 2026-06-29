@@ -41,7 +41,7 @@ const stubProfile = {
   sub: "987654321",
 };
 
-let mapBattlenetProfile: (profile: { battletag: string; sub: string }) => {
+let mapBattlenetProfile: (profile: Record<string, unknown>) => {
   name: string;
   battleTag: string;
   bnetSub: string;

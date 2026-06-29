@@ -46,22 +46,26 @@ import { db } from "#/lib/db";
  * Referenced directly from the genericOAuth battlenet config below — this
  * ensures the same function is tested AND used at runtime.
  */
-export function mapBattlenetProfile(profile: {
-  battletag: string;
-  sub: string;
-}): { name: string; battleTag: string; bnetSub: string } {
+export function mapBattlenetProfile(profile: Record<string, unknown>): {
+  name: string;
+  battleTag: string;
+  bnetSub: string;
+} {
+  // Battle.net userinfo: { sub: string, id: string, battletag: string }
+  const battletag = String(profile["battletag"] ?? "");
+  const sub = String(profile["sub"] ?? "");
   return {
     // name = battleTag keeps the user's display name current on every sign-in.
     // better-auth uses the `name` field as the primary display name.
-    name: profile.battletag,
+    name: battletag,
 
     // battleTag in canonical "Name#1234" format — the exact key w3champions
     // queries by (D-06). Refreshed on every login via overrideUserInfo: true.
-    battleTag: profile.battletag,
+    battleTag: battletag,
 
     // Stable Battle.net account sub — used for deduplication across re-auths
     // (e.g. same account signing in from different regions). Not the progress key.
-    bnetSub: profile.sub,
+    bnetSub: sub,
 
     // avatarUrl: intentionally omitted — Battle.net has no OAuth avatar endpoint.
     //   See RESEARCH.md Pitfall 2. avatarUrl column is nullable; a deterministic
