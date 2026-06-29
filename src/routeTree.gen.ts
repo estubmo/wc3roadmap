@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PreviewPathwayRouteImport } from './routes/preview/pathway'
+import { Route as PreviewMobileRouteImport } from './routes/preview/mobile'
+import { Route as PreviewMasteryStatesRouteImport } from './routes/preview/mastery-states'
+import { Route as PreviewFullMapRouteImport } from './routes/preview/full-map'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewPathwayRoute = PreviewPathwayRouteImport.update({
+  id: '/preview/pathway',
+  path: '/preview/pathway',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewMobileRoute = PreviewMobileRouteImport.update({
+  id: '/preview/mobile',
+  path: '/preview/mobile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewMasteryStatesRoute = PreviewMasteryStatesRouteImport.update({
+  id: '/preview/mastery-states',
+  path: '/preview/mastery-states',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewFullMapRoute = PreviewFullMapRouteImport.update({
+  id: '/preview/full-map',
+  path: '/preview/full-map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/preview/full-map': typeof PreviewFullMapRoute
+  '/preview/mastery-states': typeof PreviewMasteryStatesRoute
+  '/preview/mobile': typeof PreviewMobileRoute
+  '/preview/pathway': typeof PreviewPathwayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/preview/full-map': typeof PreviewFullMapRoute
+  '/preview/mastery-states': typeof PreviewMasteryStatesRoute
+  '/preview/mobile': typeof PreviewMobileRoute
+  '/preview/pathway': typeof PreviewPathwayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/preview/full-map': typeof PreviewFullMapRoute
+  '/preview/mastery-states': typeof PreviewMasteryStatesRoute
+  '/preview/mobile': typeof PreviewMobileRoute
+  '/preview/pathway': typeof PreviewPathwayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/preview/full-map'
+    | '/preview/mastery-states'
+    | '/preview/mobile'
+    | '/preview/pathway'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/preview/full-map'
+    | '/preview/mastery-states'
+    | '/preview/mobile'
+    | '/preview/pathway'
+  id:
+    | '__root__'
+    | '/'
+    | '/preview/full-map'
+    | '/preview/mastery-states'
+    | '/preview/mobile'
+    | '/preview/pathway'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PreviewFullMapRoute: typeof PreviewFullMapRoute
+  PreviewMasteryStatesRoute: typeof PreviewMasteryStatesRoute
+  PreviewMobileRoute: typeof PreviewMobileRoute
+  PreviewPathwayRoute: typeof PreviewPathwayRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/pathway': {
+      id: '/preview/pathway'
+      path: '/preview/pathway'
+      fullPath: '/preview/pathway'
+      preLoaderRoute: typeof PreviewPathwayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/mobile': {
+      id: '/preview/mobile'
+      path: '/preview/mobile'
+      fullPath: '/preview/mobile'
+      preLoaderRoute: typeof PreviewMobileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/mastery-states': {
+      id: '/preview/mastery-states'
+      path: '/preview/mastery-states'
+      fullPath: '/preview/mastery-states'
+      preLoaderRoute: typeof PreviewMasteryStatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/full-map': {
+      id: '/preview/full-map'
+      path: '/preview/full-map'
+      fullPath: '/preview/full-map'
+      preLoaderRoute: typeof PreviewFullMapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PreviewFullMapRoute: PreviewFullMapRoute,
+  PreviewMasteryStatesRoute: PreviewMasteryStatesRoute,
+  PreviewMobileRoute: PreviewMobileRoute,
+  PreviewPathwayRoute: PreviewPathwayRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
