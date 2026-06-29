@@ -50,15 +50,34 @@ const nodes = defineCollection({
     }),
     /** True if this node's content is likely to become stale on patch change (DATA-03). */
     meta_volatile: z.boolean(),
-    /** Science / community sources backing the node's learning claims (D-03). */
+    /**
+     * Science + creator citations backing the node's learning claims (D-03, D-07).
+     * Discriminated union: kind "science" (peer-reviewed) | "creator" (WC3 coaches/players).
+     *
+     * PARALLEL-SCHEMA SYNC NOTE: this discriminated union must stay field-for-field
+     * identical to CitationSchema in src/schemas/node.ts (plan 03-02 decision).
+     * Any change here must be mirrored there, and vice versa.
+     */
     citations: z.array(
-      z.object({
-        source: z.string().min(1),
-        url: z.string().optional(),
-        applicationNote: z.string().min(1, {
-          error: "Every citation must have a non-empty applicationNote (D-03)",
+      z.discriminatedUnion("kind", [
+        z.object({
+          kind: z.literal("science"),
+          source: z.string().min(1),
+          url: z.string().optional(),
+          applicationNote: z.string().min(1, {
+            error: "Every citation must have a non-empty applicationNote (D-03)",
+          }),
         }),
-      })
+        z.object({
+          kind: z.literal("creator"),
+          source: z.string().min(1),
+          url: z.string().optional(),
+          applicationNote: z.string().min(1, {
+            error: "Every citation must have a non-empty applicationNote (D-03)",
+          }),
+          quote: z.string().optional(),
+        }),
+      ])
     ),
   }),
   transform: async (document, context) => {

@@ -74,13 +74,17 @@ export type NodeSummary = z.infer<typeof NodeSummarySchema>;
 // ---------------------------------------------------------------------------
 
 /**
- * A single citation backing a node's learning claim (D-03).
- * `applicationNote` is required — CI and this schema both enforce it.
- * Final field structure is fully finalized in Phase 3; this schema
- * defines the enforcement hook from day one.
+ * Science citation — peer-reviewed / academic source backing a learning claim.
+ * `applicationNote` is required per D-03.
+ *
+ * PARALLEL-SCHEMA SYNC NOTE: any change here must be mirrored in
+ * content-collections.ts (plan 03-02). Both definitions must stay
+ * field-for-field identical.
  */
-const CitationSchema = z.object({
-  /** Human-readable reference (paper title, creator name, video title). */
+const ScienceCitationSchema = z.object({
+  /** Discriminator — identifies this as a peer-reviewed / academic source (D-07). */
+  kind: z.literal("science"),
+  /** Human-readable reference (paper title, study name). */
   source: z.string().min(1),
   /** Optional URL to the source. */
   url: z.string().optional(),
@@ -93,6 +97,54 @@ const CitationSchema = z.object({
     error: "Every citation must have a non-empty applicationNote (D-03)",
   }),
 });
+
+/**
+ * Creator citation — named WC3 player, coach, or content-creator wisdom (CONT-03).
+ * `quote` is optional (D-05); `applicationNote` is required per D-03.
+ *
+ * PARALLEL-SCHEMA SYNC NOTE: any change here must be mirrored in
+ * content-collections.ts (plan 03-02). Both definitions must stay
+ * field-for-field identical.
+ */
+const CreatorCitationSchema = z.object({
+  /** Discriminator — identifies this as a named WC3 creator / community wisdom source (D-07). */
+  kind: z.literal("creator"),
+  /** Human-readable reference (creator name, channel, video title). */
+  source: z.string().min(1),
+  /** Optional URL to the source (YouTube channel, Twitch, etc.). */
+  url: z.string().optional(),
+  /**
+   * Required per-citation bridge between source and WC3 application (D-03).
+   * Answers: "How does this source support the claim that [node concept]
+   * makes you better at WC3?" CI fails if absent or empty.
+   */
+  applicationNote: z.string().min(1, {
+    error: "Every citation must have a non-empty applicationNote (D-03)",
+  }),
+  /** Optional direct pull-quote from the creator (D-05). */
+  quote: z.string().optional(),
+});
+
+/**
+ * Discriminated union of citation kinds (D-07, CONT-01, CONT-03):
+ *   kind: "science"  — peer-reviewed / academic sources
+ *   kind: "creator"  — named WC3 players, coaches, and content-creators
+ *
+ * Both branches enforce a non-empty `applicationNote` (D-03).
+ * Export: CitationSchema, Citation, ScienceCitation, CreatorCitation — used by
+ * panel rendering components (CitationList, ProWisdomCallout) in Phase 3.
+ */
+export const CitationSchema = z.discriminatedUnion("kind", [
+  ScienceCitationSchema,
+  CreatorCitationSchema,
+]);
+
+/** Inferred union type for any citation. */
+export type Citation = z.infer<typeof CitationSchema>;
+/** Inferred type for a peer-reviewed science citation. */
+export type ScienceCitation = z.infer<typeof ScienceCitationSchema>;
+/** Inferred type for a WC3 creator / community wisdom citation. */
+export type CreatorCitation = z.infer<typeof CreatorCitationSchema>;
 
 // ---------------------------------------------------------------------------
 // NodeFrontmatterSchema — full validated schema (extends NodeSummarySchema)

@@ -41,6 +41,7 @@ const validFrontmatter = {
   meta_volatile: false,
   citations: [
     {
+      kind: "science" as const,
       source: "Ericsson (1993) – Deliberate Practice",
       url: "https://example.com/paper",
       applicationNote:
@@ -165,6 +166,7 @@ describe("NodeFrontmatterSchema — acceptance", () => {
       ...validFrontmatter,
       citations: [
         {
+          kind: "science" as const,
           source: "Ericsson (1993)",
           applicationNote: "Relevant to drilling WC3 mechanics systematically.",
         },
@@ -314,6 +316,7 @@ describe("NodeFrontmatterSchema — citation applicationNote", () => {
       ...validFrontmatter,
       citations: [
         {
+          kind: "science" as const,
           source: "Some Paper",
           url: "https://example.com",
           // applicationNote intentionally omitted
@@ -328,6 +331,7 @@ describe("NodeFrontmatterSchema — citation applicationNote", () => {
       ...validFrontmatter,
       citations: [
         {
+          kind: "science" as const,
           source: "Some Paper",
           applicationNote: "",
         },
@@ -341,6 +345,7 @@ describe("NodeFrontmatterSchema — citation applicationNote", () => {
       ...validFrontmatter,
       citations: [
         {
+          kind: "science" as const,
           source: "Some Paper",
           applicationNote: "Directly relevant to WC3 practice methods.",
         },
