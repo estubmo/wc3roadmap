@@ -120,13 +120,13 @@ Plans:
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
 
-**Plans**: 9 plans
+**Plans**: 1/9 plans executed
 **UI hint**: yes
 
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Test/infra foundation: install react-query + jsdom, QueryClientProvider, RED Nyquist test scaffolds [wave 1]
+- [x] 03-01-PLAN.md — Test/infra foundation: install react-query + jsdom, QueryClientProvider, RED Nyquist test scaffolds [wave 1]
 
 **Wave 2** *(blocked on Wave 1)*
 
@@ -252,7 +252,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
-| 3. Content Pipeline & Node Panel | 0/9 | Planned | - |
+| 3. Content Pipeline & Node Panel | 1/9 | In Progress|  |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |

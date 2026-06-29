@@ -20,9 +20,9 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Content
 
-- [ ] **CONT-01**: Each relevant node has visible inline citations to real peer-reviewed / scientific sources (motor learning, deliberate practice, sport/competitive psychology) linking to the source
+- [x] **CONT-01**: Each relevant node has visible inline citations to real peer-reviewed / scientific sources (motor learning, deliberate practice, sport/competitive psychology) linking to the source
 - [ ] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
-- [ ] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
+- [x] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
 - [ ] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
 - [ ] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
 
@@ -30,8 +30,8 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 - [x] **GRAPH-01**: Interactive node graph with pan / zoom / click (React Flow / @xyflow), non-linear exploration
 - [x] **GRAPH-02**: Node mastery states shown visually in the graph (untouched / learning / mastered)
-- [ ] **GRAPH-03**: Clicking a node opens a detail panel with its content, citations, and "next game" section (content lazy-loaded)
-- [ ] **GRAPH-04**: Search / filter nodes by race, skill type (macro/micro/mental), difficulty, and mastery state
+- [x] **GRAPH-03**: Clicking a node opens a detail panel with its content, citations, and "next game" section (content lazy-loaded)
+- [x] **GRAPH-04**: Search / filter nodes by race, skill type (macro/micro/mental), difficulty, and mastery state
 - [x] **GRAPH-05**: Desktop-first interactive graph; mobile renders node content readably (simplified / read-only graph acceptable)
 - [x] **GRAPH-06**: Graph performs smoothly at the v1 node count (memoization conventions established from the first prototype)
 
@@ -148,11 +148,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GRAPH-02 | Phase 2 | Complete |
 | GRAPH-05 | Phase 2 | Complete |
 | GRAPH-06 | Phase 2 | Complete |
-| CONT-01 | Phase 3 | Pending |
+| CONT-01 | Phase 3 | Complete |
 | CONT-02 | Phase 3 | Pending |
-| CONT-03 | Phase 3 | Pending |
-| GRAPH-03 | Phase 3 | Pending |
-| GRAPH-04 | Phase 3 | Pending |
+| CONT-03 | Phase 3 | Complete |
+| GRAPH-03 | Phase 3 | Complete |
+| GRAPH-04 | Phase 3 | Complete |
 | AUTH-01 | Phase 4 | Pending |
 | AUTH-02 | Phase 4 | Pending |
 | AUTH-03 | Phase 4 | Pending |
