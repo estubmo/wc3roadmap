@@ -6,7 +6,9 @@
  *
  * Loader:
  *   - Projects allNodes from content-collections to GraphDisplayNode[]
- *     (NO content fields — ADR 002 / ADR 005 / T-02-15 projection boundary).
+ *     (NO content fields — ADR 002 / ADR 005 / ADR 006 / T-02-15 projection boundary).
+ *     Explicit field-by-field projection preserves the content/graph decoupling;
+ *     no spreading of full NodeFrontmatter (ADR 002 rule).
  *   - Parses pathways/beginner-fundamentals.json via PathwaySchema.safeParse
  *     (T-02-16: invalid JSON → empty-state fallback, not a crash).
  *
@@ -48,6 +50,8 @@ export const Route = createFileRoute("/")({
           race: n.race,
           prerequisites: n.prerequisites,
           difficulty: n.difficulty,
+          skillType: n.skillType, // ADR-006: GRAPH-04 skill-type filtering (D-11)
+          tags: n.tags,           // ADR-006: GRAPH-04 tag search (D-11)
         });
         return result.success ? result.data : null;
       })
