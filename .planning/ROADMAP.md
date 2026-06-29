@@ -82,15 +82,29 @@ Decimal phases appear between their surrounding integers in numeric order.
 **UI hint**: yes
 
 Plans:
+**Wave 1**
+
 - [ ] 02-01-PLAN.md — Tooling bootstrap: graph deps install, shadcn init (button/badge/tooltip), @xyflow CSS import [wave 1]
 - [ ] 02-02-PLAN.md — GraphDisplayNode + Pathway Zod schemas + tests, ADR 005, CONTEXT.md glossary [wave 1]
 - [ ] 02-03-PLAN.md — 10–15 seed MDX nodes (DAG) + mocked mastery map [wave 1]
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 02-04-PLAN.md — Pure dagre layout + ancestor-chain BFS engine + tests [wave 2]
 - [ ] 02-05-PLAN.md — Beginner Fundamentals pathway data file + CI referential-integrity check [wave 2]
 - [ ] 02-06-PLAN.md — Memoized custom node component + mastery badge (D-04/D-05/D-06) [wave 2]
 - [ ] 02-07-PLAN.md — SSR-safe mobile node list + pathway banner (D-11/D-12) [wave 2]
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 02-08-PLAN.md — Edge-highlight subsystem: Zustand store + animated custom edge (D-03) [wave 3]
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 02-09-PLAN.md — Client-only canvas assembly + memoization conventions + pathway spotlight [wave 4]
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 02-10-PLAN.md — Route integration (loader + responsive switch) + preview routes + human verify [wave 5]
 
 ### Phase 3: Content Pipeline & Node Panel
