@@ -5,10 +5,12 @@
  * Cross-document content validation orchestrator.
  *
  * Imports the generated node corpus (from the "content-collections" module)
- * and runs three validators:
+ * and runs four validators:
  *   1. validatePrerequisiteIds — every prereq ID must reference an existing node
  *   2. validatePatchIds        — every patchId must be in the registry
  *   3. detectCycles            — the prerequisite graph must be a DAG
+ *   4. validatePathwayStepIds  — every step in pathways/beginner-fundamentals.json
+ *                                must reference an existing node (T-02-07 / T-02-08)
  *
  * IMPORTANT BUILD ORDERING: This script imports from the "content-collections"
  * module alias which resolves to .content-collections/generated/index.js.
@@ -20,11 +22,15 @@
  * Exits 0 and prints a pass summary on success.
  */
 
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 // Generated module — requires `npm run build:content` to have run first (Pitfall 4).
 import { allNodes } from "content-collections";
+import { PathwaySchema } from "../src/schemas/pathway";
 import { PATCH_IDS } from "../src/lib/patches";
 import { detectCycles } from "./lib/detectCycles";
 import { validatePrerequisiteIds, validatePatchIds } from "./lib/validators";
+import { validatePathwayStepIds } from "./validate-pathway";
 
 function main(): void {
   const errors: string[] = [];
@@ -41,6 +47,20 @@ function main(): void {
   const cycleErrors = detectCycles(allNodes);
   errors.push(...cycleErrors);
 
+  // 4. Pathway referential integrity — every step must resolve to a real node (T-02-07 / T-02-08)
+  const pathwayFile = resolve(process.cwd(), "pathways/beginner-fundamentals.json");
+  const pathwayRaw = JSON.parse(readFileSync(pathwayFile, "utf-8")) as unknown;
+  const pathwayResult = PathwaySchema.safeParse(pathwayRaw);
+  if (!pathwayResult.success) {
+    errors.push(
+      `pathways/beginner-fundamentals.json failed schema validation: ${pathwayResult.error.message}`
+    );
+  } else {
+    const nodeIds = new Set(allNodes.map((n) => n.id));
+    const pathwayErrors = validatePathwayStepIds(pathwayResult.data, nodeIds);
+    errors.push(...pathwayErrors);
+  }
+
   if (errors.length > 0) {
     console.error("\n=== Content Validation Errors ===");
     for (const error of errors) {
@@ -50,7 +70,9 @@ function main(): void {
     process.exit(1);
   }
 
-  console.log(`Content validation passed (${allNodes.length} node(s) checked).`);
+  console.log(
+    `Content validation passed (${allNodes.length} node(s) checked, pathway integrity verified).`
+  );
 }
 
 main();
