@@ -43,6 +43,8 @@ const stubProfile = {
 
 let mapBattlenetProfile: (profile: Record<string, unknown>) => {
   name: string;
+  email: string;
+  emailVerified: boolean;
   battleTag: string;
   bnetSub: string;
 };
@@ -96,6 +98,14 @@ describe("mapBattlenetProfile", () => {
   it("maps sub to bnetSub (stable Battle.net identifier)", () => {
     const result = mapBattlenetProfile(stubProfile);
     expect(result.bnetSub).toBe("987654321");
+  });
+
+  it("synthesizes a stable email from sub (Battle.net OAuth has no email scope)", () => {
+    const result = mapBattlenetProfile(stubProfile);
+    // Battle.net never returns an email; better-auth requires one. Synthesize a
+    // deterministic placeholder keyed on the immutable sub (RESEARCH / ADR 008).
+    expect(result.email).toBe("987654321@battlenet.local");
+    expect(result.emailVerified).toBe(true);
   });
 
   it("does NOT include gateway (captured from UI region selector, not OAuth)", () => {

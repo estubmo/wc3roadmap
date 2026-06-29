@@ -48,6 +48,8 @@ import { db } from "#/lib/db";
  */
 export function mapBattlenetProfile(profile: Record<string, unknown>): {
   name: string;
+  email: string;
+  emailVerified: boolean;
   battleTag: string;
   bnetSub: string;
 } {
@@ -58,6 +60,18 @@ export function mapBattlenetProfile(profile: Record<string, unknown>): {
     // name = battleTag keeps the user's display name current on every sign-in.
     // better-auth uses the `name` field as the primary display name.
     name: battletag,
+
+    // Synthesized email (Pitfall: Battle.net OAuth has NO email scope, so the
+    // userinfo response never includes one — see the 400-less `email_is_missing`
+    // path in better-auth). better-auth requires a unique, non-null email to
+    // create the user row, so we derive a stable placeholder from the immutable
+    // Battle.net `sub`. This address is never used for delivery; it only
+    // satisfies better-auth's identity model. ADR 008 records this decision.
+    email: `${sub}@battlenet.local`,
+
+    // Battle.net vouches for the account identity at OAuth time and there is no
+    // real inbox to verify, so the synthesized address is treated as verified.
+    emailVerified: true,
 
     // battleTag in canonical "Name#1234" format — the exact key w3champions
     // queries by (D-06). Refreshed on every login via overrideUserInfo: true.
