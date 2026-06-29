@@ -5,7 +5,7 @@
 > project's **ubiquitous domain language** — use them exactly in code,
 > comments, PRs, and documentation.
 >
-> Last updated: Phase 02
+> Last updated: Phase 04
 
 ---
 
@@ -247,6 +247,60 @@ badge** — a small pill overlay at the top-right corner displaying
 
 ---
 
+## Identity & Auth Terms (Phase 04)
+
+### principal
+
+The authenticated session user injected by `authMiddleware` into every server
+function context. The only trusted identity source in a user-data server
+function. Accessed via `context.principal` (type `User`, injected by
+`authMiddleware` in `src/lib/auth-middleware.ts`).
+
+Server functions built on `authedServerFn` key every query by
+`principal.id` — never by any client-supplied value. This is the enforcement
+point for the D-12 authorization contract: cross-user access is impossible
+by construction, not by convention.
+
+### session
+
+The better-auth 30-day rolling cookie-backed authentication state (AUTH-02,
+D-09/D-10). A session encapsulates the authenticated user and is refreshed
+on activity (rolling window). Resolved server-side via
+`auth.api.getSession({ headers })` in `authMiddleware`. The session cookie is
+always-persistent (no "remember me" toggle) and cached in a signed cookie to
+avoid a DB round-trip on every request. Client components read the session
+via `useSession()` from `#/lib/auth-client`.
+
+### BattleTag
+
+The canonical `"Name#1234"` Battle.net display identity. The exact key
+w3champions queries by when resolving a player's ladder data (D-06). Captured
+from the Battle.net OAuth userinfo endpoint (`battletag` field) and stored in
+`users.battleTag`. Mutable — can change when a player renames their Battle.net
+account. Refreshed on every sign-in via `overrideUserInfo: true` on the
+`genericOAuth` config (D-08, `src/lib/auth.ts`). Never used as the progress
+key; the stable `account UUID` (`users.id`) is the progress key.
+
+### gateway / region
+
+The Battle.net server region a player signs in through: `"us"` | `"eu"` |
+`"kr"`. Captured from a UI region selector before the OAuth redirect (not from
+the OAuth userinfo response — Battle.net does not expose region in the userinfo
+payload; see RESEARCH.md Pitfall 1). Stored in `users.gateway`. Required by
+Phase 7 (w3champions ladder sync) and Phase 8 (replay auto-pull) to resolve a
+player to their regional w3champions profile without an additional capture step.
+
+### account UUID
+
+The stable internal identifier for a user, stored as `users.id` (UUID v4,
+generated via `crypto.randomUUID()`). The immutable progress key used across
+all phases (AUTH-04, D-04). Never changes, even if the player's BattleTag or
+gateway changes. All Phase 5 progress records and Phase 7/8 ladder/replay rows
+are keyed by this UUID. Distinguished from `bnetSub` (the Battle.net account
+sub from OAuth, used for deduplication only, not as the progress key).
+
+---
+
 ## Appendix: Phase-Tracked Additions
 
 | Term | Introduced | Notes |
@@ -273,3 +327,8 @@ badge** — a small pill overlay at the top-right corner displaying
 | ancestor chain / prerequisite-chain highlight | Phase 02 | BFS edge set for hover highlight (D-03) |
 | spotlight | Phase 02 | fitView camera framing to pathway nodes on load (D-08) |
 | mastery encoding | Phase 02 | fill+glow+badge dual visual representation (D-05) |
+| principal | Phase 04 | Session-injected identity; only trusted auth source in server fns (D-11/D-12) |
+| session | Phase 04 | better-auth 30-day rolling cookie auth state (AUTH-02, D-09/D-10) |
+| BattleTag | Phase 04 | "Name#1234" Battle.net display identity; w3champions key (D-06); refreshed on login |
+| gateway / region | Phase 04 | us \| eu \| kr Battle.net server region; persisted for Phase 7/8 (D-05/D-07) |
+| account UUID | Phase 04 | Stable users.id UUID v4; immutable progress key (AUTH-04, D-04) |
