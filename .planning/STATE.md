@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: auth-database
 status: executing
-stopped_at: Completed 04-auth-database/04-03-PLAN.md
-last_updated: "2026-06-29T18:39:15.722Z"
+stopped_at: Completed 04-auth-database/04-06-PLAN.md
+last_updated: "2026-06-29T18:45:31.568Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
   completed_phases: 3
   total_plans: 34
-  completed_plans: 32
+  completed_plans: 33
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 04 (auth-database) — EXECUTING
-Plan: 6 of 7
+Plan: 7 of 7
 Status: Ready to execute
 Last activity: 2026-06-29 — Phase 04 execution started
 
@@ -83,6 +83,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-auth-database P03 | 40m | 3 tasks | 5 files |
 | Phase 04 P04 | 10m | 2 tasks | 3 files |
 | Phase 04-auth-database P05 | 9m | 3 tasks | 3 files |
+| Phase 04-auth-database P06 | 2m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -141,6 +142,8 @@ Recent decisions affecting current work:
 - [Phase ?]: onOpenRegion callback on SignInButton decouples button from dialog state
 - [Phase ?]: DiceBear 9.x initials URL resolves Pitfall 2 (no Battle.net avatar API)
 - [Phase ?]: RegionSelector onInteractOutside preventDefault blocks outside-click; ESC allowed
+- [Phase ?]: SiteHeader returns React fragment wrapping header + RegionSelector — dialog ownership stays in component
+- [Phase ?]: isPending renders null (empty slot) to prevent CTA flash on refresh (AUTH-02 / T-04-06b)
 
 ### Pending Todos
 
@@ -163,6 +166,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T18:38:59.880Z
-Stopped at: Completed 04-auth-database/04-03-PLAN.md
+Last session: 2026-06-29T18:45:31.561Z
+Stopped at: Completed 04-auth-database/04-06-PLAN.md
 Resume file: None

@@ -163,7 +163,7 @@ Plans:
   3. Calling a user-data server function directly (e.g., via curl or Postman) with a different user's resource ID returns an authorization error, not data — client-supplied user IDs are ignored in favor of the session principal
   4. The progress key stored in the database is a stable internal account identifier (UUID from the `users` table) that survives a BattleTag display-name change without breaking progress records
 
-**Plans**: 5/7 plans executed
+**Plans**: 6/7 plans executed
 
 Plans:
 **Wave 1**
@@ -185,7 +185,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 04-06-PLAN.md — SiteHeader compose + __root mount + end-of-phase OAuth/session-persistence verification [wave 5]
+- [x] 04-06-PLAN.md — SiteHeader compose + __root mount + end-of-phase OAuth/session-persistence verification [wave 5]
 - [ ] 04-07-PLAN.md — D-14 docs: CONTEXT.md domain terms + ADR 007 (authorization) + ADR 008 (Battle.net integration) [wave 5]
 
 **UI hint**: yes
@@ -277,7 +277,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
-| 4. Auth & Database | 5/7 | In Progress|  |
+| 4. Auth & Database | 6/7 | In Progress|  |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
