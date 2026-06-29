@@ -5,7 +5,7 @@
 > project's **ubiquitous domain language** — use them exactly in code,
 > comments, PRs, and documentation.
 >
-> Last updated: Phase 01
+> Last updated: Phase 02
 
 ---
 
@@ -204,6 +204,49 @@ The codebase follows the **deep-module** discipline from
 
 ---
 
+## Graph Engine Terms (Phase 02)
+
+### GraphDisplayNode
+
+The graph engine's typed data contract — a narrow projection of `NodeSummary`
+that adds exactly one field: `difficulty` (D-04, ADR 005). Defined in
+`src/schemas/graph.ts`. Graph components type their props to
+`GraphDisplayNode[]`; importing `NodeFrontmatter` into graph code is
+prohibited (ADR 002).
+
+### pathway step
+
+A single node ID entry in a `Pathway.steps[]` array. Steps are ordered —
+the array index represents the suggested traversal sequence. The graph engine
+uses the step list to determine which nodes are "in pathway" (full opacity)
+vs. "off pathway" (dimmed) at initial load (D-08, D-09).
+
+### ancestor chain / prerequisite-chain highlight
+
+The set of edges and nodes that are direct ancestors of the currently
+hovered node, computed via BFS over the prerequisite graph. On hover, the
+full ancestor chain is highlighted in rune-gold via animated `motion.path`
+strokes (D-03). Implemented in `src/lib/graph-store.ts` (Zustand atom) and
+`src/lib/pathway-utils.ts` (BFS computation).
+
+### spotlight
+
+The camera framing applied when the graph first loads — `fitView()` is
+called with the pathway's step node IDs, centering the viewport on the
+guided pathway and leaving non-pathway nodes visible but off-screen or
+de-emphasized (D-08). "Explore full map" exits spotlight mode.
+
+### mastery encoding
+
+The dual visual representation of a node's mastery state: (1) **fill +
+glow** — the node face background tints from `obsidian-800` toward
+`rune-500` with a CSS box-shadow glow as mastery increases; (2) **status
+badge** — a small pill overlay at the top-right corner displaying
+"Learning" or "Mastered" text (D-05). Both encodings are driven by the
+`masteryState` field on the node's data object at render time.
+
+---
+
 ## Appendix: Phase-Tracked Additions
 
 | Term | Introduced | Notes |
@@ -225,3 +268,8 @@ The codebase follows the **deep-module** discipline from
 | meta_volatile | Phase 01 | Patch-sensitivity flag |
 | last_reviewed | Phase 01 | Date content was verified against patchId |
 | patch_context | Phase 01 | Patch-relative change note on a node |
+| GraphDisplayNode | Phase 02 | Graph projection: NodeSummary + difficulty (ADR 005) |
+| pathway step | Phase 02 | Single node ID in Pathway.steps[], ordered traversal |
+| ancestor chain / prerequisite-chain highlight | Phase 02 | BFS edge set for hover highlight (D-03) |
+| spotlight | Phase 02 | fitView camera framing to pathway nodes on load (D-08) |
+| mastery encoding | Phase 02 | fill+glow+badge dual visual representation (D-05) |
