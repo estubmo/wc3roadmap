@@ -188,6 +188,18 @@ Battle.net `400 — Invalid grant type or callback URL is not valid` because the
 The callback path is fixed by the plugin and is not configurable, so the
 Battle.net client registration is the side that must match it.
 
+### 11. Synthesized email — Battle.net has no email scope
+
+Battle.net OAuth does not expose an email (there is no email scope; userinfo
+returns only `sub`, `id`, `battletag`). better-auth requires a unique, non-null
+`email` to create a user row and fails sign-in with `email_is_missing`
+otherwise. `mapBattlenetProfile` therefore synthesizes a stable placeholder
+keyed on the immutable Battle.net `sub`: `` `${sub}@battlenet.local` ``, with
+`emailVerified: true`. This address is never used for delivery — it only
+satisfies better-auth's identity model. Keying on `sub` (not BattleTag) keeps
+the synthetic email stable across BattleTag changes, mirroring why `sub`/UUID
+(not BattleTag) is the identity anchor elsewhere in this ADR.
+
 ---
 
 ## Consequences
