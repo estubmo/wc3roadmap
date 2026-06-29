@@ -127,3 +127,18 @@ No new network endpoints, auth paths, or schema changes at trust boundaries.
 - src/routes/preview/mobile.tsx: FOUND (created)
 - commit 9270d01 (Task 1): FOUND
 - commit 8a3e981 (Task 2): FOUND
+
+## Checkpoint Fix (post-verification)
+
+**Issue found during human visual verification:** `/preview/pathway`, `/preview/full-map`, and `/preview/mastery-states` all rendered byte-identical output on load because `RoadmapGraph` hardcoded `useState(false)` for `exploring`, making all three routes start in guided-pathway spotlight mode.
+
+**Fix (commit f2be796):**
+- Added `initialExploring?: boolean` to `RoadmapGraphProps` (JSDoc documented, default `false`)
+- Threaded prop into `GraphCanvas`; `useState(initialExploring ?? false)`
+- On-mount `fitView` effect: `initialExploring=true` → fit all nodes (`padding: 0.15`); `false` → pathway-scoped fit
+- `<ReactFlow fitViewOptions>` conditioned on same flag
+- `/preview/full-map` + `/preview/mastery-states` now pass `initialExploring` (explore mode on load)
+- `/preview/pathway` and `/src/routes/index.tsx` unchanged (spotlight default)
+- `typecheck` exit 0; 148/148 tests pass
+
+Human visual verification still pending.
