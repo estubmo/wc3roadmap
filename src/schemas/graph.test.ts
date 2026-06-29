@@ -146,6 +146,8 @@ describe("GraphDisplayNodeSchema — ADR 002 boundary", () => {
     // NodeSummarySchema.extend() strips unknown keys at parse time
     const result = GraphDisplayNodeSchema.safeParse({
       ...validGraphNode,
+      skillType: "macro" as const,
+      tags: [] as string[],
       citations: [{ source: "Paper", applicationNote: "note" }],
       patch_context: "no change",
       meta_volatile: false,
@@ -157,5 +159,80 @@ describe("GraphDisplayNodeSchema — ADR 002 boundary", () => {
       expect(result.data).not.toHaveProperty("patch_context");
       expect(result.data).not.toHaveProperty("meta_volatile");
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GraphDisplayNodeSchema — skillType + tags (ADR 006, D-11, GRAPH-04)
+// ---------------------------------------------------------------------------
+
+describe("GraphDisplayNodeSchema — skillType + tags (ADR 006)", () => {
+  /** Fully valid node with the two new D-11 fields. */
+  const validWithNewFields = {
+    ...validGraphNode,
+    skillType: "macro" as const,
+    tags: ["scouting", "timing"] as string[],
+  };
+
+  it("accepts a node with skillType and tags present in the parsed output", () => {
+    const result = GraphDisplayNodeSchema.safeParse(validWithNewFields);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      // Fields must be preserved — not stripped — after ADR-006 extension
+      expect(result.data.skillType).toBe("macro");
+      expect(result.data.tags).toEqual(["scouting", "timing"]);
+    }
+  });
+
+  it("accepts all three skillType values", () => {
+    const skillTypes = ["macro", "micro", "mental"] as const;
+    for (const skillType of skillTypes) {
+      const result = GraphDisplayNodeSchema.safeParse({ ...validWithNewFields, skillType });
+      expect(result.success, `skillType "${skillType}" should be accepted`).toBe(true);
+    }
+  });
+
+  it("accepts an empty tags array", () => {
+    const result = GraphDisplayNodeSchema.safeParse({ ...validWithNewFields, tags: [] });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts tags with multiple string values", () => {
+    const result = GraphDisplayNodeSchema.safeParse({
+      ...validWithNewFields,
+      tags: ["economy", "harassment", "positioning"],
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.tags).toHaveLength(3);
+    }
+  });
+
+  it("rejects an invalid skillType value ('physical')", () => {
+    const result = GraphDisplayNodeSchema.safeParse({
+      ...validWithNewFields,
+      skillType: "physical",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an invalid skillType value ('cognitive')", () => {
+    const result = GraphDisplayNodeSchema.safeParse({
+      ...validWithNewFields,
+      skillType: "cognitive",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects when skillType is missing", () => {
+    const { skillType: _, ...withoutSkillType } = validWithNewFields;
+    const result = GraphDisplayNodeSchema.safeParse(withoutSkillType);
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects when tags is missing", () => {
+    const { tags: _, ...withoutTags } = validWithNewFields;
+    const result = GraphDisplayNodeSchema.safeParse(withoutTags);
+    expect(result.success).toBe(false);
   });
 });
