@@ -1,0 +1,15 @@
+{
+  "id": "beginner-fundamentals",
+  "title": "Beginner Fundamentals",
+  "subtitle": "8 foundational skills — start here",
+  "steps": [
+    "supply-management",
+    "map-control",
+    "scouting",
+    "hotkey-discipline",
+    "hero-leveling",
+    "creep-routing",
+    "resource-banking",
+    "army-positioning"
+  ]
+}
