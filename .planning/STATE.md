@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 4
-current_phase_name: Auth & Database
+current_phase: 04
+current_phase_name: auth-database
 status: executing
-stopped_at: Phase 04 UI-SPEC approved
-last_updated: "2026-06-29T15:54:15.406Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-06-29T16:25:02.924Z"
 last_activity: 2026-06-29
-last_activity_desc: Phase 03 complete, transitioned to Phase 4
+last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
   completed_phases: 3
-  total_plans: 27
-  completed_plans: 27
+  total_plans: 34
+  completed_plans: 28
   percent: 33
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-28)
 
 **Core value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy
-**Current focus:** Phase 03 — content-pipeline-node-panel
+**Current focus:** Phase 04 — auth-database
 
 ## Current Position
 
-Phase: 4 — Auth & Database
-Plan: Not started
+Phase: 04 (auth-database) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-06-29 — Phase 03 complete, transitioned to Phase 4
+Last activity: 2026-06-29 — Phase 04 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -79,6 +79,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-content-pipeline-node-panel P07 | 6min | 2 tasks | 2 files |
 | Phase 03 P08 | 6min | 2 tasks | 2 files |
 | Phase 03-content-pipeline-node-panel P09 | 22m | 4 tasks | 4 files |
+| Phase 04 P01 | 5m | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,8 @@ Recent decisions affecting current work:
 - [Phase ?]: NodeDetailPanel plan
 - [Phase 03]: Plan 03-09: filter dim must be applied to React Flow controlled nodes prop (filteredDisplayNodes), not just setNodes effect — prop is authoritative and re-syncs internal store each render
 - [Phase 03]: Plan 03-09: mobile renders interactive RoadmapGraph (React Flow) on all viewports; MobileNodeList retired from Home route (retained for /preview/mobile)
+- [Phase ?]: drizzle-orm pinned to 0.45.2 (not 0.44.x); drizzle-kit to 0.31.10 — version drift correction per RESEARCH Pitfall 6
+- [Phase ?]: DATABASE_URL_DIRECT used in drizzle.config.ts (non-pooled) — pooled pgbouncer breaks drizzle-kit migrations (RESEARCH Pitfall 5)
 
 ### Pending Todos
 
@@ -146,6 +149,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T14:01:43.295Z
-Stopped at: Phase 04 UI-SPEC approved
-Resume file: .planning/phases/04-auth-database/04-UI-SPEC.md
+Last session: 2026-06-29T16:25:02.920Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None

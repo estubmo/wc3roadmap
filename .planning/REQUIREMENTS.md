@@ -44,8 +44,8 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign in with Battle.net OAuth (returns BattleTag identity)
-- [ ] **AUTH-02**: Session persists across browser refresh
+- [x] **AUTH-01**: User can sign in with Battle.net OAuth (returns BattleTag identity)
+- [x] **AUTH-02**: Session persists across browser refresh
 - [ ] **AUTH-03**: Server functions enforce session-based authorization on all user-data access (not just input-shape validation)
 - [ ] **AUTH-04**: A stable account identifier is used as the progress key (survives BattleTag display changes)
 
@@ -153,8 +153,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-03 | Phase 3 | Complete |
 | GRAPH-03 | Phase 3 | Complete |
 | GRAPH-04 | Phase 3 | Complete |
-| AUTH-01 | Phase 4 | Pending |
-| AUTH-02 | Phase 4 | Pending |
+| AUTH-01 | Phase 4 | Complete |
+| AUTH-02 | Phase 4 | Complete |
 | AUTH-03 | Phase 4 | Pending |
 | AUTH-04 | Phase 4 | Pending |
 | PROG-01 | Phase 5 | Pending |
