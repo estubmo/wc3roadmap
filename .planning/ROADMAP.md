@@ -163,7 +163,7 @@ Plans:
   3. Calling a user-data server function directly (e.g., via curl or Postman) with a different user's resource ID returns an authorization error, not data — client-supplied user IDs are ignored in favor of the session principal
   4. The progress key stored in the database is a stable internal account identifier (UUID from the `users` table) that survives a BattleTag display-name change without breaking progress records
 
-**Plans**: 1/7 plans executed
+**Plans**: 2/7 plans executed
 
 Plans:
 **Wave 1**
@@ -172,7 +172,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 04-02-PLAN.md — Drizzle schema (users/sessions/accounts/verifications + identity fields), db singleton, smoke test, [BLOCKING] schema push to Neon [wave 2]
+- [x] 04-02-PLAN.md — Drizzle schema (users/sessions/accounts/verifications + identity fields), db singleton, smoke test, [BLOCKING] schema push to Neon [wave 2]
 
 **Wave 3** *(blocked on Wave 2)*
 
@@ -277,7 +277,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
-| 4. Auth & Database | 1/7 | In Progress|  |
+| 4. Auth & Database | 2/7 | In Progress|  |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
