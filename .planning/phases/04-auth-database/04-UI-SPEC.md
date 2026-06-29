@@ -56,16 +56,18 @@ Exceptions:
 ## Typography
 
 All weights use Outfit Variable (body/UI) or Space Grotesk Variable (heading/display).
-Maximum 3 weights used in this phase: regular (400), medium (500), and semibold (600).
-Weight-500 (medium) is used exclusively for interactive label text per shadcn UI standard practice.
-Weight-600 is reserved for headings. Weight-400 is reserved for body text.
+Exactly 2 weights used in this phase: regular (400) and semibold (600).
+
+Weight-400 (regular): body text AND all interactive labels (region option buttons, dropdown items, BattleTag display chip).
+Weight-600 (semibold): headings AND the primary "Sign in with Battle.net" CTA button text.
+
+shadcn override required: shadcn Button defaults to `font-medium` (500). Override with `font-semibold` (600) on the primary Sign-in CTA and `font-normal` (400) on secondary interactive labels (region option buttons). Do not rely on shadcn's 500 default anywhere in this phase.
 
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
-| Body | 14px | 400 | 1.5 | Outfit Variable | Dropdown menu items; region selector descriptions; dialog body text |
-| Label | 13px | 500 | 1.4 | Outfit Variable | BattleTag display chip in signed-in header; header annotations |
-| Heading | 16px | 600 | 1.25 | Space Grotesk Variable | Region selector dialog title |
-| Button | 14px | 500 | n/a | Outfit Variable | Sign-in CTA label; region option labels (shadcn `text-sm font-medium`) |
+| Body / Interactive labels | 14px | 400 | 1.5 | Outfit Variable | Body text; dropdown items; region selector description; region option button labels |
+| BattleTag chip | 13px | 400 | 1.4 | Outfit Variable | Signed-in header BattleTag display |
+| Heading / Primary CTA | 16px | 600 | 1.25 | Space Grotesk Variable | Region selector dialog title; "Sign in with Battle.net" button text |
 
 ---
 
@@ -162,7 +164,7 @@ Each button:
   border: 1px solid var(--color-obsidian-600)
   background: transparent
   hover: background: var(--color-obsidian-700)
-  font-size: 14px; font-weight: 500;
+  font-size: 14px; font-weight: 400; /* override shadcn font-medium default */
   onClick → immediate OAuth redirect (no separate "Continue" button)
 ```
 
@@ -202,7 +204,7 @@ AvatarFallback: first 2 chars of BattleTag (before the # separator)
 BattleTag label:
 
 ```
-font-size: 13px; font-weight: 500; line-height: 1.4;
+font-size: 13px; font-weight: 400; line-height: 1.4; /* interactive label — uses 400, not shadcn 500 default */
 color: #e9e8ee (body text color)
 display: none on viewport < 480px (avatar only on mobile)
 max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -356,7 +358,7 @@ No third-party registries. No third-party blocks. Registry vetting gate: not app
 | Font stack (Outfit + Space Grotesk) | src/styles/app.css — detected | all font values |
 | shadcn new-york style, neutral base | components.json — detected | design system |
 | Spacing scale (8-point) | Default — consistent with Phases 1-3 | 7 values |
-| Typography scale (14/13/16px, 400/500/600) | Default + existing GraphNode patterns | 4 values |
+| Typography scale (14/13/16px, 400/600) | Default + existing GraphNode patterns; 500 removed per 2-weight rule | 3 values |
 
 ---
 
