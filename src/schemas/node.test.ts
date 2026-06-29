@@ -10,6 +10,10 @@ import { describe, it, expect } from "vitest";
 import {
   NodeSummarySchema,
   NodeFrontmatterSchema,
+  // CitationSchema is exported after plan 03-02 adds the kind discriminator.
+  // Until then this import is undefined → the CitationSchema describe blocks below
+  // are RED. Existing NodeSummarySchema / NodeFrontmatterSchema tests are unaffected.
+  CitationSchema,
 } from "./node";
 
 // ---------------------------------------------------------------------------
@@ -343,5 +347,125 @@ describe("NodeFrontmatterSchema — citation applicationNote", () => {
       ],
     });
     expect(result.success).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CitationSchema — kind discriminator (D-07, CONT-01, CONT-03) — Wave 0 RED
+//
+// CitationSchema is exported from node.ts after plan 03-02 replaces the flat
+// CitationSchema with z.discriminatedUnion("kind", [science, creator]).
+// Until plan 03-02 lands, CitationSchema is undefined here → RED.
+// ---------------------------------------------------------------------------
+
+describe("CitationSchema — kind: science (CONT-01)", () => {
+  it("accepts a valid science citation with required fields", () => {
+    const result = CitationSchema.safeParse({
+      kind: "science",
+      source: "Ericsson (1993) — Deliberate Practice",
+      applicationNote: "Deliberate practice applies to WC3 drills.",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a science citation with an optional url", () => {
+    const result = CitationSchema.safeParse({
+      kind: "science",
+      source: "Mikkelsen et al. (2009)",
+      url: "https://example.com/paper",
+      applicationNote: "Motor learning research supports micro-practice.",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a science citation missing applicationNote", () => {
+    const result = CitationSchema.safeParse({
+      kind: "science",
+      source: "Some Paper",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a science citation with an empty applicationNote", () => {
+    const result = CitationSchema.safeParse({
+      kind: "science",
+      source: "Some Paper",
+      applicationNote: "",
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("CitationSchema — kind: creator (CONT-03)", () => {
+  it("accepts a valid creator citation without a quote", () => {
+    const result = CitationSchema.safeParse({
+      kind: "creator",
+      source: "Grubby (YouTube)",
+      applicationNote: "Grubby demonstrates map control in every high-level game.",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a creator citation with an optional quote", () => {
+    const result = CitationSchema.safeParse({
+      kind: "creator",
+      source: "Grubby (YouTube)",
+      url: "https://www.youtube.com/c/Grubby",
+      applicationNote: "Map control is the largest skill gap.",
+      quote: "Map control — specifically denying opponent creeping routes — is the single largest skill gap.",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("quote is optional on the creator branch (omitting it still passes)", () => {
+    const withQuote = CitationSchema.safeParse({
+      kind: "creator",
+      source: "TempO",
+      applicationNote: "High APM enables faster scouting responses.",
+      quote: "APM is a proxy for decision speed, not just mechanics.",
+    });
+    const withoutQuote = CitationSchema.safeParse({
+      kind: "creator",
+      source: "TempO",
+      applicationNote: "High APM enables faster scouting responses.",
+    });
+    expect(withQuote.success).toBe(true);
+    expect(withoutQuote.success).toBe(true);
+  });
+
+  it("rejects a creator citation missing applicationNote", () => {
+    const result = CitationSchema.safeParse({
+      kind: "creator",
+      source: "Grubby (YouTube)",
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("CitationSchema — kind discriminator rejection (D-07)", () => {
+  it("rejects a citation with an unknown kind", () => {
+    const result = CitationSchema.safeParse({
+      kind: "community",
+      source: "WC3 forums",
+      applicationNote: "Forum wisdom.",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a citation with no kind field", () => {
+    const result = CitationSchema.safeParse({
+      source: "Some source",
+      applicationNote: "Some note.",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a citation with an empty-string kind", () => {
+    const result = CitationSchema.safeParse({
+      kind: "",
+      source: "Some source",
+      applicationNote: "Some note.",
+    });
+    expect(result.success).toBe(false);
   });
 });
