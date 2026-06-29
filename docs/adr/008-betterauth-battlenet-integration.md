@@ -200,6 +200,27 @@ satisfies better-auth's identity model. Keying on `sub` (not BattleTag) keeps
 the synthetic email stable across BattleTag changes, mirroring why `sub`/UUID
 (not BattleTag) is the identity anchor elsewhere in this ADR.
 
+### 12. `input:false` identity fields are written by `databaseHooks`, not `mapProfileToUser`
+
+`battleTag`, `gateway`, and `bnetSub` are `input: false` (D-05 — never settable
+from client API input) and `notNull` in the schema. better-auth **ignores
+`input:false` fields returned from `mapProfileToUser` during OAuth
+provisioning**, so that mapper cannot populate them — the user insert fails with
+`battleTag_is_required`. They are instead written by
+`databaseHooks.user.create.before`, the documented trusted-server path that
+bypasses input rules while keeping `input:false` intact (clients still cannot
+set them via the API). Field sources, none of them trusted client input:
+
+- `battleTag` ← `user.name` (an `input:true` field `mapBattlenetProfile` sets to the BattleTag).
+- `bnetSub` ← local-part of the synthesized `user.email` (`${sub}@battlenet.local`).
+- `gateway` ← region chosen in `RegionSelector`, threaded through the OAuth flow
+  via `signIn.oauth2({ additionalData: { region } })` and read server-side with
+  `getOAuthState` (from `better-auth/api`). Validated against `us|eu|kr`;
+  defaults to `us` so sign-in never fails on a missing region.
+
+`mapProfileToUser` is still used, but only for the `input:true` standard fields
+(`name`, `email`, `emailVerified`) it is allowed to set.
+
 ---
 
 ## Consequences
