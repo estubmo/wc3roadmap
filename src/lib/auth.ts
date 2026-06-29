@@ -161,12 +161,6 @@ export const auth = betterAuth({
             ? (region as string)
             : "us";
 
-          // Temporary diagnostic — confirms the hook fires and what it writes.
-          // Safe to remove once the OAuth round-trip is verified end to end.
-          console.info(
-            `[auth] user.create.before -> battleTag=${battleTag} gateway=${gateway} bnetSub=${bnetSub}`,
-          );
-
           return { data: { ...user, battleTag, bnetSub, gateway } };
         },
       },
