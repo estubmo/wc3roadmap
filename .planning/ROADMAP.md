@@ -74,12 +74,24 @@ Decimal phases appear between their surrounding integers in numeric order.
 
   1. A user can pan, zoom, and click any node on the graph without visible frame drops — React DevTools Profiler confirms fewer than 3 re-renders per custom node component during a pan gesture
   2. Nodes display three visually distinct mastery states (untouched / in-progress / mastered) using mocked data — the graph is the source of truth for visual state
-  3. First-load shows a guided pathway view with 8–12 highlighted nodes, not the full graph; the full graph is accessible via an explicit "Explore full map" action only
+  3. First-load camera frames the guided pathway (8–12 highlighted nodes) with non-pathway nodes heavily de-emphasized (dimmed, not absent); the full graph is revealed only via an explicit "Explore full map" action — non-pathway nodes remain mounted in the DOM to satisfy the memoization criterion (D-09 interpretation)
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
 
-**Plans**: TBD
+**Plans**: 10 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 02-01-PLAN.md — Tooling bootstrap: graph deps install, shadcn init (button/badge/tooltip), @xyflow CSS import [wave 1]
+- [ ] 02-02-PLAN.md — GraphDisplayNode + Pathway Zod schemas + tests, ADR 005, CONTEXT.md glossary [wave 1]
+- [ ] 02-03-PLAN.md — 10–15 seed MDX nodes (DAG) + mocked mastery map [wave 1]
+- [ ] 02-04-PLAN.md — Pure dagre layout + ancestor-chain BFS engine + tests [wave 2]
+- [ ] 02-05-PLAN.md — Beginner Fundamentals pathway data file + CI referential-integrity check [wave 2]
+- [ ] 02-06-PLAN.md — Memoized custom node component + mastery badge (D-04/D-05/D-06) [wave 2]
+- [ ] 02-07-PLAN.md — SSR-safe mobile node list + pathway banner (D-11/D-12) [wave 2]
+- [ ] 02-08-PLAN.md — Edge-highlight subsystem: Zustand store + animated custom edge (D-03) [wave 3]
+- [ ] 02-09-PLAN.md — Client-only canvas assembly + memoization conventions + pathway spotlight [wave 4]
+- [ ] 02-10-PLAN.md — Route integration (loader + responsive switch) + preview routes + human verify [wave 5]
 
 ### Phase 3: Content Pipeline & Node Panel
 
