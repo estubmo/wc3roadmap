@@ -120,8 +120,36 @@ Plans:
   4. Node content attributing wisdom to recognized WC3 players/guides names the source visibly in the panel; attribution is not buried in a footnote
   5. A user can filter nodes by skill type and mastery state — the graph narrows to matching nodes in real time without a page reload
 
-**Plans**: TBD
+**Plans**: 9 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Test/infra foundation: install react-query + jsdom, QueryClientProvider, RED Nyquist test scaffolds [wave 1]
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 03-02-PLAN.md — CitationSchema discriminated union (node.ts + content-collections.ts) + D-13 How-to-Apply split + migrate 13 seed MDX [wave 2]
+- [ ] 03-03-PLAN.md — GraphDisplayNode projection extension (skillType + tags) + ADR-006 + loader projection [wave 2]
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 03-04-PLAN.md — graph-store panel + filter state; pure matchesFilter / isFilterActive [wave 3]
+- [ ] 03-05-PLAN.md — nodeContentQueryOptions lazy per-node content query [wave 3]
+- [ ] 03-06-PLAN.md — CitationList (numbered science refs) + ProWisdomCallout (creator) + URL allowlist [wave 3]
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 03-07-PLAN.md — PrerequisiteChips (panel swap) + FilterBar (top-bar search + facets) [wave 4]
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 03-08-PLAN.md — NodePanelContent (pinned How-to-Apply + body + citations) + NodeDetailPanel (drawer/sheet) [wave 5]
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [ ] 03-09-PLAN.md — Wire onNodeClick + filter dim + mount FilterBar/panel + human-verify checkpoint [wave 6]
 
 ### Phase 4: Auth & Database
 
@@ -224,7 +252,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
-| 3. Content Pipeline & Node Panel | 0/? | Not started | - |
+| 3. Content Pipeline & Node Panel | 0/9 | Planned | - |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
