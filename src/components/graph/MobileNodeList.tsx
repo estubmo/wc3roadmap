@@ -23,6 +23,7 @@ import { Sword, BookOpen } from "lucide-react";
 import type { GraphDisplayNode } from "#/schemas/graph";
 import type { Pathway } from "#/schemas/pathway";
 import { getMockMastery } from "#/lib/mock-mastery";
+import { useGraphStore } from "#/lib/graph-store";
 import { MasteryBadge } from "./MasteryBadge";
 
 // ---------------------------------------------------------------------------
@@ -83,15 +84,14 @@ function MobileNodeCard({ node }: { node: GraphDisplayNode }) {
 
   return (
     <div
-      // Phase 2: tap is a deliberate no-op; Phase 3 wires the detail panel.
       role="button"
       tabIndex={0}
       onClick={() => {
-        /* Phase 2 no-op — wired in Phase 3 */
+        useGraphStore.getState().setSelectedNode(node.id);
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
-          /* Phase 2 no-op — wired in Phase 3 */
+          useGraphStore.getState().setSelectedNode(node.id);
         }
       }}
       style={{
