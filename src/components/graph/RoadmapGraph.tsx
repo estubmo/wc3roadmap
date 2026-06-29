@@ -42,12 +42,14 @@ import {
   type Node,
   type NodeMouseHandler,
 } from "@xyflow/react";
+import { useShallow } from "zustand/shallow";
 import { GraphNode } from "./GraphNode";
 import { GraphEdge } from "./GraphEdge";
 import { PathwayBanner } from "./PathwayBanner";
 import { computeLayout } from "#/lib/graph-layout";
 import { getMockMastery } from "#/lib/mock-mastery";
 import { useGraphStore } from "#/lib/graph-store";
+import { matchesFilter, isFilterActive } from "#/lib/filter-utils";
 import type { GraphDisplayNode } from "#/schemas/graph";
 import type { Pathway } from "#/schemas/pathway";
 
@@ -185,15 +187,49 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
   }, []); // intentionally empty — runs once on mount; initialExploring is an init value
 
   // ------------------------------------------------------------------
-  // setNodes when exploring state or displayNodes change
+  // Filter dim — second pass layered on the existing pathway spotlight dim
+  //
+  // Subscribe to filter slice only (Pitfall 3: useShallow avoids re-renders
+  // from hoveredNodeId / selectedNodeId changes that don't affect dim).
+  // When no filter is active, returns displayNodes unchanged (stable ref).
+  // When active, dims non-matching nodes to opacity 0.15 + pointerEvents none,
+  // layered ON TOP of the Phase 2 pathway-dim style (compose, do NOT replace).
+  // Pitfall 6: this memo feeds the setNodes effect so there's no infinite loop.
+  // ------------------------------------------------------------------
+
+  const { searchQuery, activeFilters } = useGraphStore(
+    useShallow((s) => ({
+      searchQuery: s.searchQuery,
+      activeFilters: s.activeFilters,
+    }))
+  );
+
+  const filteredDisplayNodes: Node[] = useMemo(() => {
+    if (!isFilterActive(searchQuery, activeFilters)) return displayNodes;
+    return displayNodes.map((n) => {
+      const rawNode = rawNodes.find((r) => r.id === n.id)!;
+      const mastery = getMockMastery(n.id);
+      const matches = matchesFilter(rawNode, mastery, searchQuery, activeFilters);
+      return matches
+        ? n
+        : {
+            ...n,
+            style: { ...n.style, opacity: 0.15, pointerEvents: "none" as const },
+          };
+    });
+  }, [displayNodes, searchQuery, activeFilters, rawNodes]);
+
+  // ------------------------------------------------------------------
+  // setNodes when exploring state or filteredDisplayNodes change
   //
   // Call setNodes to push the updated style/data to React Flow's
   // internal node store — required when we change node style imperatively.
+  // Consumes filteredDisplayNodes (not displayNodes) so filter dim is applied.
   // ------------------------------------------------------------------
 
   useEffect(() => {
-    setNodes(displayNodes);
-  }, [displayNodes, setNodes]);
+    setNodes(filteredDisplayNodes);
+  }, [filteredDisplayNodes, setNodes]);
 
   // ------------------------------------------------------------------
   // handleExplore: toggle explore mode + refit camera
@@ -250,12 +286,16 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
   );
 
   // ------------------------------------------------------------------
-  // onNodeClick — no-op stub for Phase 2; Phase 3 wires the detail panel
+  // onNodeClick — wired in Phase 3; calls setSelectedNode via getState()
+  //
+  // getState() (not a hook subscription) keeps GraphCanvas from re-rendering
+  // on every selectedNodeId change — only GraphEdge/NodeDetailPanel subscribe.
+  // useCallback([]) — getState is stable, no deps needed (GRAPH-06).
   // ------------------------------------------------------------------
 
   const handleNodeClick: NodeMouseHandler = useCallback(
-    (_event, _node) => {
-      // Phase 3: open node detail panel
+    (_event, node) => {
+      useGraphStore.getState().setSelectedNode(node.id);
     },
     []
   );
