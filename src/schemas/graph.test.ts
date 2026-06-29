@@ -22,10 +22,12 @@ const validSummary = {
   prerequisites: [],
 };
 
-/** Fully valid GraphDisplayNode — NodeSummary + difficulty. */
+/** Fully valid GraphDisplayNode — NodeSummary + difficulty + skillType + tags (ADR 005, ADR 006). */
 const validGraphNode = {
   ...validSummary,
   difficulty: "beginner" as const,
+  skillType: "macro" as const,
+  tags: [] as string[],
 };
 
 // ---------------------------------------------------------------------------

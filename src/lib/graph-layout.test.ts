@@ -31,6 +31,8 @@ const nodes: GraphDisplayNode[] = [
     race: "agnostic",
     prerequisites: [],
     difficulty: "beginner",
+    skillType: "macro",
+    tags: [],
   },
   {
     id: "b",
@@ -39,6 +41,8 @@ const nodes: GraphDisplayNode[] = [
     race: "agnostic",
     prerequisites: ["a"],
     difficulty: "beginner",
+    skillType: "micro",
+    tags: [],
   },
   {
     id: "c",
@@ -47,6 +51,8 @@ const nodes: GraphDisplayNode[] = [
     race: "agnostic",
     prerequisites: ["a"],
     difficulty: "intermediate",
+    skillType: "mental",
+    tags: [],
   },
   {
     id: "d",
@@ -55,6 +61,8 @@ const nodes: GraphDisplayNode[] = [
     race: "agnostic",
     prerequisites: ["b"],
     difficulty: "advanced",
+    skillType: "macro",
+    tags: [],
   },
 ];
 
