@@ -25,7 +25,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — ship to validate)
+- [x] User accounts via Battle.net OAuth (returns BattleTag identity) — *Validated in Phase 4: Auth & Database (live sign-in confirmed; UUID-keyed identity, session-derived authorization)*
 
 ### Active
 
@@ -40,7 +40,6 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - [ ] Content stored as decoupled, version-controlled data (JSON/MDX) independent of the graph/UI engine — easy to update as the meta shifts
 - [ ] Patch-version awareness across the ENTIRE system — content nodes, build orders, mastery thresholds, replays, and progress are all tagged with the WC3 patch they apply to, so the system stays correct across balance patches
 - [ ] Guided Pathways / Learning Tracks overlay on the graph (e.g. "Beginner Basics") that highlight an ordered subset of nodes — a guided on-ramp over free-form exploration
-- [ ] User accounts via Battle.net OAuth (returns BattleTag identity)
 - [ ] Progress tracking per node (mark / show mastery state)
 - [ ] Coarse auto-detection from the w3champions API (games-played volume, MMR tier, matchup W/L trends) — the only signals that API exposes
 - [ ] `.w3g` replay parsing (w3gjs base + forked wc3v analysis) to extract fine-grained mechanical signals (build-order timings, expansion timing, APM/eAPM, hotkey/control-group use, hero/item builds, supply/economy curves) for objective mechanical-node mastery
@@ -75,6 +74,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - **Graph visualization**: Interactive node graph is the centerpiece; React Flow is the likely fit in a React/TanStack world — confirm during research.
 - **Design bar**: Must be elegant, intuitive, and beautifully designed — this is a stated product priority, not an afterthought.
 - **Extensibility**: Architecture must make adding nodes, races, and sources easy without rework — User priority ("make changes along the way").
+- **Architecture discipline (cross-cutting)**: Apply the `/improve-codebase-architecture` + `codebase-design` teachings throughout planning AND implementation — design **deep modules** (simple interfaces hiding substantial implementation), keep the codebase testable and AI-navigable, and reduce coupling. Maintain a **`CONTEXT.md`** capturing the project's ubiquitous domain language (node, mastery, pathway, signal, patch, etc.) and record significant choices as **ADRs in `docs/adr/`**. Every phase plan should reference and extend these. — User priority.
 - **Openness**: Free and open source under **GPL-3.0** (strong copyleft) — no paywalls, code/content public. License is GPL-3.0 specifically because the project forks/integrates wc3v (jblanchette/wc3v), which is GPL-3.0; user accepted this.
 - **Feasibility risk**: Battle.net OAuth is confirmed; w3champions API rate limits/stability are undocumented (treat as fragile). `.w3g` replay parsing feasibility/maturity for the current patch is the new key unknown — needs a spike. Manual tracking + self-assessment is the fallback if auto-detection underdelivers.
 - **Patch versioning**: Patch version is a cross-cutting concern, not a single feature — it touches the content schema, replay parser, mastery thresholds, and progress records. Must be designed in from the data-model phase, not bolted on.
@@ -103,6 +103,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 | v1 content = race-agnostic core fully fleshed; race branches deferred to v1.x | Avoid the "comprehensive at launch" shipping trap; depth over breadth | — Pending |
 | Minimum publishable gate: ~25 fully-authored nodes before launch | Gives content authoring a finish line; ~20-30 is where guided pathways become meaningful | — Pending |
 | Desktop-first, mobile-readable for v1 | Interactive React Flow graph is hard on touch; mobile renders content readably | — Pending |
+| Adopt deep-module architecture discipline (`improve-codebase-architecture`); maintain `CONTEXT.md` + `docs/adr/` | User wants the codebase testable, AI-navigable, low-coupling; applied across all phases, scaffolded in Phase 1 | — Pending |
 | Battle.net OAuth for identity; w3champions accessed as a BattleTag-keyed API lookup (not an OAuth provider) | Research finding: w3champions is not an OAuth provider; Battle.net returns BattleTag which keys the w3c API | — Pending |
 | Content decoupled from graph engine as version-controlled JSON/MDX, with node-level dating | WC3 meta shifts on balance patches; hard-coded content would be a maintenance trap (Gemini critique #2) | — Pending |
 | Add Guided Pathways / Learning Tracks overlay on the free-form graph | A sprawling graph overwhelms novices ("analysis paralysis"); guided tracks give structure without losing exploration (Gemini critique #3) | — Pending |
@@ -127,4 +128,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-28 after initialization*
+*Last updated: 2026-06-30 after Phase 4 completion*
