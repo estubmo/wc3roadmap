@@ -6,14 +6,14 @@ current_phase: 04
 current_phase_name: auth-database
 status: executing
 stopped_at: Completed 04-auth-database/04-03-PLAN.md
-last_updated: "2026-06-29T18:13:10.327Z"
+last_updated: "2026-06-29T18:26:52.142Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
   completed_phases: 3
   total_plans: 34
-  completed_plans: 30
+  completed_plans: 31
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 04 (auth-database) — EXECUTING
-Plan: 4 of 7
+Plan: 5 of 7
 Status: Ready to execute
 Last activity: 2026-06-29 — Phase 04 execution started
 
@@ -81,6 +81,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-content-pipeline-node-panel P09 | 22m | 4 tasks | 4 files |
 | Phase 04 P01 | 5m | 3 tasks | 7 files |
 | Phase 04-auth-database P03 | 40m | 3 tasks | 5 files |
+| Phase 04 P04 | 10m | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -133,6 +134,9 @@ Recent decisions affecting current work:
 - [Phase ?]: overrideUserInfo: true on battlenet OAuth config — refreshes BattleTag on re-login while UUID stays stable (D-08)
 - [Phase ?]: generateId: () => crypto.randomUUID() — UUID v4 enforced for stable Phase 5 progress key (D-04)
 - [Phase ?]: server.handlers GET+POST in one catch-all auth route dollar.ts — per RESEARCH Anti-Patterns
+- [Phase ?]: getUserProfileHandler exported as named fn for testability without TanStack Start runtime
+- [Phase ?]: AuthedContext type exported from auth-middleware.ts — typed handler params
+- [Phase ?]: authMiddleware.options.server() is correct test call for registered middleware handler (not .server() chaining method)
 
 ### Pending Todos
 
@@ -155,6 +159,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T18:13:10.314Z
+Last session: 2026-06-29T18:26:28.620Z
 Stopped at: Completed 04-auth-database/04-03-PLAN.md
 Resume file: None
