@@ -16,7 +16,7 @@ The project is built in nine phases that follow a strict content-first, dependen
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Schema** - Zod content schema, MECHANIC/CONCEPTUAL taxonomy, patch-version primitive, CI validation, GPL-3.0 license (completed 2026-06-28)
-- [ ] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only)
+- [x] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only) (completed 2026-06-29)
 - [ ] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter
 - [ ] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization
 - [ ] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification
@@ -78,7 +78,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. On a desktop browser the graph is fully interactive (pan/zoom/click); on a mobile viewport the graph renders node content in a readable simplified form without breaking the page
   5. All custom node components are `React.memo`-wrapped, all graph event handlers use `useCallback`, and `onlyRenderVisibleElements` is enabled — these conventions are present in the first prototype commit, not retrofitted
 
-**Plans**: 9/10 plans executed
+**Plans**: 10/10 plans complete
 **UI hint**: yes
 
 Plans:
@@ -105,7 +105,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 02-10-PLAN.md — Route integration (loader + responsive switch) + preview routes + human verify [wave 5]
+- [x] 02-10-PLAN.md — Route integration (loader + responsive switch) + preview routes + human verify [wave 5]
 
 ### Phase 3: Content Pipeline & Node Panel
 
@@ -223,7 +223,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Schema | 8/8 | Complete    | 2026-06-28 |
-| 2. Graph Engine | 9/10 | In Progress|  |
+| 2. Graph Engine | 10/10 | Complete   | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 0/? | Not started | - |
 | 4. Auth & Database | 0/? | Not started | - |
 | 5. Progress Tracking | 0/? | Not started | - |
