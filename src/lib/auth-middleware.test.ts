@@ -184,10 +184,14 @@ describe("cross-user authorization (D-12/D-13, success criterion 3)", () => {
       }
     );
 
-    // @ts-expect-error — partial mock; options.server may not be typed for direct call
-    await authMiddleware.options.server({
-      next: async (ctx: { context: { principal: { id: string } } }) => {
-        await mockUserDataHandler(ctx);
+    // Access the registered server fn via options.server; cast to any to bypass
+    // complex TanStack Start internal types in this test context.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const serverFn = (authMiddleware as any).options?.server as (opts: { next: (ctx: unknown) => Promise<unknown> }) => Promise<unknown>;
+    await serverFn({
+      next: async (ctx: unknown) => {
+        const typedCtx = ctx as { context: { principal: { id: string } } };
+        await mockUserDataHandler(typedCtx);
         return { result: undefined };
       },
     });
