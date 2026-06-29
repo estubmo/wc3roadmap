@@ -20,10 +20,14 @@
  */
 
 import { betterAuth } from "better-auth";
+import { getOAuthState } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { db } from "#/lib/db";
+
+/** Battle.net regional gateways (D-07). Matches the RegionSelector UI values. */
+const GATEWAYS = ["us", "eu", "kr"] as const;
 
 // ---------------------------------------------------------------------------
 // Battle.net OAuth profile mapper (AUTH-01)
@@ -117,6 +121,49 @@ export const auth = betterAuth({
   advanced: {
     database: {
       generateId: () => crypto.randomUUID(),
+    },
+  },
+
+  // ---------------------------------------------------------------------------
+  // Database hooks — populate server-derived identity at user creation (D-05).
+  //
+  // WHY THIS EXISTS: battleTag, gateway, and bnetSub are `input: false` (D-05 —
+  // never settable from client API input). better-auth deliberately IGNORES
+  // `input: false` fields returned from `mapProfileToUser` during OAuth
+  // provisioning, so those columns can only be written by a trusted server-side
+  // hook like this one. This keeps the D-05 guarantee intact (clients still
+  // cannot set these) while actually populating the NOT NULL columns.
+  //
+  // Sources of each field (none are trusted client input):
+  //   - battleTag: recovered from `user.name`, which mapBattlenetProfile set to
+  //     the BattleTag (an `input: true` standard field, so it IS applied).
+  //   - bnetSub:   recovered from the synthesized `user.email` (`${sub}@battlenet.local`).
+  //   - gateway:   the region the user chose in RegionSelector, threaded through
+  //     the OAuth flow via additionalData and read back with getOAuthState.
+  //     Defaults to "us" if absent so sign-in never fails on a missing region.
+  // ---------------------------------------------------------------------------
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const battleTag = typeof user.name === "string" ? user.name : "";
+          const email = typeof user.email === "string" ? user.email : "";
+          const bnetSub = email.includes("@") ? email.split("@")[0] : "";
+
+          // Region is client-chosen but server-validated here against the allow-list.
+          const state = (await getOAuthState().catch(() => null)) as
+            | { region?: string }
+            | null;
+          const region = state?.region;
+          const gateway = (GATEWAYS as readonly string[]).includes(
+            String(region),
+          )
+            ? (region as string)
+            : "us";
+
+          return { data: { ...user, battleTag, bnetSub, gateway } };
+        },
+      },
     },
   },
 

@@ -76,8 +76,16 @@ interface RegionSelectorProps {
  */
 export function RegionSelector({ open, onOpenChange }: RegionSelectorProps) {
   async function handleRegionSelect(gateway: Gateway): Promise<void> {
+    // Persist locally as a same-origin backup, AND thread the region through the
+    // OAuth flow via additionalData so the server-side databaseHooks.user.create
+    // hook can read it (getOAuthState) and persist it to users.gateway at
+    // creation. Battle.net userinfo never returns the region (RESEARCH Pitfall 1).
     sessionStorage.setItem("bnet_region", gateway);
-    await signIn.oauth2({ providerId: "battlenet", callbackURL: "/" });
+    await signIn.oauth2({
+      providerId: "battlenet",
+      callbackURL: "/",
+      additionalData: { region: gateway },
+    });
   }
 
   return (
