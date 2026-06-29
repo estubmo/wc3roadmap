@@ -38,16 +38,16 @@ It is for the WC3 community — players of any race and any skill level who want
 | `@tanstack/react-router` | 1.x (bundled with Start) | Type-safe file-based routing | Same package tree as Start; createFileRoute gives full TypeScript inference of params, search params (Zod-validated), and loader data. Zero config when using Start. |
 | `@tanstack/react-query` | 5.x | Client-side data fetching + caching | Pairs with Start's server functions for w3champions API calls. staleTime config is critical for respecting rate limits on external API. |
 | `@xyflow/react` | 12.x | Interactive node-graph visualization | See Graph Library section below. |
-| `better-auth` | latest | Authentication — Battle.net OAuth + sessions | Has an official TanStack Start adapter. Generic OAuth plugin can configure Battle.net as a custom provider. Actively maintained, absorbed Auth.js in 2025. |
-| `drizzle-orm` | 0.44.x | ORM for PostgreSQL | Lightweight, type-safe, SQL-transparent. Edge-compatible with Neon HTTP driver. Drizzle-kit handles migrations. Community standard for TanStack Start stacks. |
-| `drizzle-kit` | 0.25.x | Schema migrations | Paired with drizzle-orm. Generates and applies SQL migrations. |
+| `better-auth` | 1.6.22 | Authentication — Battle.net OAuth + sessions | Has an official TanStack Start adapter. Generic OAuth plugin can configure Battle.net as a custom provider. Actively maintained, absorbed Auth.js in 2025. |
+| `drizzle-orm` | 0.45.2 | ORM for PostgreSQL | Lightweight, type-safe, SQL-transparent. Edge-compatible with Neon HTTP driver. Drizzle-kit handles migrations. Community standard for TanStack Start stacks. |
+| `drizzle-kit` | 0.31.10 | Schema migrations | Paired with drizzle-orm. Generates and applies SQL migrations. |
 
 ### Database
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
 | Neon PostgreSQL | N/A (managed) | Primary database — accounts, progress, sessions | Free tier includes 100 CU-hours/month + 0.5GB (plenty for OSS side project). Scale-to-zero. HTTP driver works on Cloudflare Workers edge. Acquired by Databricks 2025 — financially stable. |
-| `@neondatabase/serverless` | latest | Edge-compatible Neon driver | Required for Cloudflare Workers deploy target; also works on Vercel. Pairs with drizzle-orm natively. |
+| `@neondatabase/serverless` | 1.1.0 | Edge-compatible Neon driver | Required for Cloudflare Workers deploy target; also works on Vercel. Pairs with drizzle-orm natively. |
 
 ### Content Pipeline
 
@@ -189,7 +189,7 @@ It is for the WC3 community — players of any race and any skill level who want
 | `@xyflow/react@12.x` | React 19, Tailwind v4 | Updated Oct 2025; import from `@xyflow/react` not `reactflow` |
 | `shadcn/ui` (Feb 2025+) | Tailwind v4, React 19 | Run `npx shadcn init` for fresh setup with v4 defaults |
 | `motion@12.x` | React 19 | Import from `motion/react` not `framer-motion` |
-| `drizzle-orm@0.44.x` | `@neondatabase/serverless` latest | Use neon HTTP mode for edge; use node-postgres for Node.js target |
+| `drizzle-orm@0.45.2` | `@neondatabase/serverless@1.1.0` | Use neon HTTP mode for edge; use node-postgres for Node.js target |
 | `@content-collections/vite` | TanStack Start v1.121.0+ | Older versions needed `@content-collections/vinxi` — do not use vinxi adapter |
 | `zod@4.x` | All listed libraries | Zod v4 is a new major; confirm each library's peer dependency before upgrading from v3 |
 | `better-auth` | TanStack Start v1, Drizzle | Mount handler at `/src/routes/api/auth/$.ts`; use `tanstackStartCookies()` plugin |

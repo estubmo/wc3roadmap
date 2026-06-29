@@ -148,3 +148,11 @@ packages while meeting all Phase 1 acceptance criteria identically.
 | Styling | Chakra UI / MUI | Ship own styles that fight with custom graph aesthetics; shadcn owns zero styles — full control retained |
 | RPC layer | tRPC | `createServerFn` in TanStack Start already provides type-safe RPC with no boilerplate |
 | Data fetching | GraphQL | Over-engineered for this use case; node content is static, w3champions data is simple REST |
+
+---
+
+## Changelog
+
+| Date | Change |
+|------|--------|
+| 2026-06-29 (Phase 04-01) | Drizzle version drift corrected: drizzle-orm 0.44.x → 0.45.2, drizzle-kit 0.25.x → 0.31.10. Both installed at exact pins per RESEARCH Pitfall 6 and package legitimacy audit (both SUS flags confirmed false positives). Also pinned better-auth@1.6.22 and @neondatabase/serverless@1.1.0. |
