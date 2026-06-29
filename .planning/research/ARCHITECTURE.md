@@ -377,7 +377,7 @@ Better Auth redirects → oauth.battle.net/authorize
   ↓
 User authenticates on Battle.net
   ↓
-Battle.net redirects back → /api/auth/callback/battlenet
+Battle.net redirects back → /api/auth/oauth2/callback/battlenet
   ↓
 Better Auth exchanges code for token (server-side)
   ↓

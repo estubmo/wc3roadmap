@@ -174,6 +174,20 @@ session cookies using `@tanstack/react-start-server`. It must be the last
 entry in the `plugins` array — other plugins must finish processing the
 response before the cookie plugin writes the headers.
 
+### 10. OAuth callback path is `/api/auth/oauth2/callback/{providerId}` (genericOAuth)
+
+The `genericOAuth` plugin mounts its callback at
+`/api/auth/oauth2/callback/{providerId}` — i.e. the registered Battle.net
+Redirect URL **must** be `http://localhost:3000/api/auth/oauth2/callback/battlenet`
+(dev) and `https://<vercel-domain>/api/auth/oauth2/callback/battlenet` (prod).
+This differs from better-auth's built-in social providers, which use
+`/api/auth/callback/{providerId}` (no `oauth2/` segment). An earlier draft of
+RESEARCH/PLAN documented the social-provider path; registering it produced a
+Battle.net `400 — Invalid grant type or callback URL is not valid` because the
+`redirect_uri` better-auth actually sends did not match the registered URL.
+The callback path is fixed by the plugin and is not configurable, so the
+Battle.net client registration is the side that must match it.
+
 ---
 
 ## Consequences

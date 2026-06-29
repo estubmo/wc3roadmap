@@ -642,7 +642,7 @@ The planner must include a task for the user to:
 
 1. Go to https://develop.battle.net/access/clients
 2. Create an OAuth client
-3. Set "Redirect URIs" to: `http://localhost:3000/api/auth/callback/battlenet` (dev) and `https://your-vercel-domain.vercel.app/api/auth/callback/battlenet` (prod)
+3. Set "Redirect URIs" to: `http://localhost:3000/api/auth/oauth2/callback/battlenet` (dev) and `https://your-vercel-domain.vercel.app/api/auth/oauth2/callback/battlenet` (prod)
 4. Note the **Client ID** and **Client Secret**
 5. Add to `.env.local`: `BNET_CLIENT_ID=... BNET_CLIENT_SECRET=...`
 6. Add to Vercel dashboard environment variables: `BNET_CLIENT_ID`, `BNET_CLIENT_SECRET`
