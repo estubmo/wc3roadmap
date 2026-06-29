@@ -314,10 +314,14 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
         onToggleExplore={handleExplore}
       />
 
-      {/* ReactFlow canvas — fills remaining height */}
+      {/* ReactFlow canvas — fills remaining height.
+          nodes prop = filteredDisplayNodes (the controlled source of truth):
+          React Flow re-syncs its internal store from this prop each render, so
+          the filter dim (composed on top of the Phase 2 pathway dim) is applied
+          here, not just via the setNodes effect (which the prop would override). */}
       <div style={{ flex: 1, minHeight: 0 }}>
         <ReactFlow
-          nodes={displayNodes}
+          nodes={filteredDisplayNodes}
           edges={edges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
