@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: auth-database
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-06-29T17:46:00.526Z"
+stopped_at: Completed 04-auth-database/04-03-PLAN.md
+last_updated: "2026-06-29T18:13:10.327Z"
 last_activity: 2026-06-29
 last_activity_desc: Phase 04 execution started
 progress:
   total_phases: 9
   completed_phases: 3
   total_plans: 34
-  completed_plans: 29
+  completed_plans: 30
   percent: 33
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 04 (auth-database) — EXECUTING
-Plan: 3 of 7
+Plan: 4 of 7
 Status: Ready to execute
 Last activity: 2026-06-29 — Phase 04 execution started
 
@@ -80,6 +80,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03 P08 | 6min | 2 tasks | 2 files |
 | Phase 03-content-pipeline-node-panel P09 | 22m | 4 tasks | 4 files |
 | Phase 04 P01 | 5m | 3 tasks | 7 files |
+| Phase 04-auth-database P03 | 40m | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,11 @@ Recent decisions affecting current work:
 - [Phase 03]: Plan 03-09: mobile renders interactive RoadmapGraph (React Flow) on all viewports; MobileNodeList retired from Home route (retained for /preview/mobile)
 - [Phase ?]: drizzle-orm pinned to 0.45.2 (not 0.44.x); drizzle-kit to 0.31.10 — version drift correction per RESEARCH Pitfall 6
 - [Phase ?]: DATABASE_URL_DIRECT used in drizzle.config.ts (non-pooled) — pooled pgbouncer breaks drizzle-kit migrations (RESEARCH Pitfall 5)
+- [Phase ?]: mapBattlenetProfile exported as named function — same function tested and used at runtime
+- [Phase ?]: usePlural: true in drizzleAdapter — schema JS keys are plural, better-auth model names are singular
+- [Phase ?]: overrideUserInfo: true on battlenet OAuth config — refreshes BattleTag on re-login while UUID stays stable (D-08)
+- [Phase ?]: generateId: () => crypto.randomUUID() — UUID v4 enforced for stable Phase 5 progress key (D-04)
+- [Phase ?]: server.handlers GET+POST in one catch-all auth route dollar.ts — per RESEARCH Anti-Patterns
 
 ### Pending Todos
 
@@ -149,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-29T17:46:00.492Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-06-29T18:13:10.314Z
+Stopped at: Completed 04-auth-database/04-03-PLAN.md
 Resume file: None
