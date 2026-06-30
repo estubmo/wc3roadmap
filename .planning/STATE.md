@@ -6,14 +6,14 @@ current_phase: 05
 current_phase_name: progress-tracking
 status: executing
 stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-06-30T08:30:03.630Z"
+last_updated: "2026-06-30T08:37:10.052Z"
 last_activity: 2026-06-30
 last_activity_desc: Phase 05 execution started
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 40
+  completed_plans: 41
   percent: 44
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 05 (progress-tracking) — EXECUTING
-Plan: 7 of 9
+Plan: 8 of 9
 Status: Ready to execute
 Last activity: 2026-06-30 — Phase 05 execution started
 
@@ -91,6 +91,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-progress-tracking P03 | 3min | 3 tasks | 2 files |
 | Phase 05 P04 | 6m | 2 tasks | 2 files |
 | Phase 05 P05 | 3min | 3 tasks | 4 files |
+| Phase 05 P07 | 4m | - tasks | - files |
 
 ## Accumulated Context
 
@@ -163,6 +164,8 @@ Recent decisions affecting current work:
 - [Phase ?]: source + patchId designed in at 05-03 (D-04, D-05) — server-stamped only, avoids Phase-7 migration when auto-detection ships
 - [Phase ?]: authedServerFn .validator() required for POST — without it TanStack Start types data as undefined
 - [Phase ?]: vi.doMock() + resetModules() for progress tests — vi.mock() TDZ blocks module-level const captures
+- [Phase ?]: ProgressProvider wraps graph content; EmptyState intentionally outside
+- [Phase ?]: mergeInitiatedRef + isAlreadyMerged() dual-guard for one-time merge (intra-session + cross-reload)
 
 ### Pending Todos
 
@@ -185,6 +188,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-30T08:30:03.624Z
+Last session: 2026-06-30T08:37:10.047Z
 Stopped at: Completed 05-03-PLAN.md
 Resume file: None
