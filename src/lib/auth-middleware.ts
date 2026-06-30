@@ -2,11 +2,12 @@
 // Copyright (C) 2026 WC3 Roadmap contributors
 
 /**
- * authedServerFn — the authorization deep module (AUTH-03, D-11/D-12).
+ * authMiddleware — the authorization deep module (AUTH-03, D-11/D-12).
  *
  * INTERFACE (simple — this is all callers need to know):
- *   Add `.middleware([authMiddleware])` to any server function, or use
- *   `authedServerFn({ method })` as a factory. The handler receives
+ *   Declare the server function with `createServerFn(...)` directly, then add
+ *   `.middleware([authMiddleware])` (see "Defining authed server functions"
+ *   below for why a factory wrapper must NOT be used). The handler receives
  *   `context.principal` (the session user). Key every query by
  *   `principal.id` — NEVER by any client-supplied userId.
  *
@@ -29,7 +30,7 @@
  * is bypassed by direct server function calls (RESEARCH.md Pitfall 7).
  */
 
-import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { createMiddleware } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth, type User } from "#/lib/auth";
 
@@ -78,25 +79,30 @@ export const authMiddleware = createMiddleware({ type: "function" }).server(
 );
 
 // ---------------------------------------------------------------------------
-// authedServerFn — convenience factory (D-12)
+// Defining authed server functions (D-12)
 // ---------------------------------------------------------------------------
 
 /**
- * Factory for server functions that require authentication (AUTH-03, D-12).
+ * Authed server functions MUST be declared with `createServerFn` directly at
+ * the definition site, then `.middleware([authMiddleware])`:
  *
- * Equivalent to `createServerFn(options).middleware([authMiddleware])`.
- * Handlers receive `context.principal` (the session user, type `User`).
- * Key every DB query by `principal.id` — NEVER accept a userId from the
- * request body or params (D-12: principal-keyed by construction, not by trust).
- *
- * Example:
- *   export const getUserProfile = authedServerFn({ method: "GET" }).handler(
- *     async ({ context }) => {
- *       const { principal } = context;
+ *   export const getUserProfile = createServerFn({ method: "GET" })
+ *     .middleware([authMiddleware])
+ *     .handler(async ({ context }) => {
+ *       const { principal } = context; // injected by authMiddleware
  *       return db.query.users.findFirst({ where: eq(users.id, principal.id) });
- *     }
- *   );
+ *     });
+ *
+ * Do NOT wrap `createServerFn` in a factory (e.g. a former `authedServerFn`
+ * helper). TanStack Start's compiler extracts the `.handler()` body to the
+ * server by STATICALLY matching `createServerFn(...).handler(...)` at the call
+ * site. A factory hides `createServerFn` from the compiler, so the handler is
+ * never split out — it ships in the client bundle and runs in the browser,
+ * where `process.env` is empty (e.g. `neon(process.env.DATABASE_URL)` throws
+ * "No database connection string"). `createServerFn` must be lexically visible
+ * where `.handler()` is called.
+ *
+ * Handlers receive `context.principal` (the session user, type `User`). Key
+ * every DB query by `principal.id` — NEVER accept a userId from the request
+ * body or params (D-12: principal-keyed by construction, not by trust).
  */
-export function authedServerFn(options: { method: "GET" | "POST" }) {
-  return createServerFn(options).middleware([authMiddleware]);
-}

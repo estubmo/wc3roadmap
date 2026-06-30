@@ -2,7 +2,7 @@
 // Copyright (C) 2026 WC3 Roadmap contributors
 
 /**
- * User profile server function — first authedServerFn consumer (AUTH-03, D-12).
+ * User profile server function — first authMiddleware consumer (AUTH-03, D-12).
  *
  * Authorization contract (D-12, principal-keyed by construction):
  *   This function accepts NO userId input parameter. The DB query is keyed
@@ -16,14 +16,15 @@
  *
  * Phase 5 scope: getUserProfile is the read path for the auth user row.
  * Progress records, mastery states, and w3champions stats are separate
- * server functions built in Phases 5 and 7 using the same authedServerFn
- * pattern.
+ * server functions built in Phases 5 and 7 using the same
+ * createServerFn + authMiddleware pattern.
  */
 
+import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
 import { db } from "#/lib/db";
 import { users } from "#/db/schema";
-import { authedServerFn, type AuthedContext } from "#/lib/auth-middleware";
+import { authMiddleware, type AuthedContext } from "#/lib/auth-middleware";
 
 // ---------------------------------------------------------------------------
 // getUserProfileHandler — extracted for unit testability (same pattern as
@@ -38,7 +39,7 @@ import { authedServerFn, type AuthedContext } from "#/lib/auth-middleware";
  * without the TanStack Start server runtime (AsyncLocalStorage context),
  * following the same testability pattern as mapBattlenetProfile in auth.ts.
  *
- * Called at runtime via the authedServerFn wrapper below.
+ * Called at runtime via the createServerFn + authMiddleware wrapper below.
  */
 export async function getUserProfileHandler({ context }: AuthedContext) {
   const { principal } = context;
@@ -64,6 +65,6 @@ export async function getUserProfileHandler({ context }: AuthedContext) {
  * `null` if the row is not found. No userId parameter is accepted — see the
  * module JSDoc for the principal-keyed-by-construction authorization contract.
  */
-export const getUserProfile = authedServerFn({ method: "GET" }).handler(
-  getUserProfileHandler
-);
+export const getUserProfile = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(getUserProfileHandler);

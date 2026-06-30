@@ -16,8 +16,8 @@
  *   `patchId` is stamped from `CURRENT_PATCH.id` (D-05). Neither field is ever
  *   read from client input.
  *
- * Deep-module discipline: the simple `authedServerFn` interface hides upsert +
- * patch-stamping + fill-gaps complexity. All progress writes flow through this
+ * Deep-module discipline: the `authMiddleware` + handler interface hides upsert
+ * + patch-stamping + fill-gaps complexity. All progress writes flow through this
  * single auditable seam (CLAUDE.md architecture § deep modules).
  *
  * Exported handlers follow the same testability pattern as `getUserProfileHandler`
@@ -28,7 +28,8 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "#/lib/db";
 import { nodeProgress } from "#/db/schema";
-import { authedServerFn, type AuthedContext } from "#/lib/auth-middleware";
+import { createServerFn } from "@tanstack/react-start";
+import { authMiddleware, type AuthedContext } from "#/lib/auth-middleware";
 import { z } from "zod";
 import { MasteryStateSchema } from "#/schemas/progress";
 import { CURRENT_PATCH } from "#/lib/patches";
@@ -95,9 +96,9 @@ export async function getUserProgressHandler({ context }: AuthedContext) {
  * Returns an array of nodeProgress rows keyed by `context.principal.id`.
  * No userId parameter is accepted — see module JSDoc for authorization contract.
  */
-export const getUserProgress = authedServerFn({ method: "GET" }).handler(
-  getUserProgressHandler
-);
+export const getUserProgress = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(getUserProgressHandler);
 
 // ---------------------------------------------------------------------------
 // setNodeMasteryHandler — upsert one node's mastery state (PROG-02)
@@ -157,7 +158,8 @@ export async function setNodeMasteryHandler({
  * Accepts `{ nodeId, masteryState }` — no userId, source, or patchId.
  * Those are stamped server-side (D-04/D-05/D-06).
  */
-export const setNodeMastery = authedServerFn({ method: "POST" })
+export const setNodeMastery = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator(SetNodeMasteryInput)
   .handler(setNodeMasteryHandler);
 
@@ -222,6 +224,7 @@ export async function mergeProgressOnSignInHandler({
  * Accepts `{ records: [{ nodeId, masteryState }][] }`.
  * Server records are never overwritten (D-07 server wins).
  */
-export const mergeProgressOnSignIn = authedServerFn({ method: "POST" })
+export const mergeProgressOnSignIn = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator(MergeProgressInput)
   .handler(mergeProgressOnSignInHandler);
