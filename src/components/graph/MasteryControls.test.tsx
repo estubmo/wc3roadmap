@@ -102,12 +102,17 @@ describe("MasteryControls", () => {
     expect(buttons[2]?.textContent).toBe("Mastered");
   });
 
-  it("marks the currentState button as aria-pressed true", async () => {
+  it("marks the currentState button as active (aria-checked or data-state)", async () => {
     await renderControls({ nodeId: "node-1", currentState: "in-progress" });
     const buttons = getButtons();
     const inProgressBtn = buttons.find((b) => b.textContent === "In Progress");
     expect(inProgressBtn).toBeDefined();
-    expect(inProgressBtn?.getAttribute("aria-pressed")).toBe("true");
+    // Radix ToggleGroup (type="single") uses role="radio" + aria-checked rather than
+    // aria-pressed. Both aria-checked="true" and data-state="on" confirm the active state.
+    const isActive =
+      inProgressBtn?.getAttribute("aria-checked") === "true" ||
+      inProgressBtn?.getAttribute("data-state") === "on";
+    expect(isActive).toBe(true);
   });
 
   it("calls mutate with the new masteryState when a different button is clicked", async () => {
