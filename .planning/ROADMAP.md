@@ -245,17 +245,32 @@ Plans:
 **Plans**: 11 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 06-01-PLAN.md — Quiz content schema (QuizSchema) + CI validation, parallel-synced node.ts + content-collections.ts
 - [ ] 06-02-PLAN.md — Source enum → quiz + quizProgress table (forward-SRS signals) + [BLOCKING] drizzle-kit push
 - [ ] 06-03-PLAN.md — graph-store sourceMap slice + ProgressProvider hydration
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 06-04-PLAN.md — Pure grading engine (PASS_THRESHOLD, gradeQuiz/gradeAnswers, shuffle) [TDD]
 - [ ] 06-05-PLAN.md — recordQuizPass/recordQuizAttempt principal-keyed server fns [TDD]
 - [ ] 06-06-PLAN.md — MasteryBadge "via quiz" label + GraphNode subtle quiz marker (D-14)
 - [ ] 06-07-PLAN.md — Author tech-timing demo quiz + SME review (criterion 3)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 06-08-PLAN.md — useQuizPassMutation optimistic no-reload hook
 - [ ] 06-09-PLAN.md — Quiz UI primitives: radio-group + QuizQuestion/QuizStepper/QuizResults
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 06-10-PLAN.md — QuizCTA gating (+tests) + QuizTakeover flow host
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 06-11-PLAN.md — Panel integration (in-panel takeover) + CONTEXT.md terms + ADR 010 + end-to-end verify
+
 **UI hint**: yes
 
 ### Phase 7: w3champions Auto-Detection
