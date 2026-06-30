@@ -6,14 +6,14 @@ current_phase: 05
 current_phase_name: progress-tracking
 status: executing
 stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-06-30T07:42:19.468Z"
+last_updated: "2026-06-30T08:06:45.672Z"
 last_activity: 2026-06-30
 last_activity_desc: Phase 05 execution started
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 37
+  completed_plans: 38
   percent: 44
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 05 (progress-tracking) — EXECUTING
-Plan: 4 of 9
+Plan: 5 of 9
 Status: Ready to execute
 Last activity: 2026-06-30 — Phase 05 execution started
 
@@ -89,6 +89,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05-progress-tracking P01 | 3min | - tasks | - files |
 | Phase 05 P02 | 7min | 3 tasks | 4 files |
 | Phase 05-progress-tracking P03 | 3min | 3 tasks | 2 files |
+| Phase 05 P04 | 6m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -159,6 +160,8 @@ Recent decisions affecting current work:
 - [Phase ?]: TEXT not pgEnum for masteryState — hyphen in 'in-progress' breaks pgEnum DDL; MasteryStateSchema owns constraint at app layer
 - [Phase ?]: Surrogate PK + uniqueIndex(userId,nodeId) in node_progress — onConflictDoUpdate upsert target for 05-04 setNodeMastery (T-05-03a)
 - [Phase ?]: source + patchId designed in at 05-03 (D-04, D-05) — server-stamped only, avoids Phase-7 migration when auto-detection ships
+- [Phase ?]: authedServerFn .validator() required for POST — without it TanStack Start types data as undefined
+- [Phase ?]: vi.doMock() + resetModules() for progress tests — vi.mock() TDZ blocks module-level const captures
 
 ### Pending Todos
 
@@ -181,6 +184,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-30T07:42:19.463Z
+Last session: 2026-06-30T08:06:12.471Z
 Stopped at: Completed 05-03-PLAN.md
 Resume file: None
