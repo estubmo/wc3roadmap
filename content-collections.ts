@@ -79,8 +79,47 @@ const nodes = defineCollection({
         }),
       ])
     ),
+    // PARALLEL-SCHEMA SYNC NOTE: mirror of QuizOptionSchema/QuizQuestionSchema/QuizSchema
+    // in src/schemas/node.ts (plan 06-01). Keep field-for-field identical.
+    // Both definitions MUST stay in sync — this enforces at build time; node.ts at runtime/test.
+    quiz: z
+      .array(
+        z.object({
+          text: z.string().min(1),
+          options: z
+            .array(z.object({ text: z.string().min(1), isCorrect: z.boolean() }))
+            .min(2)
+            .max(5)
+            .superRefine((options, ctx) => {
+              const correctCount = options.filter((o) => o.isCorrect).length;
+              if (correctCount !== 1) {
+                ctx.addIssue({
+                  code: "custom",
+                  message: `exactly one correct answer required (QUIZ-03) — found ${correctCount}`,
+                  input: options,
+                });
+              }
+            }),
+          explanation: z.string().min(1, { error: "explanation required (D-03/QUIZ-03)" }),
+        })
+      )
+      .min(3)
+      .max(5)
+      .optional(),
   }),
   transform: async (document, context) => {
+    // QUIZ-01 belt-and-suspenders count guard: Zod schema enforces 3–5 questions at parse
+    // time (before transform runs), but this guard provides a clear build error message.
+    // Zod superRefine already enforces exactly-one-correct and required explanation at
+    // parse time — no redundant check needed here.
+    if (document.quiz !== undefined) {
+      if (document.quiz.length < 3 || document.quiz.length > 5) {
+        throw new Error(
+          `Node "${document.id}": quiz must have 3–5 questions (QUIZ-01). Found ${document.quiz.length}.`
+        );
+      }
+    }
+
     // CONT-02: Enforce the required How-to-Apply section FIRST so CI enforcement
     // fires before any split — a missing heading is a build error regardless of split.
     if (!document.content.includes("## How to Apply")) {
