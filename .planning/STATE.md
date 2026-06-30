@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 05
 current_phase_name: progress-tracking
-status: executing
-stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-06-30T08:42:37.096Z"
+status: verifying
+stopped_at: "Completed 05-09-PLAN.md (checkpoint:human-verify awaiting approval)"
+last_updated: "2026-06-30T08:50:19.004Z"
 last_activity: 2026-06-30
 last_activity_desc: Phase 05 execution started
 progress:
   total_phases: 9
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 43
-  completed_plans: 42
-  percent: 44
+  completed_plans: 43
+  percent: 56
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 
 Phase: 05 (progress-tracking) — EXECUTING
 Plan: 9 of 9
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-06-30 — Phase 05 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -93,6 +93,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05 P05 | 3min | 3 tasks | 4 files |
 | Phase 05 P07 | 4m | - tasks | - files |
 | Phase 05 P08 | 2m | 2 tasks | 2 files |
+| Phase 05 P09 | 5m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -169,6 +170,8 @@ Recent decisions affecting current work:
 - [Phase ?]: mergeInitiatedRef + isAlreadyMerged() dual-guard for one-time merge (intra-session + cross-reload)
 - [Phase ?]: masteryMap subscription placed before displayNodes useMemo — eliminates TS2448 (05-08)
 - [Phase ?]: MasteryControls mounts above How-to-Apply via existing gap-20px flex container — D-01 (05-08)
+- [Phase ?]: ADR 009: progress-persistence design (surrogate PK, text enum, source field, fill-gaps merge, no-gamification)
+- [Phase ?]: CONTEXT.md Phase 05: four domain terms added (progress record, mastery source, local progress, merge-on-sign-in); in-progress reaffirmed as canonical mastery-state mid-value (D-03)
 
 ### Pending Todos
 
@@ -191,6 +194,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-30T08:42:29.438Z
-Stopped at: Completed 05-03-PLAN.md
+Last session: 2026-06-30T08:50:18.998Z
+Stopped at: Completed 05-09-PLAN.md (checkpoint:human-verify awaiting approval)
 Resume file: None

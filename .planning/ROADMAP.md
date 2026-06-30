@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Graph Engine** - React Flow canvas, memoized custom nodes, mastery state visualization, guided-pathway default view (static data only) (completed 2026-06-29)
 - [x] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter (completed 2026-06-29)
 - [x] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization (completed 2026-06-29)
-- [ ] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification
+- [x] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification (completed 2026-06-30)
 - [ ] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state
 - [ ] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard
 - [ ] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds
@@ -203,7 +203,7 @@ Plans:
   4. The progress UI contains no XP points, streak counters, or global leaderboards — the only progress indicator is the user's own mastery state per node, framed as personal skill growth
   5. Clearing localStorage as an authenticated user and reopening the app shows the same server-persisted mastery states as before — client-side state is a cache, not the source of truth
 
-**Plans**: 8/9 plans executed
+**Plans**: 9/9 plans complete
 **UI hint**: yes
 
 Plans:
@@ -229,7 +229,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 05-09-PLAN.md — Docs (CONTEXT.md terms + ADR 009) + end-of-phase human-verify checkpoint [wave 5]
+- [x] 05-09-PLAN.md — Docs (CONTEXT.md terms + ADR 009) + end-of-phase human-verify checkpoint [wave 5]
 
 ### Phase 6: Self-Assessment Quizzes
 
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
-| 5. Progress Tracking | 8/9 | In Progress|  |
+| 5. Progress Tracking | 9/9 | Complete   | 2026-06-30 |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
