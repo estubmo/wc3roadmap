@@ -58,6 +58,7 @@ export function ProgressProvider({ children }: ProgressProviderProps) {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const initMasteryMap = useGraphStore((s) => s.initMasteryMap);
+  const initSourceMap = useGraphStore((s) => s.initSourceMap);
 
   // Guard: prevents double-firing the merge within a single browser session
   // even if this component re-renders (isAlreadyMerged() guards across sessions).
@@ -82,12 +83,15 @@ export function ProgressProvider({ children }: ProgressProviderProps) {
     if (!progressRecords) return;
 
     const map: Record<string, MasteryState> = {};
+    const sourceMap: Record<string, string> = {};
     for (const r of progressRecords) {
       // Cast: DB returns `text` column; Zod guarantees valid values at write time.
       map[r.nodeId] = r.masteryState as MasteryState;
+      sourceMap[r.nodeId] = r.source; // Propagate source so quiz-source visuals render after refresh (D-14, Pitfall 4)
     }
     initMasteryMap(map);
-  }, [progressRecords, initMasteryMap]);
+    initSourceMap(sourceMap);
+  }, [progressRecords, initMasteryMap, initSourceMap]);
 
   // ---------------------------------------------------------------------------
   // Effect B: signed-out hydrate — localStorage → masteryMap (D-08)
