@@ -203,7 +203,7 @@ Plans:
   4. The progress UI contains no XP points, streak counters, or global leaderboards — the only progress indicator is the user's own mastery state per node, framed as personal skill growth
   5. Clearing localStorage as an authenticated user and reopening the app shows the same server-persisted mastery states as before — client-side state is a cache, not the source of truth
 
-**Plans**: 2/9 plans executed
+**Plans**: 3/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -211,7 +211,7 @@ Plans:
 
 - [x] 05-01-PLAN.md — Tooling: install sonner, shadcn toggle-group + sonner, mount Toaster at root [wave 1]
 - [x] 05-02-PLAN.md — Schema vocabulary: learning→in-progress (D-03), source field (D-04), single-source MasteryState, MasteryBadge label [wave 1]
-- [ ] 05-03-PLAN.md — nodeProgress Drizzle table (surrogate PK + unique index, FK, source/patch) + [BLOCKING] schema push [wave 1]
+- [x] 05-03-PLAN.md — nodeProgress Drizzle table (surrogate PK + unique index, FK, source/patch) + [BLOCKING] schema push [wave 1]
 
 **Wave 2** *(blocked on Wave 1)*
 
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
-| 5. Progress Tracking | 2/9 | In Progress|  |
+| 5. Progress Tracking | 3/9 | In Progress|  |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
