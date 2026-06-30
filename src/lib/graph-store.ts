@@ -41,6 +41,7 @@
 import { create } from "zustand";
 import type { Edge } from "@xyflow/react";
 import { computeAncestorEdgeIds } from "./pathway-utils";
+import type { MasteryState } from "#/schemas/progress";
 
 // ---------------------------------------------------------------------------
 // Filter state types
@@ -141,6 +142,46 @@ export interface GraphStore {
    * Clear the search query and all facet filters in one action.
    */
   clearFilters: () => void;
+
+  // --- Phase 5: mastery state map ---
+
+  /**
+   * Per-node mastery state map, keyed by node ID (PROG-01, D-09).
+   *
+   * Populated by `initMasteryMap` when the server progress query resolves;
+   * updated optimistically by `setNodeMastery` on each manual mark.
+   *
+   * Consumers MUST subscribe via `useShallow` to avoid unnecessary re-renders
+   * on hover/selection changes (Pitfall 2 from 05-RESEARCH.md):
+   *
+   *   const masteryMap = useGraphStore(useShallow((s) => s.masteryMap));
+   *
+   * Never subscribe to the full store — every hover event would re-render all
+   * masteryMap consumers if the full store object is the selector output.
+   */
+  masteryMap: Record<string, MasteryState>;
+
+  /**
+   * Optimistically update a single node's mastery state (D-09).
+   *
+   * Produces a new masteryMap object with the updated entry so React can
+   * detect the change via reference equality (new-object semantics, Pitfall 3
+   * from 05-RESEARCH.md). Only the single subscribed node re-renders.
+   *
+   * @param nodeId - The node ID whose mastery state is being updated.
+   * @param state  - The new mastery state.
+   */
+  setNodeMastery: (nodeId: string, state: MasteryState) => void;
+
+  /**
+   * Bulk-initialize the mastery map from a server response (PROG-01).
+   *
+   * Called by ProgressProvider when the `useQuery` for `getUserProgress` first
+   * resolves, replacing the empty initial map with the full server-side record.
+   *
+   * @param map - Record of nodeId → MasteryState from the server fn response.
+   */
+  initMasteryMap: (map: Record<string, MasteryState>) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -192,5 +233,16 @@ export const useGraphStore = create<GraphStore>((set) => ({
 
   clearFilters: () => {
     set({ searchQuery: "", activeFilters: { ...EMPTY_FILTERS } });
+  },
+
+  // Phase 5: mastery state map
+  masteryMap: {},
+
+  setNodeMastery: (nodeId, state) => {
+    set((s) => ({ masteryMap: { ...s.masteryMap, [nodeId]: state } }));
+  },
+
+  initMasteryMap: (map) => {
+    set({ masteryMap: map });
   },
 }));
