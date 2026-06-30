@@ -242,7 +242,20 @@ Plans:
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
 
-**Plans**: TBD
+**Plans**: 11 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Quiz content schema (QuizSchema) + CI validation, parallel-synced node.ts + content-collections.ts
+- [ ] 06-02-PLAN.md — Source enum → quiz + quizProgress table (forward-SRS signals) + [BLOCKING] drizzle-kit push
+- [ ] 06-03-PLAN.md — graph-store sourceMap slice + ProgressProvider hydration
+- [ ] 06-04-PLAN.md — Pure grading engine (PASS_THRESHOLD, gradeQuiz/gradeAnswers, shuffle) [TDD]
+- [ ] 06-05-PLAN.md — recordQuizPass/recordQuizAttempt principal-keyed server fns [TDD]
+- [ ] 06-06-PLAN.md — MasteryBadge "via quiz" label + GraphNode subtle quiz marker (D-14)
+- [ ] 06-07-PLAN.md — Author tech-timing demo quiz + SME review (criterion 3)
+- [ ] 06-08-PLAN.md — useQuizPassMutation optimistic no-reload hook
+- [ ] 06-09-PLAN.md — Quiz UI primitives: radio-group + QuizQuestion/QuizStepper/QuizResults
+- [ ] 06-10-PLAN.md — QuizCTA gating (+tests) + QuizTakeover flow host
+- [ ] 06-11-PLAN.md — Panel integration (in-panel takeover) + CONTEXT.md terms + ADR 010 + end-to-end verify
 **UI hint**: yes
 
 ### Phase 7: w3champions Auto-Detection
