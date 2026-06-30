@@ -16,6 +16,7 @@ import {
   sessions,
   accounts,
   verifications,
+  nodeProgress,
 } from "#/db/schema";
 
 // ---------------------------------------------------------------------------
@@ -125,5 +126,51 @@ describe("verifications table", () => {
 
   it("has identifier column", () => {
     expect(verifications.identifier).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// nodeProgress table — DB table name and required columns (PROG-01, PROG-02)
+// ---------------------------------------------------------------------------
+
+describe("nodeProgress table", () => {
+  it("is defined (PROG-01)", () => {
+    expect(nodeProgress).toBeDefined();
+  });
+
+  it("has DB table name 'node_progress'", () => {
+    expect(getTableName(nodeProgress)).toBe("node_progress");
+  });
+
+  it("has id column (surrogate PK)", () => {
+    expect(nodeProgress.id).toBeDefined();
+  });
+
+  it("has userId column (FK → users.id, AUTH-04)", () => {
+    expect(nodeProgress.userId).toBeDefined();
+  });
+
+  it("has nodeId column", () => {
+    expect(nodeProgress.nodeId).toBeDefined();
+  });
+
+  it("has masteryState column (text, not pgEnum — Pitfall 1)", () => {
+    expect(nodeProgress.masteryState).toBeDefined();
+  });
+
+  it("has source column (D-04 — manual/auto signal)", () => {
+    expect(nodeProgress.source).toBeDefined();
+  });
+
+  it("has patchId column (D-05 — patch version stamp)", () => {
+    expect(nodeProgress.patchId).toBeDefined();
+  });
+
+  it("has createdAt column", () => {
+    expect(nodeProgress.createdAt).toBeDefined();
+  });
+
+  it("has updatedAt column", () => {
+    expect(nodeProgress.updatedAt).toBeDefined();
   });
 });
