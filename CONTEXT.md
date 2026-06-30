@@ -5,7 +5,7 @@
 > project's **ubiquitous domain language** — use them exactly in code,
 > comments, PRs, and documentation.
 >
-> Last updated: Phase 05
+> Last updated: Phase 06
 
 ---
 
@@ -361,6 +361,78 @@ nodes silently win.
 
 ---
 
+## Self-Assessment Quiz Terms (Phase 06)
+
+### quiz
+
+A structured MCQ self-assessment attached to a CONCEPTUAL node. Contains 3–5
+questions (`QuizSchema`), each with 2–5 answer options, exactly one correct
+option, and a required `explanation` string (active-recall design — the
+explanation is revealed only after the player answers, not during). Authored in
+the node's MDX frontmatter under the `quiz:` key. Only CONCEPTUAL nodes carry
+quizzes; MECHANIC nodes use w3champions / replay auto-detection for mastery
+signals. Schema-validated at build time by `content-collections` and at runtime
+by `QuizSchema` from `src/schemas/node.ts`.
+
+### assessment
+
+User-facing synonym for quiz, used exclusively in copy and UI labels: "Take
+Assessment" (first attempt), "Retake assessment" (after passing via quiz). The
+underlying concept is identical; the distinction is presentational only.
+
+### active recall
+
+The cognitive principle driving the quiz UX design. While the player is
+answering, the node's full learning prose and all citations are unmounted from
+the DOM — the `AnimatePresence` body swap in `NodePanelContent` replaces them
+with `QuizTakeover`. This forces retrieval from memory rather than re-reading,
+which research shows produces stronger long-term retention than re-study.
+Enforced structurally (T-06-20 mitigation, D-09): it is impossible to read the
+node text and answer the quiz simultaneously.
+
+### quiz source
+
+The value `"quiz"` on a progress record's `source` field, written by
+`recordQuizPass` server function when a player passes the assessment. Surfaces in
+two places: (1) the panel header mastery badge displays "Mastered · via quiz"
+when `source === "quiz"`; (2) the graph canvas node shows a subtle `◆` rune-400
+glyph (D-14). The quiz source is always server-stamped — it is never supplied by
+the client. Latest-write-wins source precedence applies: a manual mastery write
+after a quiz pass overrides the source to `"manual"`, and vice versa.
+
+### pass threshold
+
+The minimum number of correct answers required to pass a quiz, derived from
+total question count. Defined in `PASS_THRESHOLD` (`src/lib/quiz-grading.ts`):
+
+| Questions | Minimum correct | Pass % |
+|-----------|----------------|--------|
+| 3         | 3              | 100%   |
+| 4         | 3              | 75%    |
+| 5         | 4              | 80%    |
+
+A failed attempt records a `lapseCount` increment in `quizProgress` (FSRS
+forward hook) but does NOT change `masteryState` (D-12 — quiz only ever sets
+`mastered`, never downgrades from an existing state).
+
+### quiz mastery
+
+The state where a CONCEPTUAL node's `masteryState` is `"mastered"` with
+`source === "quiz"`. Set only by passing the assessment. Distinct from manual
+mastery (`source: "manual"`) in two visible ways: the panel badge reads "Mastered
+· via quiz" and the graph canvas node shows the `◆` rune-400 marker (D-14).
+
+### lapse
+
+A failed quiz attempt on a node that the player has previously quiz-mastered.
+Recorded as a `lapseCount` increment in the `quizProgress` table alongside
+`attemptCount`. Mastery state is NOT changed on a lapse (D-12). The `lapseCount`
+field is a forward-designed FSRS signal for the deferred spaced-repetition
+scheduler (Phase N) — it cannot be reconstructed retroactively from `attemptCount`
+alone, so it is captured from Phase 6 onward.
+
+---
+
 ## Appendix: Phase-Tracked Additions
 
 | Term | Introduced | Notes |
@@ -396,3 +468,10 @@ nodes silently win.
 | mastery source | Phase 05 | source field: manual (Phase 5) \| auto (Phase 7/8 reserved); manual overrides auto (D-04) |
 | local progress | Phase 05 | Signed-out mastery in localStorage wc3rm:progress; non-authoritative; cleared after merge (D-08) |
 | merge-on-sign-in | Phase 05 | One-time fill-gaps merge on first sign-in; server wins; clears localStorage; guarded by wc3rm:merged (D-07) |
+| quiz | Phase 06 | A structured MCQ self-assessment attached to a CONCEPTUAL node; 3–5 questions, each with one correct answer and a required explanation (QUIZ-01, D-01) |
+| assessment | Phase 06 | User-facing synonym for quiz in copy/UI labels ("Take Assessment", "Retake assessment"); identical concept — the distinction is presentational only |
+| active recall | Phase 06 | The cognitive principle driving the quiz design: the node's learning prose and citations are hidden while the player answers questions, forcing retrieval from memory rather than re-reading (D-09, T-06-20 mitigation) |
+| quiz source | Phase 06 | The source value "quiz" on a progress record, written by recordQuizPass when a player passes the assessment; surfaces as "Mastered · via quiz" in the panel badge and as the ◆ canvas marker (D-13/D-14) |
+| pass threshold | Phase 06 | The minimum correct-answer count required to pass a quiz: 3/3 (100%) for 3-question quizzes, 3/4 (75%) for 4-question quizzes, 4/5 (80%) for 5-question quizzes; defined in PASS_THRESHOLD in src/lib/quiz-grading.ts (D-05, QUIZ-02) |
+| quiz mastery | Phase 06 | The state where a CONCEPTUAL node's masteryState is "mastered" with source "quiz"; set only by passing the assessment; visually distinct from manual mastery via the quiz-source badge and canvas marker (D-14) |
+| lapse | Phase 06 | A failed quiz attempt after the node has previously been quiz-mastered (source "quiz"); recorded as lapseCount increment in quizProgress; a forward-designed FSRS signal for the deferred spaced-repetition scheduler (D-07/D-08) |
