@@ -5,14 +5,14 @@
  * MasteryBadge — small pill indicating mastery state on a graph node face.
  *
  * Renders nothing for "untouched" (no badge per UI-SPEC §Mastery State Encoding).
- * Renders "Learning" pill for "in-progress" (rune-600 bg, rune-300 text).
+ * Renders "In Progress" pill for "in-progress" (rune-600 bg, rune-300 text).
  * Renders "Mastered" pill for "mastered" (rune-500 bg, obsidian-950 text).
  *
  * All colors use CSS variable references — no hardcoded hex (UI-SPEC §Color).
  * Font: 11px / 600 (semibold) per UI-SPEC §Typography §Badge.
  */
 
-import type { MasteryState } from "#/lib/mock-mastery";
+import type { MasteryState } from "#/schemas/progress";
 
 interface MasteryBadgeProps {
   state: MasteryState;
@@ -44,7 +44,7 @@ export function MasteryBadge({ state }: MasteryBadgeProps) {
           alignItems: "center",
         }}
       >
-        Learning
+        In Progress
       </span>
     );
   }
