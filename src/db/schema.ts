@@ -22,6 +22,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -247,6 +248,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
   nodeProgress: many(nodeProgress),
+  quizProgress: many(quizProgress),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -353,6 +355,108 @@ export const nodeProgress = pgTable(
 export const nodeProgressRelations = relations(nodeProgress, ({ one }) => ({
   user: one(users, {
     fields: [nodeProgress.userId],
+    references: [users.id],
+  }),
+}));
+
+// ---------------------------------------------------------------------------
+// quizProgress (DB table name: "quiz_progress")
+// ---------------------------------------------------------------------------
+
+/**
+ * Per-user quiz attempt record — the SRS tracking counterpart to nodeProgress.
+ *
+ * Design intent: `nodeProgress` is the mastery-state record (what the graph
+ * displays); `quizProgress` is the SRS tracking record (what a future
+ * spaced-repetition scheduler needs). Keeping them separate avoids coupling
+ * the mastery display to the quiz retention model (D-07/D-08).
+ *
+ * The unique index on (userId, nodeId) is the `onConflictDoUpdate` upsert
+ * target for the 06-05 `recordQuizPass` server fn — one row per user-node
+ * pair; re-attempts update in place.
+ *
+ * `passed` / `lastAttemptAt` / `attemptCount` are updated on every attempt.
+ * `lapseCount` increments on a failed re-attempt AFTER the first pass — an
+ * FSRS forward hook. It CANNOT be reconstructed from `attemptCount` retroactively
+ * because a lapse requires knowing which prior state was "passed". Designed in
+ * now so the future scheduler has the seed data it needs (D-08).
+ *
+ * FK to users.id with onDelete cascade — deleting a user removes all their
+ * quiz progress rows (T-06-04: prevents orphaned cross-user data).
+ */
+export const quizProgress = pgTable(
+  "quiz_progress",
+  {
+    /** Surrogate text PK — matches the project convention (users.id, sessions.id, nodeProgress.id). */
+    id: text("id").primaryKey(),
+
+    /** FK → users.id — the stable UUID progress key (AUTH-04). Cascades on delete. */
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    /** Content node identifier — matches the node `id` field in the content schema. */
+    nodeId: text("node_id").notNull(),
+
+    /**
+     * Whether the most recent quiz attempt resulted in a pass.
+     *
+     * True when the player met the PASS_THRESHOLD for the question count.
+     * Resets to false on a lapse (failed re-attempt after a prior pass).
+     */
+    passed: boolean("passed").notNull().default(false),
+
+    /**
+     * Timestamp of the most recent quiz attempt (pass or fail).
+     *
+     * Updated on every attempt — used by a future SRS scheduler to compute
+     * the next review interval (D-08).
+     */
+    lastAttemptAt: timestamp("last_attempt_at").notNull().defaultNow(),
+
+    /**
+     * Total number of quiz attempts (pass + fail) for this node.
+     *
+     * Incremented on every attempt. Used alongside `lapseCount` to derive
+     * the player's raw quiz history without storing per-attempt rows.
+     */
+    attemptCount: integer("attempt_count").notNull().default(0),
+
+    /**
+     * Number of failed re-attempts AFTER the first successful pass — an FSRS
+     * forward hook (D-08).
+     *
+     * CRITICAL: cannot be reconstructed retroactively from `attemptCount`
+     * because a lapse requires knowing which prior attempt was the first pass.
+     * Designed in now so the future FSRS scheduler has the seed data it needs.
+     * Incremented by `recordQuizAttempt` (06-05) on fail when `passed = true`.
+     */
+    lapseCount: integer("lapse_count").notNull().default(0),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    /**
+     * Unique index on (userId, nodeId) — the `onConflictDoUpdate` upsert target
+     * for `recordQuizPass` in 06-05. Enforces one row per user-node pair.
+     */
+    uniqueIndex("quiz_progress_user_node_unique").on(table.userId, table.nodeId),
+    /** Covering index on userId for efficient per-user quiz progress lookups (T-06-05). */
+    index("quiz_progress_userId_idx").on(table.userId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Relations — quizProgress
+// ---------------------------------------------------------------------------
+
+export const quizProgressRelations = relations(quizProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [quizProgress.userId],
     references: [users.id],
   }),
 }));
