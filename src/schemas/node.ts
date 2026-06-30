@@ -147,6 +147,81 @@ export type ScienceCitation = z.infer<typeof ScienceCitationSchema>;
 export type CreatorCitation = z.infer<typeof CreatorCitationSchema>;
 
 // ---------------------------------------------------------------------------
+// Quiz sub-schemas (QUIZ-01, QUIZ-03, D-01 through D-04)
+// ---------------------------------------------------------------------------
+
+// PARALLEL-SCHEMA SYNC NOTE: QuizOptionSchema, QuizQuestionSchema, QuizSchema
+// are intentionally defined twice:
+//   1. Here in src/schemas/node.ts   — runtime/test surface.
+//   2. Inline in content-collections.ts — build-time surface.
+// Both definitions MUST stay field-for-field identical. Any change here must
+// be mirrored in content-collections.ts (plan 06-01) and vice versa.
+
+/** A single answer option in a quiz question. */
+const QuizOptionSchema = z.object({
+  /** Option text — must be non-empty. */
+  text: z.string().min(1, { error: "Option text cannot be empty (QUIZ-01)" }),
+  /** True if this is the correct answer. Exactly one option per question must be true. */
+  isCorrect: z.boolean(),
+});
+
+/**
+ * A single multiple-choice quiz question (QUIZ-01, QUIZ-03).
+ *
+ * Constraints:
+ *  - 2–5 answer options
+ *  - Exactly one correct option (superRefine, QUIZ-03)
+ *  - Required `explanation` — forces the author to justify the recall depth (D-03/QUIZ-03)
+ */
+const QuizQuestionSchema = z.object({
+  /** The question text — must be non-empty. */
+  text: z.string().min(1, { error: "Question text cannot be empty (QUIZ-01)" }),
+  /**
+   * Answer options (2–5). Exactly one must have `isCorrect: true` (QUIZ-03).
+   * superRefine validates the exactly-one-correct constraint at parse time.
+   */
+  options: z
+    .array(QuizOptionSchema)
+    .min(2, { error: "Each question needs at least 2 options" })
+    .max(5, { error: "Each question can have at most 5 options" })
+    .superRefine((options, ctx) => {
+      const correctCount = options.filter((o) => o.isCorrect).length;
+      if (correctCount !== 1) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Question must have exactly one correct answer (found ${correctCount}) (QUIZ-03)`,
+          input: options,
+        });
+      }
+    }),
+  /**
+   * Required per D-03/QUIZ-03: explains WHY the correct answer is right.
+   * Forces the author to justify the recall depth of the question.
+   * CI fails (build-time) and parse fails (runtime) if absent or empty.
+   */
+  explanation: z.string().min(1, {
+    error: "explanation is required on every quiz question (D-03/QUIZ-03 structural guardrail)",
+  }),
+});
+
+/**
+ * QuizSchema — validated array of 3–5 MCQ questions (QUIZ-01).
+ * Optional on NodeFrontmatterSchema: CONCEPTUAL nodes without a `quiz` field
+ * show no "Take Assessment" button (D-04 graceful default).
+ */
+export const QuizSchema = z
+  .array(QuizQuestionSchema)
+  .min(3, { error: "A quiz requires at least 3 questions (QUIZ-01)" })
+  .max(5, { error: "A quiz may have at most 5 questions (QUIZ-01)" });
+
+/** Inferred TypeScript type for a single quiz option. */
+export type QuizOption = z.infer<typeof QuizOptionSchema>;
+/** Inferred TypeScript type for a single quiz question (options + explanation). */
+export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
+/** Inferred TypeScript type for a complete quiz (array of questions). */
+export type Quiz = z.infer<typeof QuizSchema>;
+
+// ---------------------------------------------------------------------------
 // NodeFrontmatterSchema — full validated schema (extends NodeSummarySchema)
 // ---------------------------------------------------------------------------
 
@@ -210,6 +285,13 @@ export const NodeFrontmatterSchema = NodeSummarySchema.extend({
    * but CI may enforce a minimum citation count in Phase 3.
    */
   citations: z.array(CitationSchema),
+  /**
+   * Optional self-assessment quiz for CONCEPTUAL nodes (QUIZ-01, D-01, D-04).
+   * When present: renders a "Take Assessment" CTA in the node detail panel.
+   * When absent (undefined): no button rendered (D-04 graceful default).
+   * MECHANIC nodes never render the quiz button regardless of this field.
+   */
+  quiz: QuizSchema.optional(),
 });
 
 /** Inferred TypeScript type for the full node frontmatter. */
