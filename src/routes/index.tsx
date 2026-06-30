@@ -32,6 +32,7 @@ import type { Pathway } from "#/schemas/pathway";
 import { RoadmapGraph } from "#/components/graph/RoadmapGraph";
 import { FilterBar } from "#/components/graph/FilterBar";
 import { NodeDetailPanel } from "#/components/graph/NodeDetailPanel";
+import { ProgressProvider } from "#/components/graph/ProgressProvider";
 // Pathway JSON — bundled by Vite at build time; works in SSR + client contexts.
 // Validated at runtime via PathwaySchema.safeParse (T-02-16 mitigation).
 import pathwayRaw from "../../pathways/beginner-fundamentals.json";
@@ -134,54 +135,56 @@ function Home() {
   }
 
   return (
-    <main style={{ backgroundColor: "var(--color-obsidian-950)" }}>
-      {/* 56px app control bar — SSR-safe structural element.
-          Height is consumed by calc(100dvh - 56px) on the canvas wrapper below.
-          Content: app identity (left) + FilterBar (D-09, fills remaining width). */}
-      <div
-        style={{
-          height: "56px",
-          display: "flex",
-          alignItems: "center",
-          paddingInline: "32px",
-          backgroundColor: "var(--color-obsidian-900)",
-          borderBottom: "1px solid var(--color-obsidian-600)",
-        }}
-      >
-        <span
+    <ProgressProvider>
+      <main style={{ backgroundColor: "var(--color-obsidian-950)" }}>
+        {/* 56px app control bar — SSR-safe structural element.
+            Height is consumed by calc(100dvh - 56px) on the canvas wrapper below.
+            Content: app identity (left) + FilterBar (D-09, fills remaining width). */}
+        <div
           style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "15px",
-            fontWeight: 600,
-            lineHeight: 1,
-            flexShrink: 0,
+            height: "56px",
+            display: "flex",
+            alignItems: "center",
+            paddingInline: "32px",
+            backgroundColor: "var(--color-obsidian-900)",
+            borderBottom: "1px solid var(--color-obsidian-600)",
           }}
         >
-          WC3 Roadmap
-        </span>
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "15px",
+              fontWeight: 600,
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
+          >
+            WC3 Roadmap
+          </span>
 
-        {/* FilterBar — D-09/D-10 search input + four facet groups.
-            Fills remaining top-bar width; dispatches to graph-store.
-            useShallow slice subscription inside FilterBar (Pitfall 3). */}
-        <FilterBar />
-      </div>
+          {/* FilterBar — D-09/D-10 search input + four facet groups.
+              Fills remaining top-bar width; dispatches to graph-store.
+              useShallow slice subscription inside FilterBar (Pitfall 3). */}
+          <FilterBar />
+        </div>
 
-      {/* Interactive node graph — rendered on ALL viewports (desktop + mobile).
-          RoadmapGraph wraps the @xyflow/react canvas in <ClientOnly>; React Flow
-          has native touch support (single-finger pan, two-finger pinch-zoom,
-          tap → onNodeClick → setSelectedNode opens the mobile bottom sheet).
-          The filter dim and pathway spotlight apply identically on both
-          breakpoints. (MobileNodeList card list retired from the route.) */}
-      <div style={{ height: "calc(100dvh - 56px)" }}>
-        <RoadmapGraph nodes={nodes} pathway={pathway} />
-      </div>
+        {/* Interactive node graph — rendered on ALL viewports (desktop + mobile).
+            RoadmapGraph wraps the @xyflow/react canvas in <ClientOnly>; React Flow
+            has native touch support (single-finger pan, two-finger pinch-zoom,
+            tap → onNodeClick → setSelectedNode opens the mobile bottom sheet).
+            The filter dim and pathway spotlight apply identically on both
+            breakpoints. (MobileNodeList card list retired from the route.) */}
+        <div style={{ height: "calc(100dvh - 56px)" }}>
+          <RoadmapGraph nodes={nodes} pathway={pathway} />
+        </div>
 
-      {/* Panel layer — client-only, mounted once above both desktop + mobile.
-          NodeDetailPanel reads selectedNodeId from graph-store; no props needed.
-          Single mount point per RESEARCH §Q5 "Home owns the panel layer". */}
-      <ClientOnly fallback={null}>
-        <NodeDetailPanel />
-      </ClientOnly>
-    </main>
+        {/* Panel layer — client-only, mounted once above both desktop + mobile.
+            NodeDetailPanel reads selectedNodeId from graph-store; no props needed.
+            Single mount point per RESEARCH §Q5 "Home owns the panel layer". */}
+        <ClientOnly fallback={null}>
+          <NodeDetailPanel />
+        </ClientOnly>
+      </main>
+    </ProgressProvider>
   );
 }
