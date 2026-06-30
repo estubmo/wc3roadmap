@@ -33,10 +33,6 @@ describe("MasteryStateSchema", () => {
     expect(MasteryStateSchema.safeParse("untouched").success).toBe(true);
   });
 
-  it("accepts 'learning'", () => {
-    expect(MasteryStateSchema.safeParse("learning").success).toBe(true);
-  });
-
   it("accepts 'mastered'", () => {
     expect(MasteryStateSchema.safeParse("mastered").success).toBe(true);
   });
@@ -77,7 +73,7 @@ describe("ProgressRecordSchema — acceptance", () => {
   });
 
   it("accepts all three masteryState values", () => {
-    for (const masteryState of ["untouched", "learning", "mastered"] as const) {
+    for (const masteryState of ["untouched", "in-progress", "mastered"] as const) {
       const result = ProgressRecordSchema.safeParse({ ...validRecord, masteryState });
       expect(result.success, `masteryState "${masteryState}" should be accepted`).toBe(true);
     }

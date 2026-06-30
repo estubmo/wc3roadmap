@@ -15,8 +15,13 @@
  * typed accessor with graceful default for unknown IDs.
  */
 
-/** The three mastery states a node can be in (GRAPH-02, UI-SPEC §Mastery State Encoding). */
-export type MasteryState = "untouched" | "in-progress" | "mastered";
+import type { MasteryState } from "#/schemas/progress";
+
+/**
+ * Re-exported from the canonical source of truth for MasteryState.
+ * src/schemas/progress.ts is the single source — do not define this type here.
+ */
+export type { MasteryState };
 
 /**
  * Private backing store for the mock mastery map.
@@ -54,6 +59,10 @@ export const MOCK_MASTERY: Readonly<Record<string, MasteryState>> = _MOCK_MASTER
  * Look up the mastery state for a node by ID.
  * Returns "untouched" for unknown node IDs — graceful default so callers do
  * not need to guard against undefined when the corpus grows.
+ *
+ * @deprecated Phase 2 mock data — replaced by real persistence in Phase 5.
+ * Retained for /preview/* dev routes and MobileNodeList only. Do not use in
+ * new Phase 5+ code; use the progress store / server fn instead.
  */
 export function getMockMastery(nodeId: string): MasteryState {
   return _MOCK_MASTERY[nodeId] ?? "untouched";
