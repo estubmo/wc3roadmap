@@ -25,6 +25,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ---------------------------------------------------------------------------
@@ -245,6 +246,7 @@ export const verifications = pgTable(
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
+  nodeProgress: many(nodeProgress),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -257,6 +259,100 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, {
     fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+// ---------------------------------------------------------------------------
+// nodeProgress (DB table name: "node_progress")
+// ---------------------------------------------------------------------------
+
+/**
+ * Per-user node mastery progress record.
+ *
+ * Design: surrogate text PK + unique index on (userId, nodeId) — the unique
+ * index is the `onConflictDoUpdate` target for the 05-04 `setNodeMastery`
+ * upsert. One row per user-node pair; inserting twice updates in place.
+ *
+ * `masteryState` is stored as plain TEXT (not pgEnum) because the canonical
+ * value `"in-progress"` contains a hyphen that breaks pgEnum DDL quoting
+ * (RESEARCH.md Pitfall 1). Validation lives in `MasteryStateSchema` (Zod) at
+ * the app layer, not in the database.
+ *
+ * `source` (D-04): "manual" | "auto" — stamped server-side; never from client
+ * input. Defaults to "manual"; future Phase 7 auto-detection writes "auto".
+ *
+ * `patchId` (D-05): stamped from CURRENT_PATCH.id by the 05-04 server fn.
+ * Designed in now so patch versioning is a first-class column from day one,
+ * avoiding a Phase-7 migration later.
+ *
+ * FK to users.id with onDelete cascade — deleting a user removes all their
+ * progress rows (T-05-03b: prevents orphaned cross-user data).
+ */
+export const nodeProgress = pgTable(
+  "node_progress",
+  {
+    /** Surrogate text PK — matches the project convention (users.id, sessions.id). */
+    id: text("id").primaryKey(),
+
+    /** FK → users.id — the stable UUID progress key (AUTH-04). Cascades on delete. */
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    /** Content node identifier — matches the node `id` field in the content schema. */
+    nodeId: text("node_id").notNull(),
+
+    /**
+     * Mastery state value — "untouched" | "in-progress" | "mastered".
+     *
+     * Stored as TEXT (not pgEnum) — the hyphen in "in-progress" causes DDL
+     * quoting issues with pgEnum. Validated at the app layer via MasteryStateSchema.
+     */
+    masteryState: text("mastery_state").notNull(),
+
+    /**
+     * Signal source — "manual" | "auto" (D-04).
+     *
+     * Server-side only: stamped by the 05-04 setNodeMastery server fn.
+     * Never accepted from client input. Defaults to "manual"; Phase 7
+     * w3champions auto-detection will write "auto".
+     */
+    source: text("source").notNull().default("manual"),
+
+    /**
+     * Patch version when this record was last written (D-05).
+     *
+     * Stamped from CURRENT_PATCH.id by the 05-04 server fn. Enables future
+     * patch-aware mastery resets or migrations without schema changes.
+     */
+    patchId: text("patch_id").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    /**
+     * Unique index on (userId, nodeId) — the `onConflictDoUpdate` upsert target
+     * for `setNodeMastery` in 05-04. Enforces one row per user-node pair and
+     * prevents duplicate/conflicting rows (T-05-03a).
+     */
+    uniqueIndex("progress_user_node_unique").on(table.userId, table.nodeId),
+    /** Covering index on userId for efficient bulk-fetch of all progress rows for a user. */
+    index("progress_userId_idx").on(table.userId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Relations — nodeProgress
+// ---------------------------------------------------------------------------
+
+export const nodeProgressRelations = relations(nodeProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [nodeProgress.userId],
     references: [users.id],
   }),
 }));
