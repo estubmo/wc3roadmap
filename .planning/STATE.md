@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 5
-current_phase_name: Progress Tracking
+current_phase: 05
+current_phase_name: progress-tracking
 status: executing
 stopped_at: Phase 05 UI-SPEC approved
-last_updated: "2026-06-30T06:27:37.794Z"
-last_activity: 2026-06-29
-last_activity_desc: Phase 04 complete, transitioned to Phase 5
+last_updated: "2026-06-30T07:25:42.483Z"
+last_activity: 2026-06-30
+last_activity_desc: Phase 05 execution started
 progress:
   total_phases: 9
   completed_phases: 4
-  total_plans: 34
-  completed_plans: 34
+  total_plans: 43
+  completed_plans: 35
   percent: 44
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-28)
 
 **Core value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy
-**Current focus:** Phase 04 — auth-database
+**Current focus:** Phase 05 — progress-tracking
 
 ## Current Position
 
-Phase: 5 — Progress Tracking
-Plan: Not started
+Phase: 05 (progress-tracking) — EXECUTING
+Plan: 2 of 9
 Status: Ready to execute
-Last activity: 2026-06-29 — Phase 04 complete, transitioned to Phase 5
+Last activity: 2026-06-30 — Phase 05 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -86,6 +86,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-auth-database P05 | 9m | 3 tasks | 3 files |
 | Phase 04-auth-database P06 | 2m | 2 tasks | 2 files |
 | Phase 04-auth-database P07 | 6m | 2 tasks | 3 files |
+| Phase 05-progress-tracking P01 | 3min | - tasks | - files |
 
 ## Accumulated Context
 
@@ -148,6 +149,8 @@ Recent decisions affecting current work:
 - [Phase ?]: isPending renders null (empty slot) to prevent CTA flash on refresh (AUTH-02 / T-04-06b)
 - [Phase ?]: ADR 007: principal-keyed authedServerFn convention is the auditable standard for all user-data server functions
 - [Phase ?]: ADR 008: global Battle.net OAuth endpoint (Assumption A1) with documented per-region fallback; LOW-MEDIUM confidence; EU/KR spike required before live rollout
+- [Phase ?]: sonner.tsx: removed next-themes (not installed); hardcoded theme=dark — project is dark-mode only
+- [Phase ?]: toggle.tsx: removed 'use client' directive — matches shadcn convention in this project
 
 ### Pending Todos
 
@@ -170,6 +173,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-30T00:12:20.308Z
+Last session: 2026-06-30T07:25:31.581Z
 Stopped at: Phase 05 UI-SPEC approved
 Resume file: .planning/phases/05-progress-tracking/05-UI-SPEC.md

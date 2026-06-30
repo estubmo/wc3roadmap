@@ -54,7 +54,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [ ] **PROG-01**: Per-node mastery state is tracked per user
 - [ ] **PROG-02**: Progress persists server-side, tied to the account
 - [ ] **PROG-03**: Pre-login progress is stored in localStorage and merges on sign-in
-- [ ] **PROG-04**: User can manually mark any node's mastery state
+- [x] **PROG-04**: User can manually mark any node's mastery state
 - [ ] **PROG-05**: No XP, streaks, or leaderboards (deliberate — avoids gaming the metric)
 
 ### Self-Assessment Quizzes
@@ -160,7 +160,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-01 | Phase 5 | Pending |
 | PROG-02 | Phase 5 | Pending |
 | PROG-03 | Phase 5 | Pending |
-| PROG-04 | Phase 5 | Pending |
+| PROG-04 | Phase 5 | Complete |
 | PROG-05 | Phase 5 | Pending |
 | QUIZ-01 | Phase 6 | Pending |
 | QUIZ-02 | Phase 6 | Pending |
