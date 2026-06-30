@@ -4,7 +4,8 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Global design system — Direction 0 "Modern" (see docs/adr/0001-visual-design-direction.md).
 import appCss from "#/styles/app.css?url";
-import { SiteHeader } from "#/components/SiteHeader";
+import { SiteHeader } from "#/components/SiteHeader"
+import { Toaster } from "#/components/ui/sonner";
 
 // ---------------------------------------------------------------------------
 // QueryClient — module-scope singleton (not inside RootDocument).
@@ -67,6 +68,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               is not hidden behind the header (UI-SPEC §SiteHeader). */}
           <SiteHeader />
           <div style={{ paddingTop: "48px" }}>{children}</div>
+          {/* Toaster mounts inside QueryClientProvider so toast() calls from
+              useProgressMutation (05-06) reach the DOM. position/theme per
+              UI-SPEC §Toast Specifications. */}
+          <Toaster position="bottom-right" theme="dark" />
         </QueryClientProvider>
         <Scripts />
       </body>
