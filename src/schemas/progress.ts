@@ -83,14 +83,16 @@ export const ProgressRecordSchema = z.object({
    */
   masteryState: MasteryStateSchema,
   /**
-   * Origin of this progress record (D-04 forward-design).
+   * Origin of this progress record (D-04 forward-design, D-12).
    * - `manual`: player explicitly set this state via UI controls (Phase 5).
    * - `auto`: state derived from w3champions ladder data (Phase 7/8 auto-detection).
+   * - `quiz`: player passed a self-assessment quiz (Phase 6); stamped server-side
+   *   only by `recordQuizPass` (06-05 server fn) — never accepted from client input.
    * Defaults to `"manual"` — only manual writes occur in Phase 5.
    * Note: 05-04 server fn hardcodes `"manual"` server-side; a manual mark may
    * override an auto state in the Phase 7/8 merge logic.
    */
-  source: z.enum(["manual", "auto"]).default("manual"),
+  source: z.enum(["manual", "auto", "quiz"]).default("manual"),
   /**
    * ISO 8601 datetime of the last state transition for this record.
    * Stored as a string; DB persistence layer (Phase 4) converts to timestamp.
