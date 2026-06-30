@@ -40,7 +40,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - [ ] Content stored as decoupled, version-controlled data (JSON/MDX) independent of the graph/UI engine — easy to update as the meta shifts
 - [ ] Patch-version awareness across the ENTIRE system — content nodes, build orders, mastery thresholds, replays, and progress are all tagged with the WC3 patch they apply to, so the system stays correct across balance patches
 - [ ] Guided Pathways / Learning Tracks overlay on the graph (e.g. "Beginner Basics") that highlight an ordered subset of nodes — a guided on-ramp over free-form exploration
-- [ ] Progress tracking per node (mark / show mastery state)
+- [x] Progress tracking per node (mark / show mastery state) — *Validated in Phase 5: Progress Tracking (live: manual mark persists server-side, localStorage merges on first sign-in, server is source of truth, no gamification)*
 - [ ] Coarse auto-detection from the w3champions API (games-played volume, MMR tier, matchup W/L trends) — the only signals that API exposes
 - [ ] `.w3g` replay parsing (w3gjs base + forked wc3v analysis) to extract fine-grained mechanical signals (build-order timings, expansion timing, APM/eAPM, hotkey/control-group use, hero/item builds, supply/economy curves) for objective mechanical-node mastery
 - [ ] Replay ingest both ways: manual `.w3g` upload and auto-pull from the w3champions replay endpoint
@@ -128,4 +128,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-30 after Phase 4 completion*
+*Last updated: 2026-06-30 after Phase 5 completion*
