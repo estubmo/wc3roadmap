@@ -41,6 +41,14 @@ describe("MasteryStateSchema", () => {
     expect(MasteryStateSchema.safeParse("mastered").success).toBe(true);
   });
 
+  it("accepts 'in-progress' (D-03 canonical value)", () => {
+    expect(MasteryStateSchema.safeParse("in-progress").success).toBe(true);
+  });
+
+  it("rejects 'learning' (renamed to in-progress per D-03)", () => {
+    expect(MasteryStateSchema.safeParse("learning").success).toBe(false);
+  });
+
   it("rejects 'started' (invalid state)", () => {
     expect(MasteryStateSchema.safeParse("started").success).toBe(false);
   });
@@ -88,6 +96,21 @@ describe("ProgressRecordSchema — acceptance", () => {
       lastUpdated: "2025-01-15T12:30:00Z",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("accepts source: 'manual' (D-04)", () => {
+    const result = ProgressRecordSchema.safeParse({ ...validRecord, source: "manual" });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts source: 'auto' (D-04)", () => {
+    const result = ProgressRecordSchema.safeParse({ ...validRecord, source: "auto" });
+    expect(result.success).toBe(true);
+  });
+
+  it("defaults source to 'manual' when absent (D-04)", () => {
+    const result = ProgressRecordSchema.parse(validRecord);
+    expect(result.source).toBe("manual");
   });
 });
 
