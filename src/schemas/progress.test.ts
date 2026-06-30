@@ -94,19 +94,32 @@ describe("ProgressRecordSchema — acceptance", () => {
     expect(result.success).toBe(true);
   });
 
-  it("accepts source: 'manual' (D-04)", () => {
+});
+
+// ---------------------------------------------------------------------------
+// ProgressRecordSchema — source field (D-04)
+// ---------------------------------------------------------------------------
+
+describe("ProgressRecordSchema — source field (D-04)", () => {
+  it("accepts source: 'manual'", () => {
     const result = ProgressRecordSchema.safeParse({ ...validRecord, source: "manual" });
     expect(result.success).toBe(true);
   });
 
-  it("accepts source: 'auto' (D-04)", () => {
+  it("accepts source: 'auto'", () => {
     const result = ProgressRecordSchema.safeParse({ ...validRecord, source: "auto" });
     expect(result.success).toBe(true);
   });
 
-  it("defaults source to 'manual' when absent (D-04)", () => {
+  it("defaults source to 'manual' when absent", () => {
+    // Use .parse() — .default() only materialises on a full parse, not safeParse success shape
     const result = ProgressRecordSchema.parse(validRecord);
     expect(result.source).toBe("manual");
+  });
+
+  it("rejects an invalid source value (enum guard)", () => {
+    const result = ProgressRecordSchema.safeParse({ ...validRecord, source: "w3champions" });
+    expect(result.success).toBe(false);
   });
 });
 
