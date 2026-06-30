@@ -242,7 +242,7 @@ Plans:
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
 
-**Plans**: 9/11 plans executed
+**Plans**: 10/11 plans executed
 
 Plans:
 **Wave 1**
@@ -265,7 +265,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 06-10-PLAN.md — QuizCTA gating (+tests) + QuizTakeover flow host
+- [x] 06-10-PLAN.md — QuizCTA gating (+tests) + QuizTakeover flow host
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
@@ -332,7 +332,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
-| 6. Self-Assessment Quizzes | 9/11 | In Progress|  |
+| 6. Self-Assessment Quizzes | 10/11 | In Progress|  |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
