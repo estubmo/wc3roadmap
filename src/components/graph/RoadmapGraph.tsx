@@ -47,8 +47,8 @@ import { GraphNode } from "./GraphNode";
 import { GraphEdge } from "./GraphEdge";
 import { PathwayBanner } from "./PathwayBanner";
 import { computeLayout } from "#/lib/graph-layout";
-import { getMockMastery } from "#/lib/mock-mastery";
 import { useGraphStore } from "#/lib/graph-store";
+import type { MasteryState } from "#/schemas/progress";
 import { matchesFilter, isFilterActive } from "#/lib/filter-utils";
 import type { GraphDisplayNode } from "#/schemas/graph";
 import type { Pathway } from "#/schemas/pathway";
@@ -136,6 +136,15 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
   );
 
   // ------------------------------------------------------------------
+  // Mastery map subscription — drives node color for all display useMemos
+  //
+  // useShallow ensures only masteryMap reference changes trigger re-memos,
+  // not other store updates like hover/selection (Pitfall 2, 05-RESEARCH.md).
+  // ------------------------------------------------------------------
+
+  const masteryMap = useGraphStore(useShallow((s) => s.masteryMap));
+
+  // ------------------------------------------------------------------
   // Derived nodes with mastery state + pathway dim applied
   //
   // Keep in useMemo keyed on [layoutNodes, pathwaySet, exploring] so
@@ -148,7 +157,7 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
 
   const displayNodes: Node[] = useMemo(() => {
     return layoutNodes.map((n) => {
-      const masteryState = getMockMastery(n.id);
+      const masteryState: MasteryState = masteryMap[n.id] ?? "untouched";
       const isPathwayNode = pathwaySet.has(n.id);
 
       // Dim non-pathway nodes when not exploring (D-08, D-09)
@@ -163,7 +172,7 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
         style,
       };
     });
-  }, [layoutNodes, pathwaySet, exploring]);
+  }, [layoutNodes, pathwaySet, exploring, masteryMap]);
 
   // ------------------------------------------------------------------
   // On-mount fitView: scope to pathway nodes (Pitfall 3 — call in
@@ -208,7 +217,7 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
     if (!isFilterActive(searchQuery, activeFilters)) return displayNodes;
     return displayNodes.map((n) => {
       const rawNode = rawNodes.find((r) => r.id === n.id)!;
-      const mastery = getMockMastery(n.id);
+      const mastery: MasteryState = masteryMap[n.id] ?? "untouched";
       const matches = matchesFilter(rawNode, mastery, searchQuery, activeFilters);
       return matches
         ? n
@@ -217,7 +226,7 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
             style: { ...n.style, opacity: 0.15, pointerEvents: "none" as const },
           };
     });
-  }, [displayNodes, searchQuery, activeFilters, rawNodes]);
+  }, [displayNodes, searchQuery, activeFilters, rawNodes, masteryMap]);
 
   // ------------------------------------------------------------------
   // setNodes when exploring state or filteredDisplayNodes change
