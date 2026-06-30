@@ -242,7 +242,7 @@ Plans:
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
 
-**Plans**: 5/11 plans executed
+**Plans**: 6/11 plans executed
 
 Plans:
 **Wave 1**
@@ -255,7 +255,7 @@ Plans:
 
 - [x] 06-04-PLAN.md — Pure grading engine (PASS_THRESHOLD, gradeQuiz/gradeAnswers, shuffle) [TDD]
 - [x] 06-05-PLAN.md — recordQuizPass/recordQuizAttempt principal-keyed server fns [TDD]
-- [ ] 06-06-PLAN.md — MasteryBadge "via quiz" label + GraphNode subtle quiz marker (D-14)
+- [x] 06-06-PLAN.md — MasteryBadge "via quiz" label + GraphNode subtle quiz marker (D-14)
 - [ ] 06-07-PLAN.md — Author tech-timing demo quiz + SME review (criterion 3)
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -332,7 +332,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
-| 6. Self-Assessment Quizzes | 5/11 | In Progress|  |
+| 6. Self-Assessment Quizzes | 6/11 | In Progress|  |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
