@@ -242,12 +242,12 @@ Plans:
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
 
-**Plans**: 11 plans
+**Plans**: 1/11 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Quiz content schema (QuizSchema) + CI validation, parallel-synced node.ts + content-collections.ts
+- [x] 06-01-PLAN.md — Quiz content schema (QuizSchema) + CI validation, parallel-synced node.ts + content-collections.ts
 - [ ] 06-02-PLAN.md — Source enum → quiz + quizProgress table (forward-SRS signals) + [BLOCKING] drizzle-kit push
 - [ ] 06-03-PLAN.md — graph-store sourceMap slice + ProgressProvider hydration
 
@@ -332,7 +332,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
-| 6. Self-Assessment Quizzes | 0/? | Not started | - |
+| 6. Self-Assessment Quizzes | 1/11 | In Progress|  |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |

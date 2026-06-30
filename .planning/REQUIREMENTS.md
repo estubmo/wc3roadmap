@@ -59,9 +59,9 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Self-Assessment Quizzes
 
-- [ ] **QUIZ-01**: CONCEPTUAL nodes have a short self-assessment quiz (3–5 recall-based questions)
+- [x] **QUIZ-01**: CONCEPTUAL nodes have a short self-assessment quiz (3–5 recall-based questions)
 - [ ] **QUIZ-02**: Passing a node's quiz drives that conceptual node toward "mastered"
-- [ ] **QUIZ-03**: Quizzes test understanding, not surface recall
+- [x] **QUIZ-03**: Quizzes test understanding, not surface recall
 
 ### w3champions Auto-Detection (Coarse)
 
@@ -162,9 +162,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-03 | Phase 5 | Complete |
 | PROG-04 | Phase 5 | Complete |
 | PROG-05 | Phase 5 | Complete |
-| QUIZ-01 | Phase 6 | Pending |
+| QUIZ-01 | Phase 6 | Complete |
 | QUIZ-02 | Phase 6 | Pending |
-| QUIZ-03 | Phase 6 | Pending |
+| QUIZ-03 | Phase 6 | Complete |
 | AUTO-01 | Phase 7 | Pending |
 | AUTO-02 | Phase 7 | Pending |
 | AUTO-03 | Phase 7 | Pending |
