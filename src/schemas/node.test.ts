@@ -14,6 +14,7 @@ import {
   // Until then this import is undefined → the CitationSchema describe blocks below
   // are RED. Existing NodeSummarySchema / NodeFrontmatterSchema tests are unaffected.
   CitationSchema,
+  QuizSchema,
 } from "./node";
 
 // ---------------------------------------------------------------------------
@@ -472,5 +473,124 @@ describe("CitationSchema — kind discriminator rejection (D-07)", () => {
       applicationNote: "Some note.",
     });
     expect(result.success).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// QuizSchema — QUIZ-01 (count bounds) and QUIZ-03 (structural guardrails)
+// ---------------------------------------------------------------------------
+
+/**
+ * Shared valid question fixture used across quiz tests.
+ * Provides a well-formed 3-option question with exactly one correct answer
+ * and a non-empty explanation.
+ */
+const validQuestion = {
+  text: "What is the supply limit in WC3?",
+  options: [
+    { text: "50", isCorrect: false },
+    { text: "100", isCorrect: true },
+    { text: "150", isCorrect: false },
+  ],
+  explanation: "The supply cap in WC3 is 100 food. Exceeding it requires extra supply buildings.",
+};
+
+/** Makes n copies of validQuestion for constructing test quizzes. */
+function makeQuestions(n: number) {
+  return Array.from({ length: n }, () => ({ ...validQuestion }));
+}
+
+describe("QuizSchema — QUIZ-01 count bounds", () => {
+  it("accepts a valid 3-question quiz", () => {
+    const result = QuizSchema.safeParse(makeQuestions(3));
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid 4-question quiz", () => {
+    const result = QuizSchema.safeParse(makeQuestions(4));
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid 5-question quiz", () => {
+    const result = QuizSchema.safeParse(makeQuestions(5));
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a 2-question quiz (below minimum of 3) (QUIZ-01)", () => {
+    const result = QuizSchema.safeParse(makeQuestions(2));
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a 6-question quiz (above maximum of 5) (QUIZ-01)", () => {
+    const result = QuizSchema.safeParse(makeQuestions(6));
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an empty quiz (0 questions)", () => {
+    const result = QuizSchema.safeParse([]);
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("QuizSchema — QUIZ-03 exactly-one-correct guardrail", () => {
+  it("rejects a question with zero correct options (QUIZ-03)", () => {
+    const badQuestion = {
+      ...validQuestion,
+      options: [
+        { text: "50", isCorrect: false },
+        { text: "100", isCorrect: false },
+        { text: "150", isCorrect: false },
+      ],
+    };
+    const result = QuizSchema.safeParse([badQuestion, validQuestion, validQuestion]);
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a question with two correct options (QUIZ-03)", () => {
+    const badQuestion = {
+      ...validQuestion,
+      options: [
+        { text: "50", isCorrect: true },
+        { text: "100", isCorrect: true },
+        { text: "150", isCorrect: false },
+      ],
+    };
+    const result = QuizSchema.safeParse([badQuestion, validQuestion, validQuestion]);
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("QuizSchema — QUIZ-03 explanation required guardrail", () => {
+  it("rejects a question with a missing explanation (QUIZ-03)", () => {
+    const { explanation: _, ...missingExplanation } = validQuestion;
+    const result = QuizSchema.safeParse([missingExplanation, validQuestion, validQuestion]);
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a question with an empty explanation (QUIZ-03)", () => {
+    const badQuestion = { ...validQuestion, explanation: "" };
+    const result = QuizSchema.safeParse([badQuestion, validQuestion, validQuestion]);
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("NodeFrontmatterSchema — D-04 graceful default (quiz omitted)", () => {
+  it("accepts a CONCEPTUAL node with quiz field omitted (D-04)", () => {
+    // quiz is optional — nodes without quiz content still validate and show no CTA
+    const result = NodeFrontmatterSchema.safeParse({
+      ...validFrontmatter,
+      nodeType: "CONCEPTUAL",
+      // quiz intentionally absent
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a CONCEPTUAL node with a valid 3-question quiz", () => {
+    const result = NodeFrontmatterSchema.safeParse({
+      ...validFrontmatter,
+      nodeType: "CONCEPTUAL",
+      quiz: makeQuestions(3),
+    });
+    expect(result.success).toBe(true);
   });
 });
