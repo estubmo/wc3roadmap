@@ -24,11 +24,15 @@ tech_stack:
   patterns:
     - "ADR format: Status / Date / Phase / Context / Decision / Consequences / Alternatives / Related"
     - "CONTEXT.md progressive glossary: one section per phase, appendix table updated"
+    - "createServerFn must be lexically visible at .handler() call site — no factory wrappers (L-01)"
+    - "Neon DB client instantiated lazily via Proxy to avoid SSR module-init timing crash (L-02)"
 key_files:
   created:
     - docs/adr/009-progress-persistence.md
+    - .planning/phases/05-progress-tracking/LEARNINGS.md
   modified:
     - CONTEXT.md
+    - docs/adr/009-progress-persistence.md (Verification Notes section appended post-checkpoint)
 decisions:
   - "ADR 009 authored: surrogate text PK + unique index on (userId,nodeId) as upsert target"
   - "ADR 009: text() over pgEnum for masteryState/source — hyphen DDL safety + enum extensibility"
@@ -36,12 +40,14 @@ decisions:
   - "ADR 009: fill-gaps server-wins one-time merge; wc3rm:merged dual-guard"
   - "ADR 009: per-node-only progress surface; gamification explicitly prohibited"
   - "CONTEXT.md: in-progress is now canonical mastery-state mid-value (D-03 reaffirmed)"
+  - "L-01: createServerFn factory anti-pattern removed; all server fns declare createServerFn at definition site"
+  - "L-02: Neon client lazy via Proxy — never call neon() at module scope in SSR-evaluated files"
 metrics:
-  duration: "4min"
+  duration: "15min"
   completed: "2026-06-30"
-  tasks_completed: 1
+  tasks_completed: 2
   tasks_total: 2
-  files_modified: 2
+  files_modified: 4
 status: complete
 ---
 
@@ -85,13 +91,54 @@ Covers all required design decisions in the established ADR-008 structure (Statu
 | Task | Name | Type | Status | Commit |
 |------|------|------|--------|--------|
 | 1 | Extend CONTEXT.md + author ADR 009 | auto | complete | c1d8767 |
-| 2 | End-of-phase human verification | checkpoint:human-verify | awaiting human | — |
+| 2 | End-of-phase human verification | checkpoint:human-verify | PASSED (2026-06-30, Dauntless#2202) | — |
+
+**Bug-fix commits (latent Phase 4 bugs surfaced during Task 2 verification):**
+
+| Commit | Description |
+|--------|-------------|
+| `da0af1a` | fix(05): lazily instantiate Neon db client — `DATABASE_URL` read at handler time, not module load |
+| `a4c4032` | fix(05): define authed server fns with `createServerFn` directly — compiler sees fn at definition site |
+
+**Human verification results (all 5 ROADMAP Phase 5 criteria):**
+
+| # | Criterion | Result |
+|---|-----------|--------|
+| 1 | Mark + persist across sessions ("scouting" → Mastered; persisted on refresh) | PASS |
+| 2 | localStorage merge on first sign-in ("army-positioning" merged; localStorage cleared; `wc3rm:merged` set) | PASS |
+| 3 | Single-node re-render, no full reload (optimistic Zustand masteryMap update only) | PASS |
+| 4 | No gamification (no XP/streak/leaderboard/aggregate counts anywhere in UI) | PASS |
+| 5 | Server as source of truth (after `localStorage.clear()` + reload, server-persisted mastery still visible) | PASS |
 
 ---
 
 ## Deviations from Plan
 
-None — plan executed exactly as written.
+Two latent Phase 4 bugs surfaced during the Phase 5 human-verification checkpoint — the first
+time server functions were invoked from the client in a live browser session.
+
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Lazy Neon DB client (`da0af1a`)**
+- **Found during:** Task 2 (end-of-phase human verification, first live client→server call)
+- **Issue:** `neon(process.env.DATABASE_URL!)` called at module load time in `src/lib/db.ts`. During SSR module-graph init the `better-auth` import chain caused `db.ts` to be evaluated before the Nitro env injection populated `process.env.DATABASE_URL`. Result: `neon("")` — crash on any DB access from a server function.
+- **Fix:** Replaced top-level client with a lazy `Proxy` that constructs the Neon client on first property access (inside a request handler where env is fully populated). Public API unchanged.
+- **Files modified:** `src/lib/db.ts`
+- **Verification:** All server functions reached the DB successfully during the human-verify flow
+- **Committed in:** `da0af1a`
+
+**2. [Rule 1 - Bug] `createServerFn` must be lexically visible at the call site (`a4c4032`)**
+- **Found during:** Task 2 (end-of-phase human verification, first live client invocation of progress server fns)
+- **Issue:** The `authedServerFn` factory from Phase 4 returned a builder from `createServerFn(opts).middleware([authMiddleware])`. TanStack Start's Vite compiler extracts server functions by statically matching `createServerFn(…).handler(…)` at the definition site. The factory hid `createServerFn` from the compiler — handlers compiled into the client bundle and ran in the browser. `process.env` and DB access failed immediately.
+- **Fix:** Removed `authedServerFn` factory. All four progress server functions (`getUserProgress`, `setNodeMastery`, `mergeProgressOnSignIn`, `getUserProfile`) now declare `createServerFn({ method })` directly at their definition site. `authMiddleware` retained as middleware array entry.
+- **Files modified:** `src/lib/auth-middleware.ts`, `src/server-fns/progress.ts`
+- **Verification:** Progress server functions invoked from client ran on the server; DB writes persisted; human verification passed all 5 criteria
+- **Committed in:** `a4c4032`
+
+---
+
+**Total deviations:** 2 auto-fixed (Rule 1 — latent Phase 4 bugs surfaced on first real client→server invocation)
+**Impact on plan:** Both fixes required for the human-verify checkpoint to pass. No scope creep. Lessons captured in `LEARNINGS.md` (L-01, L-02).
 
 ---
 
@@ -110,10 +157,14 @@ No new network endpoints, auth paths, file access patterns, or schema changes in
 ## Self-Check
 
 - [x] `docs/adr/009-progress-persistence.md` exists with Status/Context/Decision/Consequences sections
+- [x] ADR 009 Verification Notes section added (two bugs + createServerFn rule documented)
 - [x] `CONTEXT.md` carries `progress record`, `mastery source`, `local progress`, `merge-on-sign-in`
 - [x] `CONTEXT.md` "Last updated" reads Phase 05
 - [x] `mastery state` entry updated to `in-progress` (not `learning`)
 - [x] ADR 009 names surrogate PK + unique index, text-over-pgEnum, source field, fill-gaps merge
+- [x] `LEARNINGS.md` created with L-01 (createServerFn factory anti-pattern) and L-02 (lazy Neon client)
 - [x] Task 1 commit `c1d8767` verified in git log
+- [x] Bug-fix commits `da0af1a` and `a4c4032` verified in git log
+- [x] Task 2 human-verify checkpoint PASSED (all 5 ROADMAP Phase 5 criteria signed off)
 
 ## Self-Check: PASSED

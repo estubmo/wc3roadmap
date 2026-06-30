@@ -270,3 +270,93 @@ requires a new ADR with an explicit rationale for why it does not undermine the
 - **ADR 007** — `authedServerFn` principal-keyed authorization convention (the authorization primitive this ADR builds on)
 - **RESEARCH.md Pitfall 1** — pgEnum with hyphenated values; use `text()` + Zod
 - **RESEARCH.md Pattern 1** — surrogate PK + unique index table shape
+
+---
+
+## Verification Notes & Implementation Fixes
+
+Two latent bugs (from Phase 4) surfaced during the Phase 5 end-of-phase human
+verification — specifically when server functions were first invoked from the
+client. Both were fixed before the checkpoint and are recorded here because
+they affect how future phases write server functions and wire the DB client.
+
+### Fix 1 — Lazy Neon DB client (`da0af1a`)
+
+**File:** `src/lib/db.ts`
+
+**Problem:** `neon(process.env.DATABASE_URL!)` was called at module-load time.
+During SSR module-graph initialization, the `better-auth` import chain caused
+`db.ts` to be evaluated before the Vite/Nitro env injection had populated
+`process.env.DATABASE_URL`. The result was `neon("")` — a crash on any
+server-function call that reached the DB.
+
+**Fix:** Replaced the top-level client with a lazy `Proxy` that constructs
+the real Neon client on first property access (i.e., inside a server handler,
+by which point the env is populated). The public API is unchanged — callers
+still write `db.select(…)`.
+
+**Pattern for future phases:** never call `neon()`, `new Client()`, or any
+network-client constructor at module scope in files that are transitively
+imported by the auth setup. Always create the client lazily inside a function
+or behind a getter.
+
+### Fix 2 — `createServerFn` must be visible at the call site (`a4c4032`)
+
+**Files:** `src/lib/auth-middleware.ts`,
+`src/server-fns/progress.ts` (and any file that defines a server function)
+
+**Problem:** The Phase 4 `authedServerFn` factory wrapped
+`createServerFn(opts).middleware([authMiddleware])` and returned the builder
+object. Callers then chained `.handler(fn)` on the returned builder. TanStack
+Start's **Vite compiler** extracts a server function to the server bundle by
+statically matching the literal pattern:
+
+```
+createServerFn(…).handler(…)
+```
+
+Because `createServerFn` was inside a factory function (not at the lexical
+call site), the compiler could not detect the pattern. The `.handler()` body
+was compiled into the **client** bundle and executed in the browser. Any
+server-only access — `process.env`, the DB client, `authMiddleware`'s
+`auth.api.getSession` — failed immediately.
+
+Auth routes were unaffected because `better-auth` uses a standard file route
+(`/api/auth/$`), not a server function.
+
+**Fix:** Every server function is now declared with `createServerFn` lexically
+visible at the `.handler()` call site:
+
+```typescript
+export const setNodeMastery = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator(SetNodeMasteryInput)
+  .handler(async ({ context, data }) => { … });
+```
+
+The `authedServerFn` factory was removed. `authMiddleware` is retained as
+a standalone middleware array entry.
+
+**Rule (applies from Phase 6 onward):**
+
+> **Never wrap `createServerFn` in a factory or helper that returns the
+> builder.** The compiler cannot follow indirection. Every server function
+> must have `createServerFn(…).handler(…)` lexically at the definition site.
+> Unit tests that import and call handler functions directly will NOT catch
+> this bug — it only manifests when the function is invoked from the client.
+
+This rule supersedes the `authedServerFn` factory pattern introduced in
+Phase 4 (ADR 007). The `authMiddleware` middleware array entry is the
+correct, compiler-safe mechanism for shared auth enforcement.
+
+### Verification results (2026-06-30, user: Dauntless#2202)
+
+All five ROADMAP Phase 5 success criteria passed:
+
+| Criterion | Description | Result |
+|-----------|-------------|--------|
+| 1 | Mark + persist across sessions (mastered "scouting"; persisted on refresh) | PASS |
+| 2 | localStorage merge on first sign-in ("army-positioning" merged; localStorage cleared; `wc3rm:merged` set) | PASS |
+| 3 | Single-node re-render, no full reload (optimistic Zustand masteryMap update) | PASS |
+| 4 | No gamification (no XP/streak/leaderboard/counts anywhere) | PASS |
+| 5 | Server as source of truth (after `localStorage.clear()` + reload, server-persisted states still visible) | PASS |
