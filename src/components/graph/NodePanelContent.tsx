@@ -32,8 +32,11 @@ import { useQuery } from "@tanstack/react-query";
 import { MDXContent } from "@content-collections/mdx/react";
 import { X } from "lucide-react";
 import { allNodes } from "content-collections";
+import { useShallow } from "zustand/shallow";
 import { nodeContentQueryOptions } from "#/lib/node-content-query";
+import { useGraphStore } from "#/lib/graph-store";
 import { CitationList } from "./CitationList";
+import { MasteryControls } from "./MasteryControls";
 import { ProWisdomCallout } from "./ProWisdomCallout";
 import { PrerequisiteChips } from "./PrerequisiteChips";
 
@@ -221,6 +224,10 @@ export function NodePanelContent({ nodeId, onClose }: NodePanelContentProps) {
     error,
   } = useQuery(nodeContentQueryOptions(nodeId));
 
+  const currentState = useGraphStore(
+    useShallow((s) => s.masteryMap[nodeId] ?? "untouched")
+  );
+
   return (
     <div
       style={{
@@ -328,6 +335,9 @@ export function NodePanelContent({ nodeId, onClose }: NodePanelContentProps) {
               gap: "20px",
             }}
           >
+            {/* 0. D-01: MasteryControls — FIRST CHILD, above How to Apply */}
+            <MasteryControls nodeId={nodeId} currentState={currentState} />
+
             {/* 1. D-12: "How to Apply" — PINNED TOP (practical-first) */}
             <section
               aria-label="How to apply in your next game"
