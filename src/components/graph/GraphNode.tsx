@@ -37,6 +37,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "#/lib/utils";
 import type { GraphDisplayNode } from "#/schemas/graph";
 import type { MasteryState } from "#/lib/mock-mastery";
+import { useGraphStore } from "#/lib/graph-store";
 import { MasteryBadge } from "./MasteryBadge";
 
 // ---------------------------------------------------------------------------
@@ -181,6 +182,10 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
   const d = data as GraphNodeData;
   const { masteryState, nodeType, difficulty, race, title } = d;
 
+  // Subscribe to sourceMap for this node (D-14 canvas visual — ADR 002/005).
+  // Source MUST be read from the store only; never from the graph projection.
+  const masterySource = useGraphStore((s) => s.sourceMap[d.id]);
+
   // Faction tint hook (dormant for agnostic — v1 is all agnostic)
   const _factionTint = getFactionTint(race);
   // _factionTint would be applied to the node accent layer in v2.
@@ -212,7 +217,7 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
         className="invisible"
       />
 
-      {/* Top row: type icon (left) + mastery badge (right) */}
+      {/* Top row: type icon (left) + quiz marker + mastery badge (right) */}
       <div className="flex items-start justify-between gap-1">
         <span aria-label={typeIconAriaLabel} role="img">
           {nodeType === "MECHANIC" ? (
@@ -229,7 +234,25 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
             />
           )}
         </span>
-        <MasteryBadge state={masteryState} />
+        {/* Right-side slot: quiz-source marker + mastery badge */}
+        <div className="flex items-center gap-1">
+          {/* Quiz-mastered canvas marker (D-14, PROG-05 anti-gamification).
+              A single rune-400 glyph — source distinction only, never a reward. */}
+          {masterySource === "quiz" && masteryState === "mastered" && (
+            <span
+              aria-label="Mastered via quiz"
+              style={{
+                fontSize: "9px",
+                color: "var(--color-rune-400)",
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+            >
+              ◆
+            </span>
+          )}
+          <MasteryBadge state={masteryState} source={masterySource} />
+        </div>
       </div>
 
       {/* Title: 15px / 600, max 2 lines, ellipsis */}
