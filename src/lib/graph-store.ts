@@ -182,6 +182,47 @@ export interface GraphStore {
    * @param map - Record of nodeId → MasteryState from the server fn response.
    */
   initMasteryMap: (map: Record<string, MasteryState>) => void;
+
+  // --- Phase 6: source map (quiz vs manual vs auto label) ---
+
+  /**
+   * Per-node mastery source map, keyed by node ID (D-14).
+   *
+   * Parallel to `masteryMap` — populated from `progressRecords[].source` by
+   * `initSourceMap` in `ProgressProvider`. Updated optimistically by
+   * `setSource` after a quiz pass (via `useQuizPassMutation`).
+   *
+   * Consumers MUST subscribe via `useShallow` to avoid unnecessary re-renders
+   * on hover/selection changes (same Pitfall 2 from 05-RESEARCH.md applies):
+   *
+   *   const sourceMap = useGraphStore(useShallow((s) => s.sourceMap));
+   *
+   * Store-only state: source MUST NOT be added to any `GraphDisplayNode`
+   * projection (ADR 002 / ADR 005 / T-06-06).
+   */
+  sourceMap: Record<string, string>;
+
+  /**
+   * Optimistically update a single node's mastery source value (D-14).
+   *
+   * Produces a new `sourceMap` object with the updated entry so React can
+   * detect the change via reference equality (new-object semantics, mirrors
+   * `setNodeMastery` pattern from 05-RESEARCH.md Pitfall 3).
+   *
+   * @param nodeId - The node ID whose source is being updated.
+   * @param source - The new source value ("quiz" | "manual" | "auto").
+   */
+  setSource: (nodeId: string, source: string) => void;
+
+  /**
+   * Bulk-initialize the source map from a server response (D-14).
+   *
+   * Called by `ProgressProvider` alongside `initMasteryMap` when
+   * `getUserProgress` resolves, so quiz-source visuals render after refresh.
+   *
+   * @param map - Record of nodeId → source string from the server fn response.
+   */
+  initSourceMap: (map: Record<string, string>) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -244,5 +285,16 @@ export const useGraphStore = create<GraphStore>((set) => ({
 
   initMasteryMap: (map) => {
     set({ masteryMap: map });
+  },
+
+  // Phase 6: source map
+  sourceMap: {},
+
+  setSource: (nodeId, source) => {
+    set((s) => ({ sourceMap: { ...s.sourceMap, [nodeId]: source } }));
+  },
+
+  initSourceMap: (map) => {
+    set({ sourceMap: map });
   },
 }));
