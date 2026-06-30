@@ -51,7 +51,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Progress Tracking
 
-- [ ] **PROG-01**: Per-node mastery state is tracked per user
+- [x] **PROG-01**: Per-node mastery state is tracked per user
 - [ ] **PROG-02**: Progress persists server-side, tied to the account
 - [ ] **PROG-03**: Pre-login progress is stored in localStorage and merges on sign-in
 - [x] **PROG-04**: User can manually mark any node's mastery state
@@ -157,7 +157,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-02 | Phase 4 | Complete |
 | AUTH-03 | Phase 4 | Complete |
 | AUTH-04 | Phase 4 | Complete |
-| PROG-01 | Phase 5 | Pending |
+| PROG-01 | Phase 5 | Complete |
 | PROG-02 | Phase 5 | Pending |
 | PROG-03 | Phase 5 | Pending |
 | PROG-04 | Phase 5 | Complete |

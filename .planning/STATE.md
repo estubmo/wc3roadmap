@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 05
 current_phase_name: progress-tracking
 status: executing
-stopped_at: Phase 05 UI-SPEC approved
-last_updated: "2026-06-30T07:25:42.483Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-06-30T07:36:07.886Z"
 last_activity: 2026-06-30
 last_activity_desc: Phase 05 execution started
 progress:
   total_phases: 9
   completed_phases: 4
   total_plans: 43
-  completed_plans: 35
+  completed_plans: 36
   percent: 44
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 05 (progress-tracking) — EXECUTING
-Plan: 2 of 9
+Plan: 3 of 9
 Status: Ready to execute
 Last activity: 2026-06-30 — Phase 05 execution started
 
@@ -87,6 +87,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04-auth-database P06 | 2m | 2 tasks | 2 files |
 | Phase 04-auth-database P07 | 6m | 2 tasks | 3 files |
 | Phase 05-progress-tracking P01 | 3min | - tasks | - files |
+| Phase 05 P02 | 7min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -151,6 +152,9 @@ Recent decisions affecting current work:
 - [Phase ?]: ADR 008: global Battle.net OAuth endpoint (Assumption A1) with documented per-region fallback; LOW-MEDIUM confidence; EU/KR spike required before live rollout
 - [Phase ?]: sonner.tsx: removed next-themes (not installed); hardcoded theme=dark — project is dark-mode only
 - [Phase ?]: toggle.tsx: removed 'use client' directive — matches shadcn convention in this project
+- [Phase ?]: D-03 in-progress canonical: MasteryStateSchema enum is [untouched,in-progress,mastered] — learning removed; single vocabulary layer
+- [Phase ?]: D-04 source field: z.enum([manual,auto]).default(manual) on ProgressRecordSchema; 05-04 server fn hardcodes manual
+- [Phase ?]: mock-mastery.ts re-exports MasteryState from schemas/progress — single source of truth for MasteryState type
 
 ### Pending Todos
 
@@ -173,6 +177,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-30T07:25:31.581Z
-Stopped at: Phase 05 UI-SPEC approved
-Resume file: .planning/phases/05-progress-tracking/05-UI-SPEC.md
+Last session: 2026-06-30T07:36:07.881Z
+Stopped at: Completed 05-02-PLAN.md
+Resume file: None
