@@ -203,7 +203,7 @@ Plans:
   4. The progress UI contains no XP points, streak counters, or global leaderboards — the only progress indicator is the user's own mastery state per node, framed as personal skill growth
   5. Clearing localStorage as an authenticated user and reopening the app shows the same server-persisted mastery states as before — client-side state is a cache, not the source of truth
 
-**Plans**: 5/9 plans executed
+**Plans**: 6/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -220,7 +220,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 05-06-PLAN.md — useProgressMutation (optimistic + rollback, D-09) + MasteryControls 3-state panel control (no gamification) [wave 3]
+- [x] 05-06-PLAN.md — useProgressMutation (optimistic + rollback, D-09) + MasteryControls 3-state panel control (no gamification) [wave 3]
 - [ ] 05-07-PLAN.md — ProgressProvider: hydrate masteryMap + one-time fill-gaps merge on sign-in (D-07) + mount in home route [wave 3]
 
 **Wave 4** *(blocked on Wave 3)*
@@ -303,7 +303,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Graph Engine | 10/10 | Complete    | 2026-06-29 |
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
-| 5. Progress Tracking | 5/9 | In Progress|  |
+| 5. Progress Tracking | 6/9 | In Progress|  |
 | 6. Self-Assessment Quizzes | 0/? | Not started | - |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
