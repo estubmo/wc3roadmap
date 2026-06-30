@@ -5,7 +5,7 @@
 > project's **ubiquitous domain language** — use them exactly in code,
 > comments, PRs, and documentation.
 >
-> Last updated: Phase 04
+> Last updated: Phase 05
 
 ---
 
@@ -84,14 +84,16 @@ v2 (RACE-01..05). The field exists now to avoid a future migration.
 The three-state lifecycle of a player's progress on a node. Three values:
 
 - `untouched` — the player has not engaged with this node.
-- `learning` — the player has started studying or practicing the node but has
-  not yet met the mastery threshold.
+- `in-progress` — the player has started studying or practicing the node but
+  has not yet met the mastery threshold.
 - `mastered` — the player has met the `masteryThreshold` criteria for the
   current patch.
 
 Stored in `ProgressRecord.masteryState`. Drives visual state on the graph node
 (Phase 2) and staleness alerts when a mastered node's patch context becomes
-stale (Phase 9).
+stale (Phase 9). `in-progress` is the canonical mid-state value end-to-end —
+DB column value, Zod enum, code, and user-facing copy all use the same term
+(D-03, Phase 5). No value↔label translation layer.
 
 ### pathway
 
@@ -301,6 +303,64 @@ sub from OAuth, used for deduplication only, not as the progress key).
 
 ---
 
+## Progress & Mastery Terms (Phase 05)
+
+### progress record
+
+One user's mastery state on one node for one patch — the atomic unit of
+progress persistence. Stored in the `node_progress` Drizzle table as a single
+row, keyed by `users.id` UUID (`userId`) and `nodeId`, with a surrogate text
+primary key. Each record carries `masteryState`, `source`, `patchId`,
+`createdAt`, and `updatedAt`. At most one record exists per `(userId, nodeId)`
+pair (enforced by a unique index; upsert strategy via `onConflictDoUpdate`).
+
+### mastery source
+
+The `source` field on a progress record — how the mastery state was set.
+Two values:
+
+- `manual` — the player explicitly chose the state via the mastery controls in
+  the node detail panel. Written by every Phase 5 server function.
+- `auto` — reserved for Phase 7/8 auto-detection signals (w3champions ladder
+  data, replay parsing). Not written in Phase 5.
+
+A `manual` mark can override an `auto` state (D-04). The `source` field is
+always stamped server-side; clients cannot influence it — the server function
+hardcodes `"manual"` and never reads `source` from the request body.
+
+### local progress
+
+Signed-out mastery state held client-side in `localStorage` under the key
+`wc3rm:progress` as a JSON object mapping `nodeId` to `MasteryState`. Local
+progress is non-authoritative — it is the unsigned-out player's optimistic
+cache. Once the player signs in and the fill-gaps merge runs, local progress is
+cleared and the server becomes the sole source of truth (D-08). Local progress
+is never sent to the server except during the one-time merge. SSR guards
+(`typeof window !== 'undefined'`) are required before every `localStorage`
+access.
+
+### merge-on-sign-in
+
+The one-time fill-gaps merge that runs the first time a player signs in to an
+existing account (or creates a new account). Behavior:
+
+1. Client sends all `wc3rm:progress` localStorage entries to the
+   `mergeProgressOnSignIn` server function (POST via `authedServerFn`).
+2. Server inserts records **only for nodes where the account has no existing
+   row** — "fill gaps". Nodes where the server already has a record are left
+   unchanged (server wins).
+3. After successful merge, the client sets the `wc3rm:merged` flag in
+   `localStorage` and clears `wc3rm:progress`.
+4. TanStack Query invalidates the progress cache; a "Progress synced" toast
+   appears if any records were merged.
+
+Guard: both `mergeInitiatedRef` (in-session) and `isAlreadyMerged()` (cross-
+reload via `wc3rm:merged` flag) prevent re-running the merge on subsequent
+page loads or hot reloads (D-07). No conflict-surfacing UI — server-touched
+nodes silently win.
+
+---
+
 ## Appendix: Phase-Tracked Additions
 
 | Term | Introduced | Notes |
@@ -332,3 +392,7 @@ sub from OAuth, used for deduplication only, not as the progress key).
 | BattleTag | Phase 04 | "Name#1234" Battle.net display identity; w3champions key (D-06); refreshed on login |
 | gateway / region | Phase 04 | us \| eu \| kr Battle.net server region; persisted for Phase 7/8 (D-05/D-07) |
 | account UUID | Phase 04 | Stable users.id UUID v4; immutable progress key (AUTH-04, D-04) |
+| progress record | Phase 05 | One user's mastery state on one node for one patch; persisted in node_progress (ADR 009) |
+| mastery source | Phase 05 | source field: manual (Phase 5) \| auto (Phase 7/8 reserved); manual overrides auto (D-04) |
+| local progress | Phase 05 | Signed-out mastery in localStorage wc3rm:progress; non-authoritative; cleared after merge (D-08) |
+| merge-on-sign-in | Phase 05 | One-time fill-gaps merge on first sign-in; server wins; clears localStorage; guarded by wc3rm:merged (D-07) |
