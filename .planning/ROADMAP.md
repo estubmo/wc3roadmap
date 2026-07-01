@@ -287,14 +287,26 @@ Plans:
   5. CONCEPTUAL nodes never advance from a sync result — the `detectMasterySignals()` pure function only emits updates for nodes with `nodeType === 'mechanical'`
 
 **Plans**: 8 plans
+**Wave 1**
+
 - [ ] 07-01-PLAN.md — mmr-tiers ordinal registry (tierForMmr/tierIndex/TIER_IDS)
 - [ ] 07-02-PLAN.md — w3championsSync cache table + [BLOCKING] drizzle-kit push
 - [ ] 07-03-PLAN.md — auto-source labeling + graph highlight slice (MasteryBadge/GraphNode/store)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 07-04-PLAN.md — content schema autoDetect criterion (node.ts + content-collections mirror)
 - [ ] 07-05-PLAN.md — detectMasterySignals pure function (MECHANIC-only, untouched-only)
 - [ ] 07-06-PLAN.md — w3champions fetch client + D-10 status classifier + SYNC_TTL_MS/keys
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 07-07-PLAN.md — sync + status server fns (principal-keyed, TTL gate, additive ratchet)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 07-08-PLAN.md — sync UX hook + always-live button + UserDropdown mount
+
 **UI hint**: yes
 
 ### Phase 8: Replay Parsing
