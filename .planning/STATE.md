@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 7
-current_phase_name: w3champions Auto-Detection
+current_phase: 07
+current_phase_name: w3champions-auto-detection
 status: executing
 stopped_at: Phase 7 context gathered
-last_updated: "2026-07-01T16:10:24.570Z"
+last_updated: "2026-07-01T17:45:14.715Z"
 last_activity: 2026-07-01
-last_activity_desc: Phase 06 complete, transitioned to Phase 7
+last_activity_desc: Phase 07 execution started
 progress:
   total_phases: 9
   completed_phases: 6
-  total_plans: 54
-  completed_plans: 54
+  total_plans: 62
+  completed_plans: 55
   percent: 67
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-28)
 
 **Core value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy
-**Current focus:** Phase 06 — Self-Assessment Quizzes
+**Current focus:** Phase 07 — w3champions-auto-detection
 
 ## Current Position
 
-Phase: 7 — w3champions Auto-Detection
-Plan: Not started
+Phase: 07 (w3champions-auto-detection) — EXECUTING
+Plan: 2 of 8
 Status: Ready to execute
-Last activity: 2026-07-01 — Phase 06 complete, transitioned to Phase 7
+Last activity: 2026-07-01 — Phase 07 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -106,6 +106,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P08 | 2min | 1 tasks | 1 files |
 | Phase 06 P10 | 6 | 2 tasks | 3 files |
 | Phase 06 P11 | ~9min | 3 tasks | 3 files |
+| Phase 07 P01 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -196,6 +197,8 @@ Recent decisions affecting current work:
 - [Phase 06]: ADR 010 authored: quiz-mastery design (source precedence, client-grading tradeoff accepted, quizProgress FSRS forward signals)
 - [Phase 06]: CONTEXT.md Phase-6 terms added: quiz, assessment, active recall, quiz source, pass threshold, quiz mastery, lapse
 - [Phase 06]: End-of-phase human verification approved: criteria 1 (CONCEPTUAL-only CTA) and 2 (pass -> mastered/quiz, no reload) both hold
+- [Phase ?]: [Phase 07-01]: mmr-tiers.ts project-owned ordinal registry (patches.ts shape) — TIER_IDS/tierForMmr/tierIndex; decoupled from season-fragile w3champions League names (RESEARCH Pitfall 5)
+- [Phase ?]: [Phase 07-01]: tier cutoffs are [ASSUMED] A3 placeholders (bronze=0..grandmaster=2000) — one-file recalibration, no downstream migration (D-04 caps blast radius)
 
 ### Pending Todos
 
@@ -218,6 +221,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-01T14:44:54.247Z
+Last session: 2026-07-01T17:44:26.795Z
 Stopped at: Phase 7 context gathered
 Resume file: .planning/phases/07-w3champions-auto-detection/07-CONTEXT.md
