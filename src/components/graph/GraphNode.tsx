@@ -30,6 +30,7 @@
  */
 
 import { memo } from "react";
+import { motion } from "motion/react";
 import type { NodeProps } from "@xyflow/react";
 import { Handle, Position } from "@xyflow/react";
 import { Sword, BookOpen } from "lucide-react";
@@ -186,6 +187,13 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
   // Source MUST be read from the store only; never from the graph projection.
   const masterySource = useGraphStore((s) => s.sourceMap[d.id]);
 
+  // Subscribe to the transient recently-advanced set via a per-node boolean
+  // selector (D-07) — .has(id) so only freshly auto-advanced nodes re-render on
+  // sync, never the whole graph. Drives the one-shot Motion pulse below.
+  const isRecentlyAdvanced = useGraphStore((s) =>
+    s.recentlyAdvancedNodeIds.has(d.id)
+  );
+
   // Faction tint hook (dormant for agnostic — v1 is all agnostic)
   const _factionTint = getFactionTint(race);
   // _factionTint would be applied to the node accent layer in v2.
@@ -199,11 +207,21 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
     nodeType === "MECHANIC" ? "Mechanic node" : "Conceptual node";
 
   return (
-    <div
+    <motion.div
       className={cn(
         nodeVariants({ masteryState, nodeType })
       )}
       style={masteryStyles[masteryState]}
+      // D-07 one-shot pulse: when this node is in the recently-advanced set,
+      // play a brief scale pulse so it announces itself on the user's return.
+      // Transient + non-blocking — does not touch hover/selection state and
+      // reverts to scale 1. Nodes outside the set pass `undefined` (no-op).
+      animate={isRecentlyAdvanced ? { scale: [1, 1.05, 1] } : undefined}
+      transition={
+        isRecentlyAdvanced
+          ? { duration: 0.9, ease: "easeInOut" }
+          : undefined
+      }
     >
       {/* React Flow handles — invisible, at top and bottom edges */}
       <Handle
@@ -251,6 +269,24 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
               ◆
             </span>
           )}
+          {/* Auto-detected canvas marker (D-09) — parallel to the quiz ◆,
+              distinguishes w3champions auto-advanced in-progress nodes on the
+              canvas. PLACEHOLDER glyph; final marker style deferred to the
+              UI-SPEC pass (CONTEXT.md). Reuses the in-progress rune-400 accent,
+              no new color introduced. */}
+          {masterySource === "auto" && masteryState === "in-progress" && (
+            <span
+              aria-label="Advanced from w3champions"
+              style={{
+                fontSize: "9px",
+                color: "var(--color-rune-400)",
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+            >
+              ◈
+            </span>
+          )}
           <MasteryBadge state={masteryState} source={masterySource} />
         </div>
       </div>
@@ -295,6 +331,6 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
           />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 });
