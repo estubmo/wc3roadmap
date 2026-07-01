@@ -17,6 +17,7 @@ import {
   accounts,
   verifications,
   nodeProgress,
+  w3championsSync,
 } from "#/db/schema";
 
 // ---------------------------------------------------------------------------
@@ -172,5 +173,39 @@ describe("nodeProgress table", () => {
 
   it("has updatedAt column", () => {
     expect(nodeProgress.updatedAt).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// w3championsSync table — DB table name and required columns (AUTO-04)
+// ---------------------------------------------------------------------------
+
+describe("w3championsSync table", () => {
+  it("is defined (AUTO-04)", () => {
+    expect(w3championsSync).toBeDefined();
+  });
+
+  it("has DB table name 'w3champions_sync'", () => {
+    expect(getTableName(w3championsSync)).toBe("w3champions_sync");
+  });
+
+  it("has id column (surrogate PK)", () => {
+    expect(w3championsSync.id).toBeDefined();
+  });
+
+  it("has userId column (FK → users.id, AUTH-04)", () => {
+    expect(w3championsSync.userId).toBeDefined();
+  });
+
+  it("has mmrTier column (nullable — D-10c)", () => {
+    expect(w3championsSync.mmrTier).toBeDefined();
+  });
+
+  it("has gamesPlayed column", () => {
+    expect(w3championsSync.gamesPlayed).toBeDefined();
+  });
+
+  it("has lastSyncedAt column (durable TTL gate — AUTO-04)", () => {
+    expect(w3championsSync.lastSyncedAt).toBeDefined();
   });
 });
