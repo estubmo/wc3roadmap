@@ -6,6 +6,7 @@
  *
  * Renders nothing for "untouched" (no badge per UI-SPEC §Mastery State Encoding).
  * Renders "In Progress" pill for "in-progress" (rune-600 bg, rune-300 text).
+ * Renders "In progress · from w3champions" when in-progress + source "auto" (D-09 panel surfacing).
  * Renders "Mastered" pill for "mastered" (rune-500 bg, obsidian-950 text).
  * Renders "Mastered · via quiz" when mastered + source "quiz" (D-14 panel surfacing).
  *
@@ -17,7 +18,11 @@ import type { MasteryState } from "#/schemas/progress";
 
 interface MasteryBadgeProps {
   state: MasteryState;
-  /** Optional mastery source (D-14). Renders "Mastered · via quiz" when source === "quiz" and state === "mastered". */
+  /**
+   * Optional mastery source (D-14 / D-09). Renders "Mastered · via quiz" when
+   * source === "quiz" and state === "mastered"; renders "In progress · from
+   * w3champions" when source === "auto" and state === "in-progress".
+   */
   source?: string;
 }
 
@@ -47,7 +52,11 @@ export function MasteryBadge({ state, source }: MasteryBadgeProps) {
           alignItems: "center",
         }}
       >
-        In Progress
+        {/* PLACEHOLDER copy — exact wording finalized in the UI-SPEC pass
+            (CONTEXT.md). Auto-detected in-progress reads distinct from a
+            manual in-progress mark (D-09), reusing the same in-progress pill
+            styling (no new accent color). */}
+        {source === "auto" ? "In progress · from w3champions" : "In Progress"}
       </span>
     );
   }
