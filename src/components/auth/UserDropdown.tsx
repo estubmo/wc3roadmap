@@ -15,7 +15,10 @@
  * No rune-500 accent — the gold accent is reserved exclusively for
  * SignInButton (ADR 0001 / UI-SPEC §Color).
  *
- * The w3champions sync item is intentionally absent — deferred to Phase 7 (UI-SPEC).
+ * The w3champions sync item (SyncW3championsButton) is mounted above the
+ * Sign-out item (Phase 7, AUTO-01) — a signed-in user triggers the sync and
+ * sees "Last synced Xm ago" directly from this profile surface. No separate
+ * linking step: the BattleTag is already in the session.
  */
 
 import { ChevronDown, LogOut } from "lucide-react";
@@ -32,6 +35,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "#/components/ui/dropdown-menu";
+import { SyncW3championsButton } from "#/components/profile/SyncW3championsButton";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -137,6 +141,9 @@ export function UserDropdown() {
           padding: "4px 0",
         }}
       >
+        {/* w3champions sync — always-live action + "Last synced Xm ago" (Phase 7, AUTO-01) */}
+        <SyncW3championsButton />
+
         {/* Sign out — ghost variant, LogOut icon, no confirmation (Phase 4 safe) */}
         <DropdownMenuItem
           onClick={() => void handleSignOut()}
