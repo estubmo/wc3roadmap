@@ -223,6 +223,36 @@ export interface GraphStore {
    * @param map - Record of nodeId → source string from the server fn response.
    */
   initSourceMap: (map: Record<string, string>) => void;
+
+  // --- Phase 7: transient recently-advanced highlight (D-07) ---
+
+  /**
+   * Transient set of node ids advanced by the most recent w3champions sync (D-07).
+   *
+   * UI-ONLY, NOT PERSISTED — drives GraphNode's one-shot Motion pulse highlight
+   * so freshly auto-advanced nodes visibly announce themselves when the user
+   * returns to the graph. Written by `useSyncW3championsMutation` onSuccess
+   * (07-08) via `setRecentlyAdvanced`, cleared/replaced on each sync. Never
+   * added to any `GraphDisplayNode` projection (ADR 002 / ADR 005).
+   *
+   * Consumers read membership via `.has(nodeId)` in a per-node selector
+   * (`useGraphStore((s) => s.recentlyAdvancedNodeIds.has(id))`) — never
+   * subscribe to the Set object itself (that would re-render all nodes on
+   * every sync).
+   */
+  recentlyAdvancedNodeIds: ReadonlySet<string>;
+
+  /**
+   * Replace the transient recently-advanced set (D-07).
+   *
+   * Produces a brand-new Set so React detects the change via reference
+   * equality (new-object semantics, mirrors `setSource`). Called by the sync
+   * mutation's onSuccess with the ids the server just advanced; pass an empty
+   * array to clear the pulse.
+   *
+   * @param nodeIds - Node ids advanced by the most recent sync.
+   */
+  setRecentlyAdvanced: (nodeIds: string[]) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -296,5 +326,12 @@ export const useGraphStore = create<GraphStore>((set) => ({
 
   initSourceMap: (map) => {
     set({ sourceMap: map });
+  },
+
+  // Phase 7: transient recently-advanced highlight
+  recentlyAdvancedNodeIds: new Set<string>(),
+
+  setRecentlyAdvanced: (nodeIds) => {
+    set({ recentlyAdvancedNodeIds: new Set(nodeIds) });
   },
 }));
