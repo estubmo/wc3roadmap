@@ -249,6 +249,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   nodeProgress: many(nodeProgress),
   quizProgress: many(quizProgress),
+  w3championsSync: many(w3championsSync),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -457,6 +458,96 @@ export const quizProgress = pgTable(
 export const quizProgressRelations = relations(quizProgress, ({ one }) => ({
   user: one(users, {
     fields: [quizProgress.userId],
+    references: [users.id],
+  }),
+}));
+
+// ---------------------------------------------------------------------------
+// w3championsSync (DB table name: "w3champions_sync")
+// ---------------------------------------------------------------------------
+
+/**
+ * Per-user w3champions ladder-sync cache — the durable TTL gate behind
+ * criterion 3 / AUTO-04.
+ *
+ * Design: single-row cache — exactly ONE row per user, enforced by a unique
+ * index on `userId` ALONE (unlike `nodeProgress`/`quizProgress`, which key on
+ * (userId, nodeId)). This is the `onConflictDoUpdate` target for the 07-07
+ * `syncW3champions` handler. The surrogate text PK matches the project
+ * convention (users.id, nodeProgress.id).
+ *
+ * `lastSyncedAt` is the authoritative rate-limit gate — NOT TanStack Query's
+ * `staleTime`. Because this row lives in the DB it survives across browser
+ * tabs and devices, so the TTL check in 07-07 cannot be bypassed by opening a
+ * fresh tab (RESEARCH: Alternatives Considered / AUTO-04, criterion 3).
+ *
+ * `mmrTier` is NULLABLE (D-10c): null = unranked / no ladder data this season.
+ * A player with a valid sync but no ranked games still gets a cache row so the
+ * TTL gate holds; the tier is simply absent.
+ *
+ * `gamesPlayed` is NOT NULL (defaults to 0) — the games-played auto-detect
+ * signal always has a concrete count once a sync completes.
+ *
+ * FK to users.id with onDelete cascade — deleting a user removes their sync
+ * cache row (T-07-02b: no orphaned cross-user cache data; IDOR impossible by
+ * construction via principal-keyed queries in 07-07).
+ */
+export const w3championsSync = pgTable(
+  "w3champions_sync",
+  {
+    /** Surrogate text PK — matches the project convention (users.id, nodeProgress.id). */
+    id: text("id").primaryKey(),
+
+    /** FK → users.id — the stable UUID progress key (AUTH-04). Cascades on delete. */
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+
+    /**
+     * Detected MMR tier id (from mmr-tiers.ts ordinal registry) — NULLABLE.
+     *
+     * null = unranked / no ladder data this season (D-10c). Stored as TEXT
+     * following the same text()-over-pgEnum convention as nodeProgress.source
+     * (schema.ts Pitfall 1) — validation lives at the app layer.
+     */
+    mmrTier: text("mmr_tier"),
+
+    /** Games played this season — the games-played auto-detect signal. */
+    gamesPlayed: integer("games_played").notNull().default(0),
+
+    /**
+     * Timestamp of the last successful w3champions sync — the durable TTL
+     * source of truth (AUTO-04 / criterion 3).
+     *
+     * The 07-07 sync handler compares now() against this value against the
+     * rate-limit window; because it lives in the DB it survives across devices
+     * and tabs, unlike TanStack Query staleTime.
+     */
+    lastSyncedAt: timestamp("last_synced_at").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    /**
+     * Unique index on `userId` ALONE — enforces exactly one cache row per user
+     * (single-row cache). This is the `onConflictDoUpdate` upsert target for
+     * the 07-07 `syncW3champions` handler (T-07-02a).
+     */
+    uniqueIndex("w3c_sync_user_unique").on(table.userId),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Relations — w3championsSync
+// ---------------------------------------------------------------------------
+
+export const w3championsSyncRelations = relations(w3championsSync, ({ one }) => ({
+  user: one(users, {
+    fields: [w3championsSync.userId],
     references: [users.id],
   }),
 }));
