@@ -3,7 +3,7 @@ phase: 06-self-assessment-quizzes
 plan: 11
 subsystem: ui
 tags: [react, quiz, mastery, assessment, animation, adr, context]
-status: checkpoint
+status: complete
 
 # Dependency graph
 requires:
@@ -47,7 +47,7 @@ key-decisions:
 metrics:
   duration: "~9 min"
   completed: "2026-07-01"
-  tasks_committed: 2
+  tasks_committed: 3
   tasks_total: 3
   files_created: 2
   files_modified: 1
@@ -55,20 +55,24 @@ metrics:
 
 # Phase 6 Plan 11: Quiz Panel Integration + Documentation Summary
 
-**QuizCTA + AnimatePresence takeover wired into NodePanelContent (criterion 1 + D-09); Phase-6 domain terms appended to CONTEXT.md; ADR 010 authored; stopped at end-to-end human verification checkpoint.**
+**QuizCTA + AnimatePresence takeover wired into NodePanelContent (criterion 1 + D-09); Phase-6 domain terms appended to CONTEXT.md; ADR 010 authored; end-to-end human verification of criteria 1 and 2 approved.**
 
-## Status: CHECKPOINT (awaiting human verification)
+## Status: COMPLETE
 
-Tasks 1 and 2 are committed. Task 3 is a `checkpoint:human-verify` gate —
-human must verify criteria 1 and 2 in the running app before the plan is
-marked complete.
+Tasks 1 and 2 are committed. Task 3 (`checkpoint:human-verify`) was resolved
+in a follow-up session: the human ran `npm run dev`, exercised the live app,
+and confirmed both criterion 1 (CONCEPTUAL-only CTA) and criterion 2
+(pass → mastered/quiz, no reload) hold. Response: "1 & 2 approved" — no
+issues, no revisions requested. Criterion 3 (SME content review) was
+approved earlier in plan 06-07. All three end-of-phase criteria are now
+satisfied.
 
 ## Performance
 
-- **Duration:** ~9 min
+- **Duration:** ~9 min (implementation) + human verification session
 - **Started:** 2026-06-30T22:22:14Z
-- **Completed (partial):** 2026-07-01T00:31:01Z (checkpoint reached)
-- **Tasks committed:** 2 / 3
+- **Completed:** 2026-07-01 (checkpoint approved)
+- **Tasks committed:** 3 / 3
 - **Files created:** 2
 - **Files modified:** 1
 
@@ -94,7 +98,24 @@ marked complete.
 
 1. **Task 1 — NodePanelContent quiz wiring** — `74655e9` (`feat(06-11)`)
 2. **Task 2 — CONTEXT.md terms + ADR 010** — `10c677b` (`docs(06-11)`)
-3. **Task 3 — End-to-end human verification** — PENDING (checkpoint)
+3. **Task 3 — End-to-end human verification** — `checkpoint:human-verify`, no code changes; approved by human (see below)
+
+### Task 3 — End-to-end human verification (approved)
+
+The human ran the dev server and verified the live app against the
+checkpoint's `how-to-verify` steps:
+
+- **Criterion 1 (CONCEPTUAL-only CTA):** MECHANIC node (army-positioning)
+  shows no "Take Assessment" button; CONCEPTUAL node (tech-timing) shows the
+  button grouped with mastery controls. Confirmed.
+- **Criterion 2 (pass → mastered/quiz, no reload):** Passing the quiz flips
+  the node's mastery badge to "Mastered · via quiz" and updates the graph
+  canvas marker, with no page reload. Confirmed and persists.
+- **Verdict:** "1 & 2 approved" — no issues, no revisions requested.
+- Criterion 3 (SME content accuracy review) was approved earlier, in plan
+  06-07.
+
+All three end-of-phase Phase 6 success criteria are now satisfied.
 
 ## Deviations from Plan
 
@@ -114,7 +135,7 @@ None — QuizCTA, QuizTakeover, and MasteryBadge are full implementations. The p
 
 No new security-relevant surfaces introduced. The AnimatePresence body swap is the structural mitigation for T-06-20 (node answers readable during quiz). QuizCTA's self-gate is the mitigation for T-06-21 (CTA shown on ineligible nodes). Both are structurally enforced and unit-tested (QuizCTA: 13 tests in QuizCTA.test.tsx; body swap: TypeScript-verified, human-verified at checkpoint).
 
-## Self-Check
+## Self-Check: PASSED
 
 Committed files:
 
@@ -122,4 +143,10 @@ Committed files:
 - `CONTEXT.md` — FOUND in `10c677b`
 - `docs/adr/010-quiz-mastery-design.md` — FOUND in `10c677b`
 
-All three verification checks pass (typecheck, vitest, build:content).
+Commits verified present in `git log`: `74655e9`, `10c677b`.
+
+All three verification checks pass (`npx tsc --noEmit`, `npx vitest run` —
+356/356, `npm run build:content`), re-confirmed at finalization time.
+
+Checkpoint approval confirmed: human verified criteria 1 and 2 in the live
+app and responded "1 & 2 approved."
