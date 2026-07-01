@@ -6,14 +6,14 @@ current_phase: 07
 current_phase_name: w3champions-auto-detection
 status: executing
 stopped_at: Phase 7 context gathered
-last_updated: "2026-07-01T17:50:39.186Z"
+last_updated: "2026-07-01T17:56:23.057Z"
 last_activity: 2026-07-01
 last_activity_desc: Phase 07 execution started
 progress:
   total_phases: 9
   completed_phases: 6
   total_plans: 62
-  completed_plans: 56
+  completed_plans: 57
   percent: 67
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 07 (w3champions-auto-detection) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-07-01 — Phase 07 execution started
 
@@ -108,6 +108,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P11 | ~9min | 3 tasks | 3 files |
 | Phase 07 P01 | 4min | 2 tasks | 2 files |
 | Phase 07 P02 | 8min | 3 tasks | 2 files |
+| Phase 07 P03 | 7min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -201,6 +202,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 07-01]: mmr-tiers.ts project-owned ordinal registry (patches.ts shape) — TIER_IDS/tierForMmr/tierIndex; decoupled from season-fragile w3champions League names (RESEARCH Pitfall 5)
 - [Phase ?]: [Phase 07-01]: tier cutoffs are [ASSUMED] A3 placeholders (bronze=0..grandmaster=2000) — one-file recalibration, no downstream migration (D-04 caps blast radius)
 - [Phase ?]: [Phase 07-02]: w3championsSync single-row cache — uniqueIndex(userId) alone; lastSyncedAt is durable DB-side TTL gate not TanStack staleTime (AUTO-04 criterion 3); mmrTier nullable (D-10c); node_progress not re-migrated
+- [Phase 07-03]: recentlyAdvancedNodeIds transient ReadonlySet slice (D-07) + MasteryBadge auto branch + GraphNode marker/Motion pulse — extends Phase-6 sourceMap mechanism, placeholders pending UI-SPEC
 
 ### Pending Todos
 
@@ -223,6 +225,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-01T17:49:51.990Z
+Last session: 2026-07-01T17:55:07.132Z
 Stopped at: Phase 7 context gathered
 Resume file: .planning/phases/07-w3champions-auto-detection/07-CONTEXT.md
