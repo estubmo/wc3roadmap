@@ -286,7 +286,7 @@ Plans:
   4. A user who has no linked data, whose sync fails, or who skips the feature entirely can still track all progress manually and take quizzes — auto-detection is an enhancement, not a prerequisite
   5. CONCEPTUAL nodes never advance from a sync result — the `detectMasterySignals()` pure function only emits updates for nodes with `nodeType === 'mechanical'`
 
-**Plans**: 3/8 plans executed
+**Plans**: 4/8 plans executed
 **Wave 1**
 
 - [x] 07-01-PLAN.md — mmr-tiers ordinal registry (tierForMmr/tierIndex/TIER_IDS)
@@ -295,7 +295,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 07-04-PLAN.md — content schema autoDetect criterion (node.ts + content-collections mirror)
+- [x] 07-04-PLAN.md — content schema autoDetect criterion (node.ts + content-collections mirror)
 - [ ] 07-05-PLAN.md — detectMasterySignals pure function (MECHANIC-only, untouched-only)
 - [ ] 07-06-PLAN.md — w3champions fetch client + D-10 status classifier + SYNC_TTL_MS/keys
 
@@ -353,6 +353,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
-| 7. w3champions Auto-Detection | 3/8 | In Progress|  |
+| 7. w3champions Auto-Detection | 4/8 | In Progress|  |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
