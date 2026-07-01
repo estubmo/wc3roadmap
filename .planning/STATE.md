@@ -6,14 +6,14 @@ current_phase: 07
 current_phase_name: w3champions-auto-detection
 status: executing
 stopped_at: Phase 7 context gathered
-last_updated: "2026-07-01T18:05:41.663Z"
+last_updated: "2026-07-01T18:14:22.697Z"
 last_activity: 2026-07-01
 last_activity_desc: Phase 07 execution started
 progress:
   total_phases: 9
   completed_phases: 6
   total_plans: 62
-  completed_plans: 59
+  completed_plans: 60
   percent: 67
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 07 (w3champions-auto-detection) — EXECUTING
-Plan: 6 of 8
+Plan: 7 of 8
 Status: Ready to execute
 Last activity: 2026-07-01 — Phase 07 execution started
 
@@ -111,6 +111,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07 P03 | 7min | 3 tasks | 3 files |
 | Phase 07 P04 | 5min | 2 tasks | 2 files |
 | Phase 07 P05 | 2min | 2 tasks | 2 files |
+| Phase 07 P06 | 6min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -207,6 +208,7 @@ Recent decisions affecting current work:
 - [Phase 07-03]: recentlyAdvancedNodeIds transient ReadonlySet slice (D-07) + MasteryBadge auto branch + GraphNode marker/Motion pulse — extends Phase-6 sourceMap mechanism, placeholders pending UI-SPEC
 - [Phase 07-04]: autoDetect criterion is a per-node content field (D-01), single signal+threshold discriminated union (D-02: mmrTier|gamesPlayed), mirrored field-for-field in content-collections.ts per parallel-schema-sync
 - [Phase ?]: [Phase 07-05]: detectMasterySignals PURE (only ./mmr-tiers dep; zero db/fetch/auth) — caller (07-07) owns I/O; MECHANIC-only + untouched-only filters precede threshold eval (AUTO-03/D-05 structural guarantees); mmrTier null-unranked=false (D-10c)
+- [Phase 07]: [Phase 07-06]: w3champions-client.ts — pure classifyW3championsResponse over discriminated ClassifyInput maps every outcome to a D-10 bucket; fetch orchestration delegates the status mapping (mock-free unit-testable); mmrTier from raw mmr via tierForMmr (never leagueId, Pitfall 5); kr->America [ASSUMED] (Pitfall 4); Zod-validates upstream (T-07-06b); SYNC_TTL_MS single 15-min constant shared by DB gate + staleTime
 
 ### Pending Todos
 
@@ -229,6 +231,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-01T18:05:14.121Z
+Last session: 2026-07-01T18:12:14.395Z
 Stopped at: Phase 7 context gathered
 Resume file: .planning/phases/07-w3champions-auto-detection/07-CONTEXT.md

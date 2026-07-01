@@ -65,7 +65,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### w3champions Auto-Detection (Coarse)
 
-- [ ] **AUTO-01**: User links their w3champions data via BattleTag from Battle.net login
+- [x] **AUTO-01**: User links their w3champions data via BattleTag from Battle.net login
 - [x] **AUTO-02**: Coarse signals from the w3champions API (games-played volume, MMR tier, matchup W/L trends) auto-advance eligible MECHANIC nodes
 - [x] **AUTO-03**: Auto-detection only ever advances MECHANIC nodes — never CONCEPTUAL ones
 - [x] **AUTO-04**: w3champions API calls are cached and rate-limit-respecting (TanStack Query stale-while-revalidate)
@@ -165,7 +165,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QUIZ-01 | Phase 6 | Complete |
 | QUIZ-02 | Phase 6 | Complete |
 | QUIZ-03 | Phase 6 | Complete |
-| AUTO-01 | Phase 7 | Pending |
+| AUTO-01 | Phase 7 | Complete |
 | AUTO-02 | Phase 7 | Complete |
 | AUTO-03 | Phase 7 | Complete |
 | AUTO-04 | Phase 7 | Complete |
