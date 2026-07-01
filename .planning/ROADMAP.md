@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization (completed 2026-06-29)
 - [x] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification (completed 2026-06-30)
 - [x] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state (completed 2026-07-01)
-- [ ] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard
+- [x] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard (completed 2026-07-01)
 - [ ] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds
 - [ ] **Phase 9: Guided Pathways & Launch** - Pathway overlay with Beginner Fundamentals track, staleness UI, ~25-node content gate, citation review
 
@@ -286,7 +286,7 @@ Plans:
   4. A user who has no linked data, whose sync fails, or who skips the feature entirely can still track all progress manually and take quizzes — auto-detection is an enhancement, not a prerequisite
   5. CONCEPTUAL nodes never advance from a sync result — the `detectMasterySignals()` pure function only emits updates for nodes with `nodeType === 'mechanical'`
 
-**Plans**: 7/8 plans executed
+**Plans**: 8/8 plans complete
 **Wave 1**
 
 - [x] 07-01-PLAN.md — mmr-tiers ordinal registry (tierForMmr/tierIndex/TIER_IDS)
@@ -305,7 +305,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 07-08-PLAN.md — sync UX hook + always-live button + UserDropdown mount
+- [x] 07-08-PLAN.md — sync UX hook + always-live button + UserDropdown mount
 
 **UI hint**: yes
 
@@ -353,6 +353,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
-| 7. w3champions Auto-Detection | 7/8 | In Progress|  |
+| 7. w3champions Auto-Detection | 8/8 | Complete   | 2026-07-01 |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |

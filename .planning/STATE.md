@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 07
 current_phase_name: w3champions-auto-detection
-status: executing
+status: verifying
 stopped_at: Phase 7 context gathered
-last_updated: "2026-07-01T18:32:14.939Z"
+last_updated: "2026-07-01T18:37:24.885Z"
 last_activity: 2026-07-01
 last_activity_desc: Phase 07 execution started
 progress:
   total_phases: 9
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 62
-  completed_plans: 61
-  percent: 67
+  completed_plans: 62
+  percent: 78
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 
 Phase: 07 (w3champions-auto-detection) — EXECUTING
 Plan: 8 of 8
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-01 — Phase 07 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -113,6 +113,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07 P05 | 2min | 2 tasks | 2 files |
 | Phase 07 P06 | 6min | 3 tasks | 3 files |
 | Phase 07 P07 | 6m | 2 tasks | 2 files |
+| Phase 07 P08 | 8min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -210,6 +211,7 @@ Recent decisions affecting current work:
 - [Phase 07-04]: autoDetect criterion is a per-node content field (D-01), single signal+threshold discriminated union (D-02: mmrTier|gamesPlayed), mirrored field-for-field in content-collections.ts per parallel-schema-sync
 - [Phase ?]: [Phase 07-05]: detectMasterySignals PURE (only ./mmr-tiers dep; zero db/fetch/auth) — caller (07-07) owns I/O; MECHANIC-only + untouched-only filters precede threshold eval (AUTO-03/D-05 structural guarantees); mmrTier null-unranked=false (D-10c)
 - [Phase 07]: [Phase 07-06]: w3champions-client.ts — pure classifyW3championsResponse over discriminated ClassifyInput maps every outcome to a D-10 bucket; fetch orchestration delegates the status mapping (mock-free unit-testable); mmrTier from raw mmr via tierForMmr (never leagueId, Pitfall 5); kr->America [ASSUMED] (Pitfall 4); Zod-validates upstream (T-07-06b); SYNC_TTL_MS single 15-min constant shared by DB gate + staleTime
+- [Phase 07-08]: sync UX wired — useSyncW3championsMutation (D-07 pulse + dual-cache invalidation + D-08/D-10 bucket toasts) + always-live SyncW3championsButton (D-11, staleTime=SYNC_TTL_MS) mounted in UserDropdown; cached grouped with ok; purely additive (AUTO-05)
 
 ### Pending Todos
 
@@ -232,6 +234,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-01T18:32:06.868Z
+Last session: 2026-07-01T18:36:56.761Z
 Stopped at: Phase 7 context gathered
 Resume file: .planning/phases/07-w3champions-auto-detection/07-CONTEXT.md
