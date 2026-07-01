@@ -29,6 +29,7 @@
 
 import { z } from "zod";
 import { PATCH_IDS } from "../lib/patches";
+import { TIER_IDS } from "../lib/mmr-tiers";
 
 // ---------------------------------------------------------------------------
 // NodeSummarySchema — graph-display-only subset (DATA-02, ADR 002)
@@ -222,6 +223,50 @@ export type QuizQuestion = z.infer<typeof QuizQuestionSchema>;
 export type Quiz = z.infer<typeof QuizSchema>;
 
 // ---------------------------------------------------------------------------
+// AutoDetectCriteriaSchema — per-node auto-detect eligibility (AUTO-02, D-01/D-02)
+// ---------------------------------------------------------------------------
+
+// PARALLEL-SCHEMA SYNC NOTE: AutoDetectCriteriaSchema is intentionally defined
+// twice:
+//   1. Here in src/schemas/node.ts   — runtime/test surface.
+//   2. Inline in content-collections.ts — build-time surface.
+// Both definitions MUST stay field-for-field identical. Any change here must
+// be mirrored in content-collections.ts (plan 07-04) and vice versa.
+
+/**
+ * Per-node auto-detect criterion (D-01/D-02): a single signal + threshold that,
+ * once met from w3champions ladder data, lets a MECHANIC node auto-advance to
+ * `in-progress`. Eligibility lives in content — not a central rule table (D-01)
+ * — so authors add/tune eligible nodes without touching detection code.
+ *
+ * Discriminated union over `signal` (D-02: single signal+threshold only, NOT a
+ * compound rule engine):
+ *   signal: "mmrTier"     — gte is an ordinal tier id from TIER_IDS (mmr-tiers.ts).
+ *   signal: "gamesPlayed" — gte is a positive career games-played count.
+ *
+ * Consumed by detectMasterySignals (07-05, reads node.autoDetect) and the sync
+ * server fn (07-07, maps over allNodes). Mirrors the CitationSchema/QuizSchema
+ * discriminated-union + parallel-schema-sync patterns exactly.
+ */
+export const AutoDetectCriteriaSchema = z.discriminatedUnion("signal", [
+  z.object({
+    /** Discriminator — MMR-tier threshold signal. */
+    signal: z.literal("mmrTier"),
+    /** Ordinal tier id (e.g. "gold") from TIER_IDS; compared via tierIndex. */
+    gte: z.enum(TIER_IDS),
+  }),
+  z.object({
+    /** Discriminator — career games-played volume signal. */
+    signal: z.literal("gamesPlayed"),
+    /** Positive integer threshold of games played. */
+    gte: z.number().int().positive(),
+  }),
+]);
+
+/** Inferred TypeScript type for a per-node auto-detect criterion. */
+export type AutoDetectCriteria = z.infer<typeof AutoDetectCriteriaSchema>;
+
+// ---------------------------------------------------------------------------
 // NodeFrontmatterSchema — full validated schema (extends NodeSummarySchema)
 // ---------------------------------------------------------------------------
 
@@ -292,6 +337,15 @@ export const NodeFrontmatterSchema = NodeSummarySchema.extend({
    * MECHANIC nodes never render the quiz button regardless of this field.
    */
   quiz: QuizSchema.optional(),
+  /**
+   * Optional per-node auto-detect criterion for MECHANIC nodes (AUTO-02, D-01/D-02).
+   * When present: a single signal+threshold (mmrTier or gamesPlayed) that lets the
+   * node auto-advance to `in-progress` once met from w3champions ladder data.
+   * When absent (undefined): the node never auto-advances (D-01 graceful default,
+   * same convention as `quiz`).
+   * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
+   */
+  autoDetect: AutoDetectCriteriaSchema.optional(),
 });
 
 /** Inferred TypeScript type for the full node frontmatter. */
