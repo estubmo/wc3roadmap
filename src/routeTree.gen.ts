@@ -14,6 +14,7 @@ import { Route as PreviewPathwayRouteImport } from './routes/preview/pathway'
 import { Route as PreviewMobileRouteImport } from './routes/preview/mobile'
 import { Route as PreviewMasteryStatesRouteImport } from './routes/preview/mastery-states'
 import { Route as PreviewFullMapRouteImport } from './routes/preview/full-map'
+import { Route as PreviewAutoAdvanceRouteImport } from './routes/preview/auto-advance'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const PreviewFullMapRoute = PreviewFullMapRouteImport.update({
   path: '/preview/full-map',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewAutoAdvanceRoute = PreviewAutoAdvanceRouteImport.update({
+  id: '/preview/auto-advance',
+  path: '/preview/auto-advance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -49,6 +55,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
   '/preview/mobile': typeof PreviewMobileRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
   '/preview/mobile': typeof PreviewMobileRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
   '/preview/mobile': typeof PreviewMobileRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
     | '/preview/mobile'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
     | '/preview/mobile'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
     | '/preview/mobile'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PreviewAutoAdvanceRoute: typeof PreviewAutoAdvanceRoute
   PreviewFullMapRoute: typeof PreviewFullMapRoute
   PreviewMasteryStatesRoute: typeof PreviewMasteryStatesRoute
   PreviewMobileRoute: typeof PreviewMobileRoute
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreviewFullMapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/auto-advance': {
+      id: '/preview/auto-advance'
+      path: '/preview/auto-advance'
+      fullPath: '/preview/auto-advance'
+      preLoaderRoute: typeof PreviewAutoAdvanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -157,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PreviewAutoAdvanceRoute: PreviewAutoAdvanceRoute,
   PreviewFullMapRoute: PreviewFullMapRoute,
   PreviewMasteryStatesRoute: PreviewMasteryStatesRoute,
   PreviewMobileRoute: PreviewMobileRoute,
