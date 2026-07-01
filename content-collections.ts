@@ -15,6 +15,7 @@ import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMDX } from "@content-collections/mdx";
 import { z } from "zod";
 import { PATCH_IDS } from "./src/lib/patches";
+import { TIER_IDS } from "./src/lib/mmr-tiers";
 
 const nodes = defineCollection({
   name: "nodes",
@@ -105,6 +106,22 @@ const nodes = defineCollection({
       )
       .min(3)
       .max(5)
+      .optional(),
+    // PARALLEL-SCHEMA SYNC NOTE: mirror of AutoDetectCriteriaSchema in
+    // src/schemas/node.ts (plan 07-04). Keep field-for-field identical —
+    // single signal+threshold discriminated union (D-02), no compound rules.
+    // Both definitions MUST stay in sync: this enforces at build time; node.ts at runtime/test.
+    autoDetect: z
+      .discriminatedUnion("signal", [
+        z.object({
+          signal: z.literal("mmrTier"),
+          gte: z.enum(TIER_IDS),
+        }),
+        z.object({
+          signal: z.literal("gamesPlayed"),
+          gte: z.number().int().positive(),
+        }),
+      ])
       .optional(),
   }),
   transform: async (document, context) => {
