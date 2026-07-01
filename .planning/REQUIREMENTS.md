@@ -69,7 +69,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **AUTO-02**: Coarse signals from the w3champions API (games-played volume, MMR tier, matchup W/L trends) auto-advance eligible MECHANIC nodes
 - [x] **AUTO-03**: Auto-detection only ever advances MECHANIC nodes — never CONCEPTUAL ones
 - [x] **AUTO-04**: w3champions API calls are cached and rate-limit-respecting (TanStack Query stale-while-revalidate)
-- [ ] **AUTO-05**: Auto-detection enhances but never blocks progress — manual/quiz tracking works without a linked account
+- [x] **AUTO-05**: Auto-detection enhances but never blocks progress — manual/quiz tracking works without a linked account
 
 ### Replay Parsing (Fine Mechanical Signals)
 
@@ -169,7 +169,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTO-02 | Phase 7 | Complete |
 | AUTO-03 | Phase 7 | Complete |
 | AUTO-04 | Phase 7 | Complete |
-| AUTO-05 | Phase 7 | Pending |
+| AUTO-05 | Phase 7 | Complete |
 | REPLAY-01 | Phase 8 | Pending |
 | REPLAY-02 | Phase 8 | Pending |
 | REPLAY-03 | Phase 8 | Pending |
