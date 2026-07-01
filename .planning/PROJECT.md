@@ -45,7 +45,7 @@ The learning content actually makes people better at WC3 — science-backed, eff
 - [ ] `.w3g` replay parsing (w3gjs base + forked wc3v analysis) to extract fine-grained mechanical signals (build-order timings, expansion timing, APM/eAPM, hotkey/control-group use, hero/item builds, supply/economy curves) for objective mechanical-node mastery
 - [ ] Replay ingest both ways: manual `.w3g` upload and auto-pull from the w3champions replay endpoint
 - [ ] Auto-detect mastery scoped to foundational/mechanic nodes (coarse from API + fine from replays); conceptual nodes never auto-detected
-- [ ] Manual check-off + short self-assessment quizzes for conceptual/strategic nodes (avoids gaming a noisy metric)
+- [x] Manual check-off + short self-assessment quizzes for conceptual/strategic nodes (avoids gaming a noisy metric) — *Validated in Phase 6: Self-Assessment Quizzes (live: CONCEPTUAL nodes offer 3–5Q recall quizzes gated to concept nodes; passing drives mastery to mastered with source "quiz" and no page reload; SME-approved that questions test understanding, not surface recall; no score/gamification)*
 - [ ] Easily extensible content + data model (add nodes, races, sources, pathways over time)
 
 ### Out of Scope
@@ -128,4 +128,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-30 after Phase 5 completion*
+*Last updated: 2026-07-01 after Phase 6 completion*
