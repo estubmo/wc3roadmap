@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Content Pipeline & Node Panel** - MDX authoring pipeline, lazy-loading node detail panel, citation template, search/filter (completed 2026-06-29)
 - [x] **Phase 4: Auth & Database** - Battle.net OAuth via better-auth, Drizzle+Postgres, session-based server function authorization (completed 2026-06-29)
 - [x] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification (completed 2026-06-30)
-- [ ] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state
+- [x] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state (completed 2026-07-01)
 - [ ] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard
 - [ ] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds
 - [ ] **Phase 9: Guided Pathways & Launch** - Pathway overlay with Beginner Fundamentals track, staleness UI, ~25-node content gate, citation review
@@ -242,7 +242,7 @@ Plans:
   2. Passing a quiz updates that node's mastery state to mastered — the graph reflects the update without a page reload, and the source is labeled "quiz" (not manual)
   3. A quiz question cannot be answered correctly by re-reading the node's surface text; questions require genuine recall or application of the concept — a subject-matter expert would agree the question tests understanding
 
-**Plans**: 10/11 plans executed
+**Plans**: 11/11 plans complete
 
 Plans:
 **Wave 1**
@@ -269,7 +269,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 06-11-PLAN.md — Panel integration (in-panel takeover) + CONTEXT.md terms + ADR 010 + end-to-end verify
+- [x] 06-11-PLAN.md — Panel integration (in-panel takeover) + CONTEXT.md terms + ADR 010 + end-to-end verify
 
 **UI hint**: yes
 
@@ -332,7 +332,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Content Pipeline & Node Panel | 9/9 | Complete    | 2026-06-29 |
 | 4. Auth & Database | 7/7 | Complete    | 2026-06-29 |
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
-| 6. Self-Assessment Quizzes | 10/11 | In Progress|  |
+| 6. Self-Assessment Quizzes | 11/11 | Complete   | 2026-07-01 |
 | 7. w3champions Auto-Detection | 0/? | Not started | - |
 | 8. Replay Parsing | 0/? | Not started | - |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
