@@ -6,14 +6,14 @@ current_phase: 08
 current_phase_name: replay-parsing
 status: executing
 stopped_at: Phase 8 context gathered
-last_updated: "2026-07-02T10:24:54.549Z"
+last_updated: "2026-07-02T10:29:36.120Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 75
-  completed_plans: 63
+  completed_plans: 64
   percent: 78
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 08 (replay-parsing) — EXECUTING
-Plan: 2 of 13
+Plan: 3 of 13
 Status: Ready to execute
 Last activity: 2026-07-02 — Phase 08 execution started
 
@@ -116,6 +116,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07 P07 | 6m | 2 tasks | 2 files |
 | Phase 07 P08 | 8min | 3 tasks | 3 files |
 | Phase 08 P02 | 8min | 2 tasks | 3 files |
+| Phase 08 P04 | 6min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -216,6 +217,7 @@ Recent decisions affecting current work:
 - [Phase 07-08]: sync UX wired — useSyncW3championsMutation (D-07 pulse + dual-cache invalidation + D-08/D-10 bucket toasts) + always-live SyncW3championsButton (D-11, staleTime=SYNC_TTL_MS) mounted in UserDropdown; cached grouped with ok; purely additive (AUTO-05)
 - [Phase ?]: masteryStateIndex ordinal order is the drift-guarded mirror of MasteryStateSchema.options (Pitfall 5)
 - [Phase ?]: source enum extended with replay; DB source column already text(), no DDL required (D-01); schema.ts comment deferred to 08-06
+- [Phase ?]: [Phase 08-04]: object-id-maps registry keyed by objectIdMapVersion (D-12); hasOwnProperty guard on plain-object lookup prevents __proto__/constructor false-positive resolves for untrusted replay-supplied ids
 
 ### Pending Todos
 
@@ -238,6 +240,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T10:24:15.375Z
+Last session: 2026-07-02T10:29:14.076Z
 Stopped at: Phase 8 context gathered
 Resume file: .planning/phases/08-replay-parsing/08-CONTEXT.md
