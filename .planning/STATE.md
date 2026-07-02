@@ -6,14 +6,14 @@ current_phase: 08
 current_phase_name: replay-parsing
 status: executing
 stopped_at: Completed 08-05-PLAN.md
-last_updated: "2026-07-02T11:42:53.043Z"
+last_updated: "2026-07-02T11:52:29.330Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 75
-  completed_plans: 71
+  completed_plans: 72
   percent: 78
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 08 (replay-parsing) — EXECUTING
-Plan: 10 of 13
+Plan: 11 of 13
 Status: Ready to execute
 Last activity: 2026-07-02 — Phase 08 execution started
 
@@ -124,6 +124,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P03 | 5min | 1 tasks | 2 files |
 | Phase 08 P05 | 12min | 1 tasks | 2 files |
 | Phase 08 P10 | 12min | 2 tasks | 4 files |
+| Phase 08 P09 | 12min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -235,6 +236,7 @@ Recent decisions affecting current work:
 - [Phase ?]: replay-parser.ts: Player type derived structurally as ParserOutput["players"][number] — w3gjs index.d.ts has no named Player export
 - [Phase 08-replay-parsing]: [Phase 08-05]: replay-signals.ts Pick<> structural-subset input types (ReplayPlayerInput/ReplayParsedInput/SoloMatchInput) tie the pure signal layer to real w3gjs Player/ParserOutput types while keeping fixtures light; expansionTimingMs = first queued townhall-kind building (starting hall pre-placed, never queued); isSoloMatch = players.length === 2 (D-15)
 - [Phase 08]: [Phase 08-10]: build-order-{human,orc,undead,nightelf}.mdx authored — per-race replayCriteria buildOrderTiming thresholds content-authored from creator/pro wisdom (ToD/Grubby/TeD/Moon), calibrated to race identity (Orc fastest 100000ms .. Night Elf slowest 140000ms); target opener units match object-id-maps kind:opener entries from 08-04
+- [Phase ?]: [Phase 08-09]: detectReplaySignals mirrors detect-mastery-signals.ts filter-chain shape but omits D-05 untouched-only filter (D-11); buildOrderTiming resolves opener via object-id-maps kind=opener with no node.race field needed; controlGroupUsage aggregates summed used across groups, heroTiming targets earliest hero-buy entry
 
 ### Pending Todos
 
@@ -257,6 +259,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T11:41:56.337Z
+Last session: 2026-07-02T11:51:57.396Z
 Stopped at: Completed 08-05-PLAN.md
 Resume file: None
