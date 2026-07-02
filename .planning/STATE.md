@@ -6,14 +6,14 @@ current_phase: 08
 current_phase_name: replay-parsing
 status: executing
 stopped_at: Completed 08-06-PLAN.md
-last_updated: "2026-07-02T11:00:21.239Z"
+last_updated: "2026-07-02T11:21:13.552Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 75
-  completed_plans: 67
+  completed_plans: 68
   percent: 78
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 08 (replay-parsing) — EXECUTING
-Plan: 6 of 13
+Plan: 7 of 13
 Status: Ready to execute
 Last activity: 2026-07-02 — Phase 08 execution started
 
@@ -120,6 +120,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P07 | 12min | 2 tasks | 3 files |
 | Phase 08 P08 | 8min | 2 tasks | 3 files |
 | Phase 08-replay-parsing P06 | 12min | 2 tasks | 2 files |
+| Phase 08 P01 | 25min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -225,6 +226,9 @@ Recent decisions affecting current work:
 - [Phase 08-08]: fetchReplayBytes lives in existing w3champions-client.ts (not new file) — single module owns every outbound call to the w3champions host
 - [Phase 08-08]: ReplayDownloadResult kept distinct from W3cSyncResult (ok branch carries bytes vs signals) rather than a shared generic type
 - [Phase ?]: replayAnalysis uses global gameId-only unique index (D-17); buildNumber + patchId both stored (D-12); no raw .w3g bytes stored
+- [Phase ?]: [Phase 08-01]: w3gjs@4.1.0 human-verified legitimate (SUS gate cleared); parse INLINE in principal-keyed replay server fn (ADR 011) -- measured ~110-150ms wall time, negligible heap delta, 99.7%+ headroom under Vercel 60s/2GB limits
+- [Phase ?]: [Phase 08-01]: 4MB client-side upload cap (ADR 011) binding on plan 08-12 -- derived from Vercel 4.5MB body limit + TanStack Start FormData buffering (RESEARCH Pitfall 1)
+- [Phase ?]: [Phase 08-01]: wc3v (Spike 3) parse cost deferred to plan 08-13 go/no-go checkpoint -- ADR 011 inline decision scoped to base w3gjs layer only
 
 ### Pending Todos
 
@@ -247,6 +251,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T11:00:21.230Z
+Last session: 2026-07-02T11:20:04.420Z
 Stopped at: Completed 08-06-PLAN.md
 Resume file: None
