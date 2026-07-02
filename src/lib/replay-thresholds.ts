@@ -72,6 +72,14 @@ export interface ReplayNodeResult {
   nodeId: string;
   /** D-02 — replay is mastered-capable; always "mastered". */
   targetState: MasteryState;
+  /**
+   * Whether the measured value met the node's threshold. REPLAY-07: every
+   * evaluated MECHANIC node is emitted (met OR not) so the feedback report can
+   * render "you did X; target is Z" even on a MISS. ONLY `met === true`
+   * results are eligible for the mastery write (the caller filters on this
+   * before `writeMonotonicMax`) — reporting a node must never advance it.
+   */
+  met: boolean;
   /** The measured value from the replay signals; null when no signal was observed. */
   actual: number | null;
   /** The content-authored threshold the actual value was measured against. */
@@ -86,14 +94,22 @@ export interface ReplayNodeResult {
  * Pure filter chain (order matters — MECHANIC/replayCriteria filters run
  * first, mirroring `detectMasterySignals`'s structure):
  *   1. nodeType === "MECHANIC"          (only MECHANIC nodes evaluated)
- *   2. replayCriteria !== undefined     (no criterion => never advances)
+ *   2. replayCriteria !== undefined     (no criterion => never emitted)
  *   3. meetsReplayThreshold(...)        (per-signal actual-vs-target compare)
- *   4. map to ReplayNodeResult          (D-02 mastered + actual/target/signal)
+ *   4. map to ReplayNodeResult          (D-02 mastered + met + actual/target/signal)
  *
- * @param nodes All content nodes (only MECHANIC + replayCriteria ones can qualify).
+ * REPLAY-07 (feedback completeness): unlike a pure advancement detector, this
+ * emits EVERY evaluated MECHANIC+replayCriteria node — met OR not — so the
+ * report can render "you did X; target is Z" even on a miss (a null/short
+ * actual). The `met` flag distinguishes the two; the WRITE path
+ * (`writeMonotonicMax`) filters to `met === true` so reporting a node never
+ * advances it. Emitting an unmet node here is intentionally NOT a mastery
+ * signal.
+ *
+ * @param nodes All content nodes (only MECHANIC + replayCriteria ones are emitted).
  * @param signals The derived replay signals for this replay (replay-signals.ts).
  * @param patchId The replay's own patch id — resolves the correct objectIdMapVersion (REPLAY-08).
- * @returns Per-node mastered-capable results carrying actual+target for REPLAY-07 feedback.
+ * @returns Per-node results (met and unmet) carrying met+actual+target for REPLAY-07 feedback.
  */
 export function detectReplaySignals(
   nodes: ReplayThresholdInput[],
@@ -105,10 +121,10 @@ export function detectReplaySignals(
     if (node.nodeType !== "MECHANIC") continue;
     if (node.replayCriteria === undefined) continue;
     const evaluated = meetsReplayThreshold(node.replayCriteria, signals, patchId);
-    if (!evaluated.met) continue;
     results.push({
       nodeId: node.id,
       targetState: "mastered",
+      met: evaluated.met,
       actual: evaluated.actual,
       target: evaluated.target,
       signal: node.replayCriteria.signal,

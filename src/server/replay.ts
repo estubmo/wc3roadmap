@@ -316,7 +316,14 @@ async function analyzeAndWrite(
     return { signals: toSignalItems(nodeResults), advanced: [] };
   }
 
-  const advanced = await writeMonotonicMax(nodeResults, principal, patchId);
+  // REPLAY-07 split: the report shows EVERY evaluated node (met + miss), but
+  // only `met` results are eligible for the mastery write. Reporting a node
+  // must never advance it.
+  const advanced = await writeMonotonicMax(
+    nodeResults.filter((r) => r.met),
+    principal,
+    patchId,
+  );
   return { signals: toSignalItems(nodeResults), advanced };
 }
 
@@ -478,11 +485,16 @@ export async function pullReplaysHandler({ context }: AuthedContext): Promise<Re
       anyCached = true;
       const payload = JSON.parse(cached.signals) as CachedReplayPayload;
       const nodeResults = detectReplaySignals(contentNodes(), payload.signals, cached.patchId);
-      signals.push(...toSignalItems(nodeResults));
+      signals.push(...toSignalItems(nodeResults)); // report: every evaluated node (met + miss)
       // D-15 / Pitfall 7: structural gate on the cached flag — a cache hit
       // has no raw ParserOutput to re-derive player count from.
       if (payload.isSolo) {
-        const raised = await writeMonotonicMax(nodeResults, principal, cached.patchId);
+        // Only `met` results advance mastery (REPLAY-07 split).
+        const raised = await writeMonotonicMax(
+          nodeResults.filter((r) => r.met),
+          principal,
+          cached.patchId,
+        );
         advanced.push(...raised);
       }
       continue;
@@ -531,10 +543,15 @@ export async function pullReplaysHandler({ context }: AuthedContext): Promise<Re
 
     anyFresh = true;
     const nodeResults = detectReplaySignals(contentNodes(), derivedSignals, patchId);
-    signals.push(...toSignalItems(nodeResults));
+    signals.push(...toSignalItems(nodeResults)); // report: every evaluated node (met + miss)
 
     if (solo) {
-      const raised = await writeMonotonicMax(nodeResults, principal, patchId);
+      // Only `met` results advance mastery (REPLAY-07 split) — see analyzeAndWrite.
+      const raised = await writeMonotonicMax(
+        nodeResults.filter((r) => r.met),
+        principal,
+        patchId,
+      );
       advanced.push(...raised);
     }
     // D-15: non-solo matches still report signals but never advance (no write call above).

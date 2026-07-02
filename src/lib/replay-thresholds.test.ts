@@ -14,10 +14,15 @@
  *     is trivially met.
  *   - replayCriteria-required: a MECHANIC node with no replayCriteria never
  *     emits (graceful default).
- *   - Each of the five signal variants emits on a met threshold and does not
- *     emit on a missed one, boundary-tested where applicable.
- *   - Every emitted result carries { nodeId, targetState: "mastered", actual,
- *     target, signal } — the REPLAY-07 feedback contract.
+ *   - REPLAY-07 report completeness: EVERY evaluated MECHANIC+replayCriteria
+ *     node is emitted — met OR not — carrying a `met` flag plus actual+target
+ *     so the report can render "you did X; target is Z" on a miss. Only
+ *     `met === true` results are eligible for advancement (the write path
+ *     filters on `met`); a miss emits `met: false` and never advances.
+ *   - Each of the five signal variants sets met=true on a met threshold and
+ *     met=false on a missed one, boundary-tested where applicable.
+ *   - Every emitted result carries { nodeId, targetState: "mastered", met,
+ *     actual, target, signal } — the REPLAY-07 feedback contract.
  *   - Purity: identical input produces deep-equal output across calls.
  *   - NOT untouched-only (D-11): the function signature carries no
  *     existingProgressNodeIds parameter at all — it is free to retarget any
@@ -104,7 +109,7 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
     replayCriteria: { signal: "buildOrderTiming", beforeMs: 120000 },
   };
 
-  it("emits when the opener-kind unit is queued before beforeMs", () => {
+  it("emits met when the opener-kind unit is queued before beforeMs", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       buildOrder: [{ unitOrBuildingId: "hfoo", ms: 100000 }],
@@ -113,6 +118,7 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
       {
         nodeId: "build-order-human",
         targetState: "mastered",
+        met: true,
         actual: 100000,
         target: 120000,
         signal: "buildOrderTiming",
@@ -120,23 +126,41 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
     ]);
   });
 
-  it("does not emit at the exact boundary (ms === beforeMs is not 'before')", () => {
+  it("emits met:false (not omitted) at the exact boundary (ms === beforeMs is not 'before')", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       buildOrder: [{ unitOrBuildingId: "hfoo", ms: 120000 }],
     };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "build-order-human",
+        targetState: "mastered",
+        met: false,
+        actual: 120000,
+        target: 120000,
+        signal: "buildOrderTiming",
+      },
+    ]);
   });
 
-  it("does not emit when the opener-kind unit is queued after beforeMs", () => {
+  it("emits met:false when the opener-kind unit is queued after beforeMs", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       buildOrder: [{ unitOrBuildingId: "hfoo", ms: 150000 }],
     };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "build-order-human",
+        targetState: "mastered",
+        met: false,
+        actual: 150000,
+        target: 120000,
+        signal: "buildOrderTiming",
+      },
+    ]);
   });
 
-  it("does not emit when no opener-kind unit was ever queued (worker/townhall only)", () => {
+  it("emits met:false with actual:null when no opener-kind unit was ever queued (worker/townhall only)", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       buildOrder: [
@@ -144,7 +168,16 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
         { unitOrBuildingId: "htow", ms: 200 },
       ],
     };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "build-order-human",
+        targetState: "mastered",
+        met: false,
+        actual: null,
+        target: 120000,
+        signal: "buildOrderTiming",
+      },
+    ]);
   });
 
   it("resolves the correct opener across all four races without a node.race field", () => {
@@ -157,9 +190,23 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
       ...emptySignals,
       buildOrder: [{ unitOrBuildingId: "ogru", ms: 90000 }],
     };
-    expect(detectReplaySignals([orcNode], signals, PATCH_ID).map((r) => r.nodeId)).toEqual([
-      "build-order-orc",
-    ]);
+    const results = detectReplaySignals([orcNode], signals, PATCH_ID);
+    expect(results.map((r) => r.nodeId)).toEqual(["build-order-orc"]);
+    expect(results[0]?.met).toBe(true);
+  });
+
+  it("resolves a broadened opener (orc headhunter ohun, not just grunt)", () => {
+    const orcNode: ReplayThresholdInput = {
+      id: "build-order-orc",
+      nodeType: "MECHANIC",
+      replayCriteria: { signal: "buildOrderTiming", beforeMs: 100000 },
+    };
+    const signals: ReplaySignals = {
+      ...emptySignals,
+      buildOrder: [{ unitOrBuildingId: "ohun", ms: 80000 }],
+    };
+    const results = detectReplaySignals([orcNode], signals, PATCH_ID);
+    expect(results[0]).toMatchObject({ met: true, actual: 80000, signal: "buildOrderTiming" });
   });
 });
 
@@ -174,11 +221,12 @@ describe("detectReplaySignals — eapm (boundary inclusive)", () => {
     replayCriteria: { signal: "eapm", gte: 100 },
   };
 
-  it("emits when eapm is above the threshold", () => {
+  it("emits met when eapm is above the threshold", () => {
     expect(detectReplaySignals([node], { ...emptySignals, eapm: 101 }, PATCH_ID)).toEqual([
       {
         nodeId: "eapm-mechanic",
         targetState: "mastered",
+        met: true,
         actual: 101,
         target: 100,
         signal: "eapm",
@@ -186,14 +234,23 @@ describe("detectReplaySignals — eapm (boundary inclusive)", () => {
     ]);
   });
 
-  it("emits when eapm equals the threshold (inclusive boundary)", () => {
-    expect(
-      detectReplaySignals([node], { ...emptySignals, eapm: 100 }, PATCH_ID).map((r) => r.nodeId),
-    ).toEqual(["eapm-mechanic"]);
+  it("emits met when eapm equals the threshold (inclusive boundary)", () => {
+    const results = detectReplaySignals([node], { ...emptySignals, eapm: 100 }, PATCH_ID);
+    expect(results.map((r) => r.nodeId)).toEqual(["eapm-mechanic"]);
+    expect(results[0]?.met).toBe(true);
   });
 
-  it("does not emit when eapm is below the threshold", () => {
-    expect(detectReplaySignals([node], { ...emptySignals, eapm: 99 }, PATCH_ID)).toEqual([]);
+  it("emits met:false when eapm is below the threshold", () => {
+    expect(detectReplaySignals([node], { ...emptySignals, eapm: 99 }, PATCH_ID)).toEqual([
+      {
+        nodeId: "eapm-mechanic",
+        targetState: "mastered",
+        met: false,
+        actual: 99,
+        target: 100,
+        signal: "eapm",
+      },
+    ]);
   });
 });
 
@@ -208,7 +265,7 @@ describe("detectReplaySignals — controlGroupUsage (aggregate 'used' across gro
     replayCriteria: { signal: "controlGroupUsage", gte: 20 },
   };
 
-  it("emits when the summed 'used' count across groups meets the threshold", () => {
+  it("emits met when the summed 'used' count across groups meets the threshold", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       controlGroupUsage: [
@@ -220,6 +277,7 @@ describe("detectReplaySignals — controlGroupUsage (aggregate 'used' across gro
       {
         nodeId: "hotkey-discipline",
         targetState: "mastered",
+        met: true,
         actual: 20,
         target: 20,
         signal: "controlGroupUsage",
@@ -227,12 +285,21 @@ describe("detectReplaySignals — controlGroupUsage (aggregate 'used' across gro
     ]);
   });
 
-  it("does not emit when the summed 'used' count is below the threshold", () => {
+  it("emits met:false when the summed 'used' count is below the threshold", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       controlGroupUsage: [{ groupId: 1, assigned: 5, used: 10 }],
     };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "hotkey-discipline",
+        targetState: "mastered",
+        met: false,
+        actual: 10,
+        target: 20,
+        signal: "controlGroupUsage",
+      },
+    ]);
   });
 });
 
@@ -247,7 +314,7 @@ describe("detectReplaySignals — heroTiming (earliest hero-buy entry)", () => {
     replayCriteria: { signal: "heroTiming", beforeMs: 30000 },
   };
 
-  it("emits when the earliest hero-buy entry occurs before beforeMs", () => {
+  it("emits met when the earliest hero-buy entry occurs before beforeMs", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       heroTiming: [{ heroId: "hmkg", level: 1, ms: 20000 }],
@@ -256,6 +323,7 @@ describe("detectReplaySignals — heroTiming (earliest hero-buy entry)", () => {
       {
         nodeId: "hero-timing",
         targetState: "mastered",
+        met: true,
         actual: 20000,
         target: 30000,
         signal: "heroTiming",
@@ -263,16 +331,34 @@ describe("detectReplaySignals — heroTiming (earliest hero-buy entry)", () => {
     ]);
   });
 
-  it("does not emit when the earliest hero-buy entry occurs after beforeMs", () => {
+  it("emits met:false when the earliest hero-buy entry occurs after beforeMs", () => {
     const signals: ReplaySignals = {
       ...emptySignals,
       heroTiming: [{ heroId: "hmkg", level: 1, ms: 40000 }],
     };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "hero-timing",
+        targetState: "mastered",
+        met: false,
+        actual: 40000,
+        target: 30000,
+        signal: "heroTiming",
+      },
+    ]);
   });
 
-  it("does not emit when no hero was ever bought", () => {
-    expect(detectReplaySignals([node], emptySignals, PATCH_ID)).toEqual([]);
+  it("emits met:false with actual:null when no hero was ever bought", () => {
+    expect(detectReplaySignals([node], emptySignals, PATCH_ID)).toEqual([
+      {
+        nodeId: "hero-timing",
+        targetState: "mastered",
+        met: false,
+        actual: null,
+        target: 30000,
+        signal: "heroTiming",
+      },
+    ]);
   });
 });
 
@@ -287,12 +373,13 @@ describe("detectReplaySignals — expansionTiming", () => {
     replayCriteria: { signal: "expansionTiming", beforeMs: 300000 },
   };
 
-  it("emits when expansionTimingMs occurs before beforeMs", () => {
+  it("emits met when expansionTimingMs occurs before beforeMs", () => {
     const signals: ReplaySignals = { ...emptySignals, expansionTimingMs: 250000 };
     expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
       {
         nodeId: "expansion-timing",
         targetState: "mastered",
+        met: true,
         actual: 250000,
         target: 300000,
         signal: "expansionTiming",
@@ -300,13 +387,49 @@ describe("detectReplaySignals — expansionTiming", () => {
     ]);
   });
 
-  it("does not emit when expansionTimingMs is null (no expansion detected)", () => {
-    expect(detectReplaySignals([node], emptySignals, PATCH_ID)).toEqual([]);
+  it("emits met:false with actual:null when expansionTimingMs is null (no expansion detected)", () => {
+    expect(detectReplaySignals([node], emptySignals, PATCH_ID)).toEqual([
+      {
+        nodeId: "expansion-timing",
+        targetState: "mastered",
+        met: false,
+        actual: null,
+        target: 300000,
+        signal: "expansionTiming",
+      },
+    ]);
   });
 
-  it("does not emit when expansionTimingMs occurs after beforeMs", () => {
+  it("emits met:false when expansionTimingMs occurs after beforeMs", () => {
     const signals: ReplaySignals = { ...emptySignals, expansionTimingMs: 350000 };
-    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([]);
+    expect(detectReplaySignals([node], signals, PATCH_ID)).toEqual([
+      {
+        nodeId: "expansion-timing",
+        targetState: "mastered",
+        met: false,
+        actual: 350000,
+        target: 300000,
+        signal: "expansionTiming",
+      },
+    ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Report/advance split (REPLAY-07)
+// ---------------------------------------------------------------------------
+
+describe("detectReplaySignals — report/advance split (REPLAY-07)", () => {
+  it("emits both a met and an unmet node from a mixed list; only the met one is advancement-eligible", () => {
+    const nodes: ReplayThresholdInput[] = [
+      { id: "eapm-hit", nodeType: "MECHANIC", replayCriteria: { signal: "eapm", gte: 50 } },
+      { id: "eapm-miss", nodeType: "MECHANIC", replayCriteria: { signal: "eapm", gte: 200 } },
+    ];
+    const results = detectReplaySignals(nodes, { ...emptySignals, eapm: 100 }, PATCH_ID);
+    // Report sees BOTH nodes (feedback completeness)...
+    expect(results.map((r) => r.nodeId).sort()).toEqual(["eapm-hit", "eapm-miss"]);
+    // ...but only the met one is eligible for the write path.
+    expect(results.filter((r) => r.met).map((r) => r.nodeId)).toEqual(["eapm-hit"]);
   });
 });
 

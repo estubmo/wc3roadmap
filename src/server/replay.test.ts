@@ -81,9 +81,18 @@ const allNodesFixture = [
   { id: "creep-routing", nodeType: "MECHANIC", replayCriteria: { signal: "eapm", gte: 80 } },
 ];
 
-/** Default detectReplaySignals result: one node meeting its threshold. */
+/** Default detectReplaySignals result: one node meeting its threshold.
+ * `met: true` marks it advancement-eligible (REPLAY-07 report/advance split —
+ * the server filters `.met` before writing). */
 const defaultNodeResults = [
-  { nodeId: "creep-routing", targetState: "mastered", actual: 100, target: 80, signal: "eapm" },
+  {
+    nodeId: "creep-routing",
+    targetState: "mastered",
+    met: true,
+    actual: 100,
+    target: 80,
+    signal: "eapm",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -343,6 +352,47 @@ describe("uploadReplayHandler — monotonic-max write (D-02/D-03/D-04)", () => {
     expect(insert?.values?.userId).toBe(principalA.id);
     expect(insert?.values?.userId).not.toBe("attacker");
     expect(insert?.values?.source).toBe("replay");
+  });
+
+  it("reports a missed node (met:false) but advances only the met one (REPLAY-07 report/advance split)", async () => {
+    mocks.detectReplaySignals.mockReturnValue([
+      {
+        nodeId: "creep-routing",
+        targetState: "mastered",
+        met: true,
+        actual: 100,
+        target: 80,
+        signal: "eapm",
+      },
+      {
+        nodeId: "build-order-human",
+        targetState: "mastered",
+        met: false,
+        actual: 150000,
+        target: 120000,
+        signal: "buildOrderTiming",
+      },
+    ]);
+
+    const { uploadReplayHandler } = await importReplay();
+    const result = await uploadReplayHandler({
+      context: { principal: principalA },
+      data: makeUploadFormData(),
+    });
+
+    // Report shows BOTH nodes — the miss is NOT silently dropped (the bug this fixes).
+    expect(result.signals.map((s) => s.nodeId).sort()).toEqual([
+      "build-order-human",
+      "creep-routing",
+    ]);
+    expect(result.signals.find((s) => s.nodeId === "build-order-human")).toMatchObject({
+      actual: 150000,
+      target: 120000,
+    });
+    // ...but only the met node advances, and only one DB write fires.
+    expect(result.advanced).toEqual(["creep-routing"]);
+    expect(nodeProgressInserts()).toHaveLength(1);
+    expect(nodeProgressInserts()[0]?.values?.nodeId).toBe("creep-routing");
   });
 
   it("a non-1v1 (team/FFA) fixture returns signals but advances zero nodes (D-15)", async () => {
