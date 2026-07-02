@@ -322,7 +322,22 @@ Plans:
   4. The wc3v fork integration provides advanced analysis output (supply curves, precise expansion detection, compare-to-pro signals) as an additional analysis layer on top of w3gjs base signals
   5. Users can trigger auto-pull of recent w3champions replays from their profile (after rate-limit confirmation via the w3champions API token); parsed results are cached by gameId so the same replay is never re-parsed
 
-**Plans**: TBD
+**Plans**: 13 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Wave 0: w3gjs legitimacy checkpoint + install + parse/endpoint spike (ADR 011)
+- [ ] 08-02-PLAN.md — mastery-ordinal helper + progress source enum +replay (D-01)
+- [ ] 08-03-PLAN.md — parseReplay w3gjs Buffer wrapper (fail-safe)
+- [ ] 08-04-PLAN.md — patch-aware object-ID maps (D-12)
+- [ ] 08-05-PLAN.md — pure semantic signal layer + 1v1 gate (D-11/D-15)
+- [ ] 08-06-PLAN.md — replayAnalysis cache table + [BLOCKING] drizzle-kit push (D-17)
+- [ ] 08-07-PLAN.md — replayCriteria frontmatter + content-collections mirror
+- [ ] 08-08-PLAN.md — fetchReplayBytes SSRF-guarded download + replay-keys
+- [ ] 08-09-PLAN.md — pure patch-aware threshold detector (feedback data)
+- [ ] 08-10-PLAN.md — 4 canonical build-order MECHANIC nodes, one per race (D-10)
+- [ ] 08-11-PLAN.md — server orchestration: upload/pull/read + monotonic-max write (D-03/D-04)
+- [ ] 08-12-PLAN.md — /replays route + upload/pull hooks + actionable report
+- [ ] 08-13-PLAN.md — wc3v advanced-analysis layer (isolatable/descopable, D-06/D-07)
 
 ### Phase 9: Guided Pathways & Launch
 
