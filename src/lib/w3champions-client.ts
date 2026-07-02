@@ -217,3 +217,47 @@ function statusShortCircuit(status: number): W3cSyncResult | undefined {
   if (status >= 200 && status < 300) return undefined;
   return classifyW3championsResponse({ kind: "http", status });
 }
+
+// ---------------------------------------------------------------------------
+// Replay auto-pull download primitive (REPLAY-05, T-08-08a/b)
+// ---------------------------------------------------------------------------
+
+/** Discriminated status buckets for a replay-bytes download attempt. */
+export type ReplayDownloadStatus = "ok" | "rate-limited" | "no-data" | "unreachable";
+
+/** Tagged result: `bytes` present only when `status === "ok"`. */
+export interface ReplayDownloadResult {
+  status: ReplayDownloadStatus;
+  bytes?: Buffer;
+}
+
+/**
+ * Download the raw `.w3g` bytes for a w3champions `gameId` via the public,
+ * unauthenticated `GET /api/replays/{gameId}` endpoint (Spike 2 — no bearer
+ * token required for the base download).
+ *
+ * PITFALL 8 (watch item, not solved here): the w3champions replay-download
+ * endpoint rate-limits per caller (IP or API token), not per end-user — at
+ * v1-scale traffic this project's serverless egress shares one budget across
+ * all users. Accepted per T-08-08c; an API-token partition is the future
+ * mitigation if traffic grows.
+ *
+ * Reuses the exact SSRF guard from `fetchW3championsSignals` (T-07-06a
+ * precedent, now T-08-08a): the URL is built ONLY from the hardcoded
+ * `W3C_BASE_URL` host plus an `encodeURIComponent`-ed `gameId` — never any
+ * other field. Never forwards upstream status codes or bodies (T-07-06c /
+ * T-08-08b) — every outcome collapses to an opaque bucket.
+ */
+export async function fetchReplayBytes(gameId: string): Promise<ReplayDownloadResult> {
+  try {
+    const res = await fetch(
+      `${W3C_BASE_URL}/api/replays/${encodeURIComponent(gameId)}`,
+    );
+    if (res.status === 429) return { status: "rate-limited" };
+    if (!res.ok) return { status: "no-data" };
+    return { status: "ok", bytes: Buffer.from(await res.arrayBuffer()) };
+  } catch {
+    // Network throw / timeout — never leak the underlying error (T-08-08b).
+    return { status: "unreachable" };
+  }
+}
