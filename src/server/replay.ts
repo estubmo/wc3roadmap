@@ -46,20 +46,20 @@
  * fields (per D-12) means a future, more precise buildNumber -> patch
  * resolution can be added without re-parsing any cached replay.
  *
- * Recent-gameId resolution ([ASSUMED], pullReplaysHandler only): the
- * w3champions API exposes a global, unauthenticated "recent matches" feed
- * (`GET /api/matches?gameMode=1&offset&pageSize`, confirmed live during this
- * plan — the same endpoint 08-01's fixture-sourcing spike used) but no
- * verified player-scoped server-side filter parameter was found in this
- * session (unlike the RESEARCH-cited `/api/replays/{gameId}` download
- * endpoint). `resolveRecentGameIds` queries the general feed and filters
- * CLIENT-SIDE for matches containing the principal's own BattleTag (reusing
- * the same normalized-comparison discipline as the player-slot match below)
- * — correct regardless of whether the upstream endpoint's query params do
- * any server-side filtering, at the cost of only searching the most recent
- * page of the global feed. If this proves too shallow in practice, a future
- * plan should re-verify the upstream API for a proper player-scoped search
- * endpoint.
+ * Recent-gameId resolution (pullReplaysHandler only): the w3champions API
+ * exposes a public, unauthenticated PLAYER-SCOPED search endpoint
+ * (`GET /api/matches/search?playerId={battleTag}&season={n}&gameMode=1&offset&pageSize`,
+ * confirmed live during 08-12 verification). `season` is REQUIRED (the search
+ * returns zero without it); `gateway` is NOT required (so this is
+ * region-agnostic — a US and an EU player both resolve correctly). The
+ * current season is resolved live from `GET /api/ladder/seasons` (max id),
+ * with a constant fallback if that lookup fails. An earlier revision queried
+ * the GLOBAL `/api/matches` feed and filtered client-side for the principal's
+ * BattleTag — which almost never contained the player's own games (only the
+ * most recent global page), producing a spurious "no recent replays". The
+ * player-scoped endpoint fixes that at the source. Never accepts a gameId
+ * from client input (ADR 007) — `battleTag` is the only input, always from
+ * `context.principal`.
  *
  * Exported handlers follow the same testability pattern as
  * `syncW3championsHandler` / `recordQuizPassHandler`: named async functions
@@ -403,7 +403,7 @@ export const uploadReplay = createServerFn({ method: "POST" })
 /** How many most-recent 1v1 matches to scan for the principal (see module doc). */
 const RECENT_MATCHES_PAGE_SIZE = 25;
 
-/** Minimal Zod shape read from the general `/api/matches` feed (see module doc, "Recent-gameId resolution"). */
+/** Minimal Zod shape read from the player-scoped `/api/matches/search` feed (see module doc, "Recent-gameId resolution"). */
 const RecentMatchSchema = z.object({
   id: z.string(),
   teams: z.array(
@@ -416,31 +416,60 @@ const RecentMatchesResponseSchema = z.object({
   matches: z.array(RecentMatchSchema),
 });
 
+/** Shape read from `/api/ladder/seasons` — an array of `{ id }`, newest first. */
+const SeasonsResponseSchema = z.array(z.object({ id: z.number() }));
+
 /**
- * Resolve candidate gameIds for the principal from the general w3champions
- * "recent matches" feed, filtered client-side by BattleTag (see module doc —
- * no verified player-scoped upstream filter was found this session). Never
- * accepts a gameId from client input (ADR 007) — `battleTag` is the only
- * input, always sourced from `context.principal`.
+ * Fallback current season used only if the live `/api/ladder/seasons` lookup
+ * fails — the search endpoint REQUIRES a season, so a hard failure would break
+ * pull entirely. Kept roughly current; the live lookup below is the primary
+ * source and self-updates as new seasons open.
+ */
+const CURRENT_SEASON_FALLBACK = 25;
+
+/**
+ * Resolve the current (highest-id) w3champions ladder season. The
+ * player-scoped match search requires a season parameter. On any failure
+ * (network, hostile JSON), degrade to `CURRENT_SEASON_FALLBACK` rather than
+ * breaking pull — never leak upstream error detail (T-07-06c precedent).
+ */
+async function resolveCurrentSeason(): Promise<number> {
+  try {
+    const res = await fetch(`${W3C_BASE_URL}/api/ladder/seasons`);
+    if (!res.ok) return CURRENT_SEASON_FALLBACK;
+    const seasons = SeasonsResponseSchema.parse(await res.json());
+    const maxId = seasons.reduce((max, s) => Math.max(max, s.id), 0);
+    return maxId > 0 ? maxId : CURRENT_SEASON_FALLBACK;
+  } catch {
+    return CURRENT_SEASON_FALLBACK;
+  }
+}
+
+/**
+ * Resolve recent gameIds for the principal from the w3champions PLAYER-SCOPED
+ * match search (see module doc — `season` required, `gateway` not, so this is
+ * region-agnostic). The endpoint already returns only the player's own games,
+ * so every returned match is theirs — no client-side BattleTag filter is
+ * needed (and filtering here was the source of the old "no recent replays"
+ * bug when it ran against the global feed). Never accepts a gameId from client
+ * input (ADR 007) — `battleTag` is the only input, always from `context.principal`.
  */
 async function resolveRecentGameIds(
   battleTag: string,
 ): Promise<{ status: ReplayStatus; gameIds: string[] }> {
-  const target = normalizePlayerName(battleTag);
+  if (normalizePlayerName(battleTag) === "") return { status: "no-data", gameIds: [] };
 
   try {
+    const season = await resolveCurrentSeason();
     const res = await fetch(
-      `${W3C_BASE_URL}/api/matches?gameMode=1&offset=0&pageSize=${RECENT_MATCHES_PAGE_SIZE}`,
+      `${W3C_BASE_URL}/api/matches/search?playerId=${encodeURIComponent(battleTag)}` +
+        `&season=${season}&gameMode=1&offset=0&pageSize=${RECENT_MATCHES_PAGE_SIZE}`,
     );
     if (res.status === 429) return { status: "rate-limited", gameIds: [] };
     if (!res.ok) return { status: "no-data", gameIds: [] };
 
     const parsed = RecentMatchesResponseSchema.parse(await res.json());
-    const gameIds = parsed.matches
-      .filter((m) =>
-        m.teams.some((t) => t.players.some((p) => normalizePlayerName(p.battleTag) === target)),
-      )
-      .map((m) => m.id);
+    const gameIds = parsed.matches.map((m) => m.id);
 
     return { status: gameIds.length > 0 ? "ok" : "no-data", gameIds };
   } catch {

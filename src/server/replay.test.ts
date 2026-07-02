@@ -156,17 +156,29 @@ beforeEach(() => {
   const fetchReplayBytes = vi
     .fn()
     .mockResolvedValue({ status: "ok", bytes: Buffer.from("fake-w3g-bytes") });
-  const fetchGlobal = vi.fn().mockResolvedValue({
-    ok: true,
-    status: 200,
-    json: async () => ({
-      matches: [
-        {
-          id: "gid-1",
-          teams: [{ players: [{ battleTag: "Player#1234" }] }],
-        },
-      ],
-    }),
+  // URL-aware fetch mock: the pull path hits TWO endpoints — the seasons
+  // lookup (resolveCurrentSeason) then the player-scoped match search.
+  const fetchGlobal = vi.fn((url: string) => {
+    if (typeof url === "string" && url.includes("/api/ladder/seasons")) {
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => [{ id: 25 }, { id: 24 }],
+      });
+    }
+    // Default: the player-scoped /api/matches/search response.
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        matches: [
+          {
+            id: "gid-1",
+            teams: [{ players: [{ battleTag: "Player#1234" }] }],
+          },
+        ],
+      }),
+    });
   });
 
   const defaultReturningImpl = (rec: InsertRecord): unknown[] => {
@@ -564,12 +576,31 @@ describe("pullReplaysHandler — gameId cache-gate (D-17)", () => {
     }
   });
 
-  it("resolves candidate gameIds from the principal's own battleTag, never from client input", async () => {
+  it("resolves candidate gameIds via the player-scoped search, keyed on the principal's own battleTag", async () => {
     const { pullReplaysHandler } = await importReplay();
     await pullReplaysHandler({ context: { principal: principalA } });
 
-    expect(mocks.fetchGlobal).toHaveBeenCalledWith(
-      expect.stringContaining("/api/matches?gameMode=1"),
+    // Hits the player-scoped search endpoint with the principal's encoded
+    // BattleTag + a season + 1v1 filter — never the global feed, never a
+    // client-supplied id (ADR 007).
+    const searchCall = mocks.fetchGlobal.mock.calls
+      .map((c) => c[0] as string)
+      .find((u) => u.includes("/api/matches/search"));
+    expect(searchCall).toBeDefined();
+    expect(searchCall).toContain(`playerId=${encodeURIComponent(principalA.battleTag)}`);
+    expect(searchCall).toContain("season=");
+    expect(searchCall).toContain("gameMode=1");
+  });
+
+  it("resolves the current season from the seasons endpoint before searching", async () => {
+    const { pullReplaysHandler } = await importReplay();
+    await pullReplaysHandler({ context: { principal: principalA } });
+
+    const urls = mocks.fetchGlobal.mock.calls.map((c) => c[0] as string);
+    expect(urls.some((u) => u.includes("/api/ladder/seasons"))).toBe(true);
+    // Season 25 (max from the mocked seasons list) is threaded into the search.
+    expect(urls.some((u) => u.includes("/api/matches/search") && u.includes("season=25"))).toBe(
+      true,
     );
   });
 });
