@@ -322,13 +322,13 @@ Plans:
   4. The wc3v fork integration provides advanced analysis output (supply curves, precise expansion detection, compare-to-pro signals) as an additional analysis layer on top of w3gjs base signals
   5. Users can trigger auto-pull of recent w3champions replays from their profile (after rate-limit confirmation via the w3champions API token); parsed results are cached by gameId so the same replay is never re-parsed
 
-**Plans**: 13 plans
+**Plans**: 1/13 plans executed
 
 Plans:
 **Wave 1**
 
 - [ ] 08-01-PLAN.md — Wave 0: w3gjs legitimacy checkpoint + install + parse/endpoint spike (ADR 011)
-- [ ] 08-02-PLAN.md — mastery-ordinal helper + progress source enum +replay (D-01)
+- [x] 08-02-PLAN.md — mastery-ordinal helper + progress source enum +replay (D-01)
 - [ ] 08-03-PLAN.md — parseReplay w3gjs Buffer wrapper (fail-safe)
 - [ ] 08-04-PLAN.md — patch-aware object-ID maps (D-12)
 - [ ] 08-05-PLAN.md — pure semantic signal layer + 1v1 gate (D-11/D-15)
@@ -383,5 +383,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
 | 7. w3champions Auto-Detection | 8/8 | Complete    | 2026-07-01 |
-| 8. Replay Parsing | 0/? | Not started | - |
+| 8. Replay Parsing | 1/13 | In Progress|  |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
