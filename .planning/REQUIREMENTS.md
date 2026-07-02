@@ -76,7 +76,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **REPLAY-01**: Parse `.w3g` replays with w3gjs to extract mechanical signals (build-order timings, APM/eAPM, control-group/hotkey use, hero/item build timing, unit/upgrade timeline)
 - [x] **REPLAY-02**: A semantic-signal layer turns w3gjs output into meaningful WC3 events mapped to specific mechanic nodes
 - [ ] **REPLAY-03**: Integrate a fork of wc3v (GPL-3.0) for advanced analysis (supply/economy curves, battle detection, compare-to-pro)
-- [ ] **REPLAY-04**: User can manually upload a `.w3g` replay for analysis
+- [x] **REPLAY-04**: User can manually upload a `.w3g` replay for analysis
 - [x] **REPLAY-05**: System can auto-pull replays from the w3champions replay endpoint (`/api/replays/{gameId}`)
 - [x] **REPLAY-06**: Replay-derived signals auto-mark MECHANIC node mastery against patch-aware thresholds (e.g. "build order executed under target time")
 - [x] **REPLAY-07**: Replay analysis returns actionable feedback ("you did X at time Y; target is Z")
@@ -173,7 +173,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REPLAY-01 | Phase 8 | Complete |
 | REPLAY-02 | Phase 8 | Complete |
 | REPLAY-03 | Phase 8 | Pending |
-| REPLAY-04 | Phase 8 | Pending |
+| REPLAY-04 | Phase 8 | Complete |
 | REPLAY-05 | Phase 8 | Complete |
 | REPLAY-06 | Phase 8 | Complete |
 | REPLAY-07 | Phase 8 | Complete |
