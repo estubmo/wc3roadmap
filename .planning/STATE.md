@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 08
 current_phase_name: replay-parsing
 status: executing
-stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-07-02T11:27:23.543Z"
+stopped_at: Completed 08-05-PLAN.md
+last_updated: "2026-07-02T11:36:40.229Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 75
-  completed_plans: 69
+  completed_plans: 70
   percent: 78
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 08 (replay-parsing) — EXECUTING
-Plan: 8 of 13
+Plan: 9 of 13
 Status: Ready to execute
 Last activity: 2026-07-02 — Phase 08 execution started
 
@@ -122,6 +122,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08-replay-parsing P06 | 12min | 2 tasks | 2 files |
 | Phase 08 P01 | 25min | 3 tasks | 6 files |
 | Phase 08 P03 | 5min | 1 tasks | 2 files |
+| Phase 08 P05 | 12min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -231,6 +232,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 08-01]: 4MB client-side upload cap (ADR 011) binding on plan 08-12 -- derived from Vercel 4.5MB body limit + TanStack Start FormData buffering (RESEARCH Pitfall 1)
 - [Phase ?]: [Phase 08-01]: wc3v (Spike 3) parse cost deferred to plan 08-13 go/no-go checkpoint -- ADR 011 inline decision scoped to base w3gjs layer only
 - [Phase ?]: replay-parser.ts: Player type derived structurally as ParserOutput["players"][number] — w3gjs index.d.ts has no named Player export
+- [Phase 08-replay-parsing]: [Phase 08-05]: replay-signals.ts Pick<> structural-subset input types (ReplayPlayerInput/ReplayParsedInput/SoloMatchInput) tie the pure signal layer to real w3gjs Player/ParserOutput types while keeping fixtures light; expansionTimingMs = first queued townhall-kind building (starting hall pre-placed, never queued); isSoloMatch = players.length === 2 (D-15)
 
 ### Pending Todos
 
@@ -253,6 +255,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T11:27:23.530Z
-Stopped at: Completed 08-03-PLAN.md
+Last session: 2026-07-02T11:36:40.222Z
+Stopped at: Completed 08-05-PLAN.md
 Resume file: None
