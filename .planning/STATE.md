@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 08
 current_phase_name: replay-parsing
 status: executing
-stopped_at: "Plan 08-13: paused at Task 1 go/no-go checkpoint (wc3v w3gjs-internals patch feasibility) -- awaiting human GO/NO-GO decision"
-last_updated: "2026-07-02T19:34:52.625Z"
+stopped_at: "Plan 08-13: REPLAY-03 descoped to Phase 8.x after GO investigation -- wc3v vendored, Pitfall 2 fixed, 2 new data-sourcing blockers found (see docs/adr/012)"
+last_updated: "2026-07-02T20:03:45.979Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
@@ -251,7 +251,8 @@ None yet.
 - Phase 7 (w3champions): API feasibility must be confirmed with w3champions team before integration code begins; manual fallback (Phase 5) ships regardless
 - Phase 8 (replay parsing): Two spikes required before planning — (1) w3gjs parse time/memory on Vercel serverless; (2) w3champions replay endpoint functional test from external server + API token request
 - Phase 4 (auth): better-auth + Battle.net OAuth has no community-validated examples as of June 2026; budget discovery time for region-specific OAuth host edge cases
-- Plan 08-13 (wc3v advanced-analysis, REPLAY-03): PAUSED at Task 1 go/no-go checkpoint. Time-boxed spike finding: RECOMMEND NO-GO -- wc3v lib/ modules (ResourceSeries/BuildingBackfill/BattleDetector/Player/World) require PlayerManager-built game state (eventStream, unit.path, spawnTime, lostState); PlayerManager.js itself hard-imports w3gjs's non-exported internal ActionParser at node_modules/w3gjs/dist/lib/parsers/ActionParser -- a path absent from installed w3gjs@4.1.0 (dist/cjs/dist/esm only). wc3v.js's own StatefulBufferParser EOF-patch targets the same nonexistent dist/lib path. Awaiting human GO/NO-GO.
+- Plan 08-13 (wc3v advanced-analysis, REPLAY-03): PAUSED at Task 1 go/no-go checkpoint. Time-boxed spike finding: RECOMMEND NO-GO -- wc3v lib/ modules (ResourceSeries/BuildingBackfill/BattleDetector/Player/World) require PlayerManager-built game state (eventStream, unit.path, spawnTime, lostState); PlayerManager.js itself hard-imports w3gjs's non-exported internal ActionParser at node_modules/w3gjs/dist/lib/parsers/ActionParser -- a path absent from installed w3gjs@4.1.0 (dist/cjs/dist/esm only). wc3v.js's own StatefulBufferParser EOF-patch targets the same xistent dist/lib path. Awaiting human GO/NO-GO.
+- Plan 08-13 (wc3v REPLAY-03): human chose GO; vendored full lib/+helpers/+config (76 files) and FIXED the w3gjs 4.1.0 internals patch (Pitfall 2, verified). Real run then found TWO NEW independent blockers: (A) helpers/UnitBalance.json (per-unit cost data) is gitignored upstream, generated from WC3 SLK data, never in public git history; (B) per-map binary pathing grids (mapdata/) also gitignored upstream, not derivable from .w3g bytes. Both are external data-sourcing gaps, not code-porting gaps. Descoped REPLAY-03 to Phase 8.x per D-07; did not wire Task 3 (server fn/UI) since no real replay can produce output. Base w3gjs loop (08-01..12) unaffected, all tests pass. See docs/adr/012 + src/lib/wc3v/README.md.
 
 ## Deferred Items
 
@@ -264,6 +265,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T19:34:52.619Z
-Stopped at: Plan 08-13: paused at Task 1 go/no-go checkpoint (wc3v w3gjs-internals patch feasibility) -- awaiting human GO/NO-GO decision
-Resume file: .planning/phases/08-replay-parsing/08-13-PLAN.md
+Last session: 2026-07-02T20:03:45.973Z
+Stopped at: Plan 08-13: REPLAY-03 descoped to Phase 8.x after GO investigation -- wc3v vendored, Pitfall 2 fixed, 2 new data-sourcing blockers found (see docs/adr/012)
+Resume file: None -- REPLAY-03 descoped to Phase 8.x; base w3gjs loop (08-01..12) already complete and ships as Phase 8's final state
