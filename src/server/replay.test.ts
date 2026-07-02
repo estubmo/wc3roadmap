@@ -103,6 +103,7 @@ interface TestMocks {
   isSoloMatch: ReturnType<typeof vi.fn>;
   detectReplaySignals: ReturnType<typeof vi.fn>;
   findFirstReplayAnalysis: ReturnType<typeof vi.fn>;
+  findManyNodeProgress: ReturnType<typeof vi.fn>;
   fetchReplayBytes: ReturnType<typeof vi.fn>;
   fetchGlobal: ReturnType<typeof vi.fn>;
   insertCalls: InsertRecord[];
@@ -142,6 +143,7 @@ beforeEach(() => {
   const isSoloMatch = vi.fn().mockReturnValue(true);
   const detectReplaySignals = vi.fn().mockReturnValue(defaultNodeResults);
   const findFirstReplayAnalysis = vi.fn().mockResolvedValue(null);
+  const findManyNodeProgress = vi.fn().mockResolvedValue([]);
   const fetchReplayBytes = vi
     .fn()
     .mockResolvedValue({ status: "ok", bytes: Buffer.from("fake-w3g-bytes") });
@@ -195,6 +197,7 @@ beforeEach(() => {
     isSoloMatch,
     detectReplaySignals,
     findFirstReplayAnalysis,
+    findManyNodeProgress,
     fetchReplayBytes,
     fetchGlobal,
     insertCalls,
@@ -244,6 +247,7 @@ beforeEach(() => {
     db: {
       query: {
         replayAnalysis: { findFirst: findFirstReplayAnalysis },
+        nodeProgress: { findMany: findManyNodeProgress },
       },
       insert: mockInsert,
     },
@@ -517,5 +521,44 @@ describe("pullReplaysHandler — gameId cache-gate (D-17)", () => {
     expect(mocks.fetchGlobal).toHaveBeenCalledWith(
       expect.stringContaining("/api/matches?gameMode=1"),
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getReplayAnalysisHandler — principal-keyed read (REPLAY-07)
+// ---------------------------------------------------------------------------
+
+describe("getReplayAnalysisHandler — principal-keyed read", () => {
+  it("returns per-node target/signal feedback for the principal's replay-sourced progress", async () => {
+    mocks.findManyNodeProgress.mockResolvedValue([
+      { nodeId: "creep-routing", source: "replay", masteryState: "mastered" },
+      { nodeId: "some-other-node", source: "manual", masteryState: "mastered" },
+    ]);
+
+    const { getReplayAnalysisHandler } = await importReplay();
+    const result = await getReplayAnalysisHandler({ context: { principal: principalA } });
+
+    expect(result).toEqual([
+      { nodeId: "creep-routing", signal: "eapm", target: 80, actual: null },
+    ]);
+  });
+
+  it("is principal-keyed with no userId input channel", async () => {
+    const { getReplayAnalysisHandler } = await importReplay();
+    await getReplayAnalysisHandler({ context: { principal: principalA } });
+
+    expect(mocks.findManyNodeProgress).toHaveBeenCalled();
+    // The only identity used by the query is context.principal — no data param exists on this handler.
+  });
+
+  it("returns an empty array when the principal has no replay-sourced progress", async () => {
+    mocks.findManyNodeProgress.mockResolvedValue([
+      { nodeId: "creep-routing", source: "manual", masteryState: "mastered" },
+    ]);
+
+    const { getReplayAnalysisHandler } = await importReplay();
+    const result = await getReplayAnalysisHandler({ context: { principal: principalA } });
+
+    expect(result).toEqual([]);
   });
 });

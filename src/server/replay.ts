@@ -546,3 +546,76 @@ export async function pullReplaysHandler({ context }: AuthedContext): Promise<Re
 export const pullReplays = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(pullReplaysHandler);
+
+// ---------------------------------------------------------------------------
+// getReplayAnalysisHandler — principal-keyed read (REPLAY-07)
+// ---------------------------------------------------------------------------
+
+/**
+ * One durable replay-mastery entry for the report surface / node detail
+ * panel: which node, which signal, and its content-authored target.
+ *
+ * `actual` is always `null` here — the measured value from a specific parse
+ * is only available at upload/pull time (returned directly in that
+ * operation's `ReplayReport`, see 08-12's mutation-result rendering); this
+ * durable read has no per-principal "last report" store to recover it from
+ * after the fact (only the GLOBAL, gameId-keyed `replayAnalysis` cache
+ * exists, D-17). Deliberate simplification — see SUMMARY "Known Stubs".
+ */
+export interface ReplayAnalysisEntry {
+  nodeId: string;
+  signal: ReplayCriteria["signal"];
+  target: number;
+  actual: number | null;
+}
+
+function targetOf(criteria: ReplayCriteria): number {
+  return "beforeMs" in criteria ? criteria.beforeMs : criteria.gte;
+}
+
+/**
+ * Return the principal's durable replay-mastery entries — every node whose
+ * `nodeProgress.source === "replay"` — paired with its content-authored
+ * target for the node detail panel / report surface (D-16).
+ *
+ * Principal-keyed (ADR 007): the WHERE clause uses `context.principal.id`
+ * exclusively — there is no userId input channel.
+ *
+ * Exported as a named function for unit testability.
+ */
+export async function getReplayAnalysisHandler({
+  context,
+}: AuthedContext): Promise<ReplayAnalysisEntry[]> {
+  const { principal } = context;
+
+  const rows = await db.query.nodeProgress.findMany({
+    where: eq(nodeProgress.userId, principal.id),
+  });
+
+  const nodesById = new Map(contentNodes().map((n) => [n.id, n]));
+
+  const entries: ReplayAnalysisEntry[] = [];
+  for (const row of rows) {
+    if (row.source !== "replay") continue;
+    const node = nodesById.get(row.nodeId);
+    if (!node?.replayCriteria) continue;
+    entries.push({
+      nodeId: row.nodeId,
+      signal: node.replayCriteria.signal,
+      target: targetOf(node.replayCriteria),
+      actual: null,
+    });
+  }
+
+  return entries;
+}
+
+/**
+ * Fetch the authenticated user's durable replay-mastery entries.
+ *
+ * Returns entries keyed by `context.principal.id` only — no userId
+ * parameter is accepted. See module JSDoc for the authorization contract.
+ */
+export const getReplayAnalysis = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(getReplayAnalysisHandler);
