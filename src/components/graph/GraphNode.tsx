@@ -146,13 +146,12 @@ const DIFFICULTY_FILLED: Record<GraphDisplayNode["difficulty"], number> = {
 
 /**
  * Returns the CSS faction tint color for a given race, or undefined for
- * "agnostic". Hook is built but inert for v1 content (all agnostic).
+ * "agnostic". Activated in Phase 8, which introduced the first race-specific
+ * nodes (the four build-order MECHANIC nodes, 08-10) — before that all content
+ * was race: agnostic and this hook was dormant. Agnostic nodes still return
+ * undefined (no accent), so race-agnostic fundamentals stay visually neutral.
  *
- * @see UI-SPEC §Faction colors — "faction tint hook is implemented in Phase 2
- *   for MECHANIC/CONCEPTUAL node type encoding, but v1 content is all
- *   race: agnostic so tints remain dormant."
- *
- * v2 (RACE-01..05): remove the "agnostic" guard to activate.
+ * @see UI-SPEC §Faction colors — faction tint per race.
  */
 function getFactionTint(
   race: GraphDisplayNode["race"]
@@ -194,11 +193,9 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
     s.recentlyAdvancedNodeIds.has(d.id)
   );
 
-  // Faction tint hook (dormant for agnostic — v1 is all agnostic)
-  const _factionTint = getFactionTint(race);
-  // _factionTint would be applied to the node accent layer in v2.
-  // Currently unused — suppress unused-variable lint with void:
-  void _factionTint;
+  // Faction tint (D-07): drives a left accent bar in the race's faction color
+  // for race-specific nodes. undefined (no accent) for race: agnostic.
+  const factionTint = getFactionTint(race);
 
   const filledDots = DIFFICULTY_FILLED[difficulty];
   const difficultyAriaLabel = DIFFICULTY_ARIA[difficulty];
@@ -223,6 +220,24 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
           : undefined
       }
     >
+      {/* Faction accent (D-07): a left bar in the race's color for race-specific
+          nodes. Clipped to the node's rounded corners by the parent's
+          overflow-hidden. Decorative-with-label — race is also in the detail
+          panel and the FilterBar facet, so this is not the sole race encoding. */}
+      {factionTint && (
+        <span
+          role="img"
+          aria-label={`${race} faction`}
+          style={{
+            position: "absolute",
+            insetBlock: 0,
+            insetInlineStart: 0,
+            width: "3px",
+            backgroundColor: factionTint,
+          }}
+        />
+      )}
+
       {/* React Flow handles — invisible, at top and bottom edges */}
       <Handle
         type="target"
