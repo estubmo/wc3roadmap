@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Progress Tracking** - Per-node mastery persistence, manual check-off, localStorage merge on sign-in, no gamification (completed 2026-06-30)
 - [x] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state (completed 2026-07-01)
 - [x] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard (completed 2026-07-01)
-- [ ] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds
+- [x] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds (completed 2026-07-02)
 - [ ] **Phase 9: Guided Pathways & Launch** - Pathway overlay with Beginner Fundamentals track, staleness UI, ~25-node content gate, citation review
 
 ## Phase Details
@@ -322,7 +322,7 @@ Plans:
   4. The wc3v fork integration provides advanced analysis output (supply curves, precise expansion detection, compare-to-pro signals) as an additional analysis layer on top of w3gjs base signals
   5. Users can trigger auto-pull of recent w3champions replays from their profile (after rate-limit confirmation via the w3champions API token); parsed results are cached by gameId so the same replay is never re-parsed
 
-**Plans**: 12/13 plans executed
+**Plans**: 13/13 plans complete
 
 Plans:
 **Wave 1**
@@ -351,7 +351,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 08-13-PLAN.md — wc3v advanced-analysis layer (isolatable/descopable, D-06/D-07)
+- [x] 08-13-PLAN.md — wc3v advanced-analysis layer (isolatable/descopable, D-06/D-07)
 
 ### Phase 9: Guided Pathways & Launch
 
@@ -383,5 +383,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Progress Tracking | 9/9 | Complete    | 2026-06-30 |
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
 | 7. w3champions Auto-Detection | 8/8 | Complete    | 2026-07-01 |
-| 8. Replay Parsing | 12/13 | In Progress|  |
+| 8. Replay Parsing | 13/13 | Complete   | 2026-07-02 |
 | 9. Guided Pathways & Launch | 0/? | Not started | - |
