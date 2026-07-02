@@ -21,9 +21,12 @@ import { getPatch } from "../patches";
  * view, and pure lookup helpers. Zero top-level side effects.
  *
  * Version 1 (seeded here) covers the four race town-hall/expansion buildings
- * plus each race's worker and key opening combat unit — the minimum set
- * needed for build-order and expansion-timing threshold detection this
- * phase (08-09, 08-10). Extend by adding entries to `_OBJECT_ID_MAPS[1]`, or
+ * plus each race's worker and its common opening combat units — a "military
+ * opener" is any early tier-1/1.5 army unit, not a single canonical unit, so
+ * real ladder builds (e.g. human rifle-first `hrif`, orc headhunter `ohun`)
+ * register as openers, not just footman/grunt. This is the minimum set needed
+ * for build-order and expansion-timing threshold detection this phase (08-09,
+ * 08-10). Extend by adding entries to `_OBJECT_ID_MAPS[1]`, or
  * append a new `_OBJECT_ID_MAPS[N]` table and bump `objectIdMapVersion` on
  * the patches that ship the new table.
  */
@@ -62,18 +65,22 @@ const _OBJECT_ID_MAPS: Record<number, Record<string, ObjectIdEntry>> = {
     htow: { name: "Town Hall", race: "human", kind: "townhall" },
     hpea: { name: "Peasant", race: "human", kind: "worker" },
     hfoo: { name: "Footman", race: "human", kind: "opener" },
+    hrif: { name: "Rifleman", race: "human", kind: "opener" },
     // Orc
     ogre: { name: "Great Hall", race: "orc", kind: "townhall" },
     opeo: { name: "Peon", race: "orc", kind: "worker" },
     ogru: { name: "Grunt", race: "orc", kind: "opener" },
+    ohun: { name: "Troll Headhunter", race: "orc", kind: "opener" },
     // Undead
     unpl: { name: "Necropolis", race: "undead", kind: "townhall" },
     uaco: { name: "Acolyte", race: "undead", kind: "worker" },
     ugho: { name: "Ghoul", race: "undead", kind: "opener" },
+    ucry: { name: "Crypt Fiend", race: "undead", kind: "opener" },
     // Night Elf
     etol: { name: "Tree of Life", race: "nightelf", kind: "townhall" },
     ewsp: { name: "Wisp", race: "nightelf", kind: "worker" },
     earc: { name: "Archer", race: "nightelf", kind: "opener" },
+    esen: { name: "Huntress", race: "nightelf", kind: "opener" },
   },
 };
 
