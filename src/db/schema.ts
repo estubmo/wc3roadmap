@@ -315,11 +315,14 @@ export const nodeProgress = pgTable(
     masteryState: text("mastery_state").notNull(),
 
     /**
-     * Signal source — "manual" | "auto" (D-04).
+     * Signal source — "manual" | "auto" | "quiz" | "replay" (D-01/D-04).
      *
-     * Server-side only: stamped by the 05-04 setNodeMastery server fn.
-     * Never accepted from client input. Defaults to "manual"; Phase 7
-     * w3champions auto-detection will write "auto".
+     * Server-side only: stamped by the writing server fn (never accepted from
+     * client input). Defaults to "manual". Phase 7 w3champions auto-detection
+     * writes "auto"; Phase 6 quiz-pass writes "quiz"; Phase 8 `.w3g` replay
+     * parsing writes "replay" (D-01). Stored as plain TEXT (not pgEnum) so new
+     * source values never require a DDL change — validation of the full set
+     * lives in `ProgressRecordSchema` (Zod) at the app layer.
      */
     source: text("source").notNull().default("manual"),
 
@@ -551,3 +554,71 @@ export const w3championsSyncRelations = relations(w3championsSync, ({ one }) => 
     references: [users.id],
   }),
 }));
+
+// ---------------------------------------------------------------------------
+// replayAnalysis (DB table name: "replay_analysis")
+// ---------------------------------------------------------------------------
+
+/**
+ * Global `.w3g` replay signal cache — the physical backing for the D-17
+ * cache gate ("a replay with a known gameId is never re-parsed").
+ *
+ * Design: surrogate text PK + single-column unique index on `gameId` ALONE —
+ * mirrors the `w3championsSync` single-row-cache shape (lines above) but the
+ * cache is GLOBAL, not per-user (D-17): a gameId is a public match identifier,
+ * so any user pulling/uploading the same replay reuses the same cached row.
+ * This is the `onConflictDoNothing`/lookup target for the 08-11 server write
+ * path — parse-then-cache, never re-parse a known gameId.
+ *
+ * `signals` stores the JSON-stringified `ReplaySignals` object as `text()`,
+ * following the project's text()-over-structured-column convention (see
+ * `nodeProgress.masteryState`/`source`). CRITICAL: this table stores derived
+ * signals ONLY — never the raw `.w3g` file bytes (RESEARCH.md anti-pattern;
+ * T-08-06a mitigation — no redistribution/PII-in-binary ambiguity, bounded
+ * storage growth).
+ *
+ * `buildNumber` (D-12) is the raw WC3 header build number as reported by the
+ * replay itself; `patchId` is the resolved patch entry (via `getPatch`/the
+ * object-ID map version lookup). Both are stored — buildNumber is the
+ * immutable source fact, patchId is the derived/resolved value — so a future
+ * re-resolution (e.g. a patch boundary correction) never requires re-parsing.
+ */
+export const replayAnalysis = pgTable(
+  "replay_analysis",
+  {
+    /** Surrogate text PK — matches the project convention (users.id, nodeProgress.id, w3championsSync.id). */
+    id: text("id").primaryKey(),
+
+    /** Public w3champions match identifier — the D-17 global cache key. */
+    gameId: text("game_id").notNull(),
+
+    /**
+     * JSON-stringified `ReplaySignals` — derived mechanical signals only.
+     *
+     * Never the raw `.w3g` bytes (RESEARCH.md anti-pattern; T-08-06a).
+     * Follows the text()-over-structured-column convention used elsewhere
+     * in this schema (`masteryState`, `source`, `mmrTier`).
+     */
+    signals: text("signals").notNull(),
+
+    /** Resolved patch id (via `getPatch`) at parse time — D-12. */
+    patchId: text("patch_id").notNull(),
+
+    /** Raw WC3 replay header build number (D-12) — the immutable source fact behind `patchId`. */
+    buildNumber: integer("build_number").notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    /**
+     * Unique index on `gameId` ALONE — global cache per D-17 (NOT per-user,
+     * unlike `nodeProgress`/`quizProgress`'s (userId, nodeId) keying). This is
+     * the cache-gate lookup/upsert target for the 08-11 server write path.
+     */
+    uniqueIndex("replay_analysis_game_id_unique").on(table.gameId),
+  ],
+);

@@ -11,6 +11,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { getTableName } from "drizzle-orm";
+import { getTableConfig } from "drizzle-orm/pg-core";
 import {
   users,
   sessions,
@@ -18,6 +19,7 @@ import {
   verifications,
   nodeProgress,
   w3championsSync,
+  replayAnalysis,
 } from "#/db/schema";
 
 // ---------------------------------------------------------------------------
@@ -207,5 +209,50 @@ describe("w3championsSync table", () => {
 
   it("has lastSyncedAt column (durable TTL gate — AUTO-04)", () => {
     expect(w3championsSync.lastSyncedAt).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// replayAnalysis table — DB table name and required columns (REPLAY-08, D-17)
+// ---------------------------------------------------------------------------
+
+describe("replayAnalysis table", () => {
+  it("is defined (REPLAY-08)", () => {
+    expect(replayAnalysis).toBeDefined();
+  });
+
+  it("has DB table name 'replay_analysis'", () => {
+    expect(getTableName(replayAnalysis)).toBe("replay_analysis");
+  });
+
+  it("has id column (surrogate PK)", () => {
+    expect(replayAnalysis.id).toBeDefined();
+  });
+
+  it("has gameId column (D-17 global cache key)", () => {
+    expect(replayAnalysis.gameId).toBeDefined();
+  });
+
+  it("has signals column (JSON-stringified ReplaySignals, text)", () => {
+    expect(replayAnalysis.signals).toBeDefined();
+  });
+
+  it("has patchId column (D-12 resolved patch)", () => {
+    expect(replayAnalysis.patchId).toBeDefined();
+  });
+
+  it("has buildNumber column (D-12 raw WC3 header build number)", () => {
+    expect(replayAnalysis.buildNumber).toBeDefined();
+  });
+
+  it("has a unique index on gameId ALONE (D-17 global cache, not per-user)", () => {
+    const config = getTableConfig(replayAnalysis);
+    const gameIdUniqueIndexes = config.indexes.filter(
+      (idx) => idx.config.unique && idx.config.name === "replay_analysis_game_id_unique",
+    );
+    expect(gameIdUniqueIndexes).toHaveLength(1);
+    const [index] = gameIdUniqueIndexes;
+    expect(index!.config.columns).toHaveLength(1);
+    expect((index!.config.columns[0] as { name: string }).name).toBe("game_id");
   });
 });
