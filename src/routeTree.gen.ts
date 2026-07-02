@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReplaysRouteImport } from './routes/replays'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PreviewPathwayRouteImport } from './routes/preview/pathway'
 import { Route as PreviewMobileRouteImport } from './routes/preview/mobile'
@@ -17,6 +18,11 @@ import { Route as PreviewFullMapRouteImport } from './routes/preview/full-map'
 import { Route as PreviewAutoAdvanceRouteImport } from './routes/preview/auto-advance'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const ReplaysRoute = ReplaysRouteImport.update({
+  id: '/replays',
+  path: '/replays',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
   '/preview/mastery-states': typeof PreviewMasteryStatesRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
     | '/preview/mastery-states'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ReplaysRoute: typeof ReplaysRoute
   PreviewAutoAdvanceRoute: typeof PreviewAutoAdvanceRoute
   PreviewFullMapRoute: typeof PreviewFullMapRoute
   PreviewMasteryStatesRoute: typeof PreviewMasteryStatesRoute
@@ -123,6 +136,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/replays': {
+      id: '/replays'
+      path: '/replays'
+      fullPath: '/replays'
+      preLoaderRoute: typeof ReplaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ReplaysRoute: ReplaysRoute,
   PreviewAutoAdvanceRoute: PreviewAutoAdvanceRoute,
   PreviewFullMapRoute: PreviewFullMapRoute,
   PreviewMasteryStatesRoute: PreviewMasteryStatesRoute,
