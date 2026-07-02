@@ -123,6 +123,35 @@ const nodes = defineCollection({
         }),
       ])
       .optional(),
+    // PARALLEL-SCHEMA SYNC NOTE: mirror of ReplayCriteriaSchema in
+    // src/schemas/node.ts (plan 08-07). Keep field-for-field identical —
+    // single signal+threshold discriminated union (D-02 precedent), no
+    // compound rules. Both definitions MUST stay in sync: this enforces at
+    // build time; node.ts at runtime/test.
+    replayCriteria: z
+      .discriminatedUnion("signal", [
+        z.object({
+          signal: z.literal("buildOrderTiming"),
+          beforeMs: z.number().int().positive(),
+        }),
+        z.object({
+          signal: z.literal("eapm"),
+          gte: z.number().int().positive(),
+        }),
+        z.object({
+          signal: z.literal("controlGroupUsage"),
+          gte: z.number().int().positive(),
+        }),
+        z.object({
+          signal: z.literal("heroTiming"),
+          beforeMs: z.number().int().positive(),
+        }),
+        z.object({
+          signal: z.literal("expansionTiming"),
+          beforeMs: z.number().int().positive(),
+        }),
+      ])
+      .optional(),
   }),
   transform: async (document, context) => {
     // QUIZ-01 belt-and-suspenders count guard: Zod schema enforces 3–5 questions at parse
