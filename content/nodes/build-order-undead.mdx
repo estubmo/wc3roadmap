@@ -1,0 +1,52 @@
+---
+id: build-order-undead
+title: "Undead Opening Build Order"
+nodeType: MECHANIC
+skillType: macro
+difficulty: beginner
+race: undead
+tags:
+  - build-order
+  - opening
+prerequisites:
+  - hotkey-discipline
+  - supply-management
+patchId: patch-1.36.2
+patch_context: "Acolyte, Necropolis, and Crypt costs/build-times are unchanged in patch 1.36.2; the standard Undead opening timing benchmark below remains valid."
+last_reviewed: "2026-07-02"
+meta_volatile: true
+citations:
+  - kind: science
+    source: "Anderson (1982) — Acquisition of Cognitive Skill"
+    applicationNote: Anderson's ACT model describes early skill acquisition as moving from a declarative, step-by-step recall of a procedure ("Acolyte, Acolyte, Crypt, Acolyte...") to a compiled, automatic production — the exact transition a player makes by drilling the same fixed Undead opener until it no longer requires conscious sequencing.
+  - kind: creator
+    source: "WC3 coaching — TeD (YouTube, 2022)"
+    applicationNote: TeD stresses that Undead's opener is deceptively fragile because Acolytes are needed for both gold and lumber gathering AND for building the Crypt — a single misordered Acolyte assignment silently pushes the first Ghoul back by several seconds without the player noticing until the replay is reviewed.
+    quote: "Undead's opener punishes inattention more than any other race — one wrong Acolyte assignment and you don't even feel it happen."
+replayCriteria:
+  signal: buildOrderTiming
+  beforeMs: 130000
+---
+
+# Undead Opening Build Order
+
+The **standard Undead opening** sequences continuous Acolyte production out of the Necropolis, timely
+Crypt placement, and a first Ghoul queued as soon as the Crypt completes. Because Acolytes double as
+builders and resource gatherers, Undead's opener has more room for a silent, invisible mistake than any
+other race.
+
+## Why It Matters
+
+A delayed Crypt or a misassigned Acolyte does not look like a mistake in the moment — production keeps
+happening, gold keeps coming in — but it quietly pushes your first combat unit later than it should be.
+Undead's map presence in the early game (creeping with Ghouls, contesting neutral buildings) depends
+entirely on that first Ghoul arriving on schedule.
+
+## How to Apply
+
+Target: your **first Ghoul should complete before the 2:10 mark**. For your next ten games, explicitly
+narrate your Acolyte assignments out loud or in your head as you make them — "this one builds Crypt, this
+one gathers gold" — until the sequence feels automatic rather than deliberate. If your first Ghoul is
+consistently late, check the replay for the exact moment the Crypt was placed; that single timestamp
+usually explains the whole gap. Mastery advances automatically once an uploaded replay clears the
+threshold.
