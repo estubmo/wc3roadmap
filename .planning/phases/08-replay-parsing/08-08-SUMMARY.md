@@ -115,3 +115,7 @@ None - no external service configuration required.
 ---
 *Phase: 08-replay-parsing*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+All created/modified files and task commit hashes verified present on disk / in git history.
