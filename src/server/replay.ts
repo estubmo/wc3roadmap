@@ -73,12 +73,14 @@ import { nodeProgress, replayAnalysis } from "#/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { authMiddleware, type AuthedContext } from "#/lib/auth-middleware";
 import { CURRENT_PATCH } from "#/lib/patches";
-import {
-  parseReplay,
-  ReplayParseError,
-  type ParserOutput,
-  type Player,
-} from "#/lib/replay-parser";
+// Types only — the w3gjs-backed `parseReplay`/`ReplayParseError` are loaded
+// via a dynamic `import()` inside the handlers below (08-12 fix). A static
+// value import here drags `w3gjs` (whose `class W3GReplay extends EventEmitter`
+// crashes at eval in the browser) into the client bundle for this route,
+// because TanStack Start retains the exported handler functions client-side.
+// `replay-parser.ts` documents itself as server-only-never-bundled; the
+// dynamic import is what actually enforces that.
+import type { ParserOutput, Player } from "#/lib/replay-parser";
 import { deriveReplaySignals, isSoloMatch, type ReplaySignals } from "#/lib/replay-signals";
 import {
   detectReplaySignals,
@@ -351,6 +353,9 @@ export async function uploadReplayHandler({
 
   const buffer = Buffer.from(await file.arrayBuffer());
 
+  // Server-only lazy load: keeps w3gjs out of the client bundle (08-12 fix).
+  const { parseReplay, ReplayParseError } = await import("#/lib/replay-parser");
+
   let parsed: ParserOutput;
   try {
     parsed = await parseReplay(buffer);
@@ -459,6 +464,9 @@ export async function pullReplaysHandler({ context }: AuthedContext): Promise<Re
   let anyFresh = false;
   let anyCached = false;
   let lastFailureStatus: ReplayStatus | null = null;
+
+  // Server-only lazy load: keeps w3gjs out of the client bundle (08-12 fix).
+  const { parseReplay, ReplayParseError } = await import("#/lib/replay-parser");
 
   for (const gameId of resolved.gameIds) {
     // D-17 cache gate: a known gameId is NEVER re-parsed — reuse cached signals.
