@@ -126,3 +126,12 @@ None - no external service configuration required. The live database push used t
 ---
 *Phase: 08-replay-parsing*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+- FOUND: src/db/schema.ts
+- FOUND: src/db/schema.test.ts
+- FOUND: .planning/phases/08-replay-parsing/08-06-SUMMARY.md
+- FOUND: commit 26ea1d1
+- FOUND: commit e78e2b0
+- FOUND: replayAnalysis export in src/db/schema.ts

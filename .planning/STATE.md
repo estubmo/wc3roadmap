@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 08
 current_phase_name: replay-parsing
 status: executing
-stopped_at: Phase 8 context gathered
-last_updated: "2026-07-02T10:39:12.785Z"
+stopped_at: Completed 08-06-PLAN.md
+last_updated: "2026-07-02T11:00:21.239Z"
 last_activity: 2026-07-02
 last_activity_desc: Phase 08 execution started
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 75
-  completed_plans: 66
+  completed_plans: 67
   percent: 78
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 08 (replay-parsing) — EXECUTING
-Plan: 5 of 13
+Plan: 6 of 13
 Status: Ready to execute
 Last activity: 2026-07-02 — Phase 08 execution started
 
@@ -119,6 +119,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P04 | 6min | 1 tasks | 2 files |
 | Phase 08 P07 | 12min | 2 tasks | 3 files |
 | Phase 08 P08 | 8min | 2 tasks | 3 files |
+| Phase 08-replay-parsing P06 | 12min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -223,6 +224,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 08-07]: ReplayCriteriaSchema — 5 D-09 signals as flat discriminated-union variants (buildOrderTiming/eapm/controlGroupUsage/heroTiming/expansionTiming), single signal+threshold per node (D-02 precedent); beforeMs for timing signals, gte for magnitude signals
 - [Phase 08-08]: fetchReplayBytes lives in existing w3champions-client.ts (not new file) — single module owns every outbound call to the w3champions host
 - [Phase 08-08]: ReplayDownloadResult kept distinct from W3cSyncResult (ok branch carries bytes vs signals) rather than a shared generic type
+- [Phase ?]: replayAnalysis uses global gameId-only unique index (D-17); buildNumber + patchId both stored (D-12); no raw .w3g bytes stored
 
 ### Pending Todos
 
@@ -245,6 +247,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-02T10:38:38.996Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-replay-parsing/08-CONTEXT.md
+Last session: 2026-07-02T11:00:21.230Z
+Stopped at: Completed 08-06-PLAN.md
+Resume file: None
