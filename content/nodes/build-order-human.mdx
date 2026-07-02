@@ -1,0 +1,52 @@
+---
+id: build-order-human
+title: "Human Opening Build Order"
+nodeType: MECHANIC
+skillType: macro
+difficulty: beginner
+race: human
+tags:
+  - build-order
+  - opening
+prerequisites:
+  - hotkey-discipline
+  - supply-management
+patchId: patch-1.36.2
+patch_context: "Peasant, Town Hall, and Barracks costs/build-times are unchanged in patch 1.36.2; the standard Human opening timing benchmark below remains valid."
+last_reviewed: "2026-07-02"
+meta_volatile: true
+citations:
+  - kind: science
+    source: "Ericsson, Krampe & Tesch-Römer (1993) — The Role of Deliberate Practice in the Acquisition of Expert Performance"
+    applicationNote: A fixed opening sequence is exactly the kind of narrow, repeatable unit deliberate practice targets — a short, well-defined action chain a player can rehearse dozens of times per session with immediate feedback (did the Footman arrive on time?), which is what drives skill acquisition faster than playing full games without a specific target.
+  - kind: creator
+    source: "WC3 coaching — ToD (YouTube, 2022)"
+    applicationNote: ToD emphasises that Human's opening is won or lost on uninterrupted worker production out of Town Hall — any gap in the Peasant queue before the first Barracks pushes every subsequent building and unit later, so the opener is really a worker-production discipline check disguised as a build order.
+    quote: "If your Peasant queue has a gap in the first 90 seconds, you already lost tempo before your first Footman existed."
+replayCriteria:
+  signal: buildOrderTiming
+  beforeMs: 120000
+---
+
+# Human Opening Build Order
+
+The **standard Human opening** is a fixed, uninterrupted sequence: continuous Peasant production out of
+Town Hall, a Barracks placed as soon as gold allows without stalling worker output, and a first Footman
+queued the moment the Barracks completes. This node's mastery target is a real timing benchmark, not a
+vague "expand quickly" — it is checked directly against your replay data.
+
+## Why It Matters
+
+Every second the Town Hall sits idle between Peasants is economy you never recover. Human's early game has
+no slack for hesitation: the Barracks placement and first Footman timing set the pace for your whole
+opening, and a late Footman means a late scout, a late second Barracks, and a late tech decision. Because
+the sequence is short and fully repeatable, it is one of the fastest mechanics in the game to drill to
+consistency.
+
+## How to Apply
+
+Target: your **first Footman should complete before the 2:00 mark**. In your next ten games, watch only
+your Peasant queue and your Barracks placement — ignore the minimap and your opponent entirely for the
+first two minutes. If your Footman consistently arrives after 2:00, the leak is almost always a gap in
+worker production, not a slow Barracks placement. Once this replay is uploaded, mastery is detected
+automatically the moment your parsed build order clears the 2:00 threshold — no self-report needed.

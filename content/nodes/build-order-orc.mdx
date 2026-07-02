@@ -1,0 +1,51 @@
+---
+id: build-order-orc
+title: "Orc Opening Build Order"
+nodeType: MECHANIC
+skillType: macro
+difficulty: beginner
+race: orc
+tags:
+  - build-order
+  - opening
+prerequisites:
+  - hotkey-discipline
+  - supply-management
+patchId: patch-1.36.2
+patch_context: "Peon, Great Hall, and Barracks costs/build-times are unchanged in patch 1.36.2; the standard Orc opening timing benchmark below remains valid."
+last_reviewed: "2026-07-02"
+meta_volatile: true
+citations:
+  - kind: science
+    source: "Newell & Rosenbloom (1981) — Mechanisms of Skill Acquisition and the Law of Practice"
+    applicationNote: The power law of practice predicts that execution time on a fixed action sequence drops fastest during the earliest repetitions — exactly the payoff shape of drilling a short opening build order, where the first ten reps close most of the gap to a consistent, fast Grunt timing.
+  - kind: creator
+    source: "WC3 coaching — Grubby (YouTube, 2021)"
+    applicationNote: Grubby identifies Orc's early tempo — reaching the first Grunt fast enough to threaten or execute an early aggression window — as the race's core identity; a slow opener forfeits Orc's biggest structural advantage before the mid-game even starts.
+    quote: "Orc doesn't out-macro anyone. Orc wins by being on time when nobody else is ready yet."
+replayCriteria:
+  signal: buildOrderTiming
+  beforeMs: 100000
+---
+
+# Orc Opening Build Order
+
+The **standard Orc opening** prioritises tempo: continuous Peon production out of the Great Hall, a
+Barracks placed as early as gold allows, and a first Grunt queued the instant the Barracks completes. Orc's
+identity is built around reaching this first combat unit faster than the opponent expects.
+
+## Why It Matters
+
+Orc's early aggression options — camp pressure, harassment, or a straight rush — only exist if the first
+Grunt exists on time. Every second of delay in Peon production or Barracks placement is a second Orc's
+tempo advantage evaporates, and Orc has less to fall back on economically than a race that plays a slower,
+more defensive opening. A fast, consistent opener is what makes the rest of Orc's kit (Grunt-Raider timing
+pushes, early Burrow harass) viable at all.
+
+## How to Apply
+
+Target: your **first Grunt should complete before the 1:40 mark**. Drill this in isolation — for your
+next ten games, focus exclusively on an unbroken Peon queue and Barracks timing for the first 100 seconds,
+ignoring scouting and matchup adjustments entirely. A first Grunt arriving after 1:40 almost always traces
+back to a delayed Barracks, not slow production afterward. Upload the replay and mastery advances
+automatically once your parsed timing clears the threshold.
