@@ -1,0 +1,92 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Vendored from jblanchette/wc3v (GPL-3.0) at commit 87edeef1f77a8c6f9896b8844990f5b74f6313a0.
+// Source: https://github.com/jblanchette/wc3v
+// Copyright (C) original wc3v contributors (Jeff Blanchette et al.)
+// See src/lib/wc3v/README.md for scope, provenance, and integration notes,
+// and docs/adr/012-wc3v-fork-integration.md for the integration decision.
+// PATCHED (08-13 GO decision): w3gjs internal-path references repointed from
+// the upstream 3.0.0-era `dist/lib/...` layout to the installed 4.1.0
+// `dist/cjs/...` layout where this file required it -- see inline comments.
+
+const ActionBlockNames = {
+
+  16: 'UnitBuildingAbilityActionNoParams',
+  17: 'UnitBuildingAbilityActionTargetPosition',
+  18: 'UnitBuildingAbilityActionTargetPositionTargetObjectId',
+  19: 'GiveItemToUnitAciton',
+  20: 'UnitBuildingAbilityActionTwoTargetPositions',
+  22: 'ChangeSelectionAction',
+  23: 'AssignGroupHotkeyAction',
+  24: 'SelectGroupHotkeyAction',
+  25: 'SelectSubgroupAction',
+  26: 'UpdateSubgroup',
+  27: 'PreSubselection',
+  28: 'SelectGroundItemAction',
+  29: 'CancelHeroRevival',
+  30: 'RemoveUnitFromBuildingQueue',
+  31: 'PlayerMessage', 
+  81: 'TradeResources',
+  97: 'ESCPressedAction',
+  101: 'ChooseHeroSkillSubmenu',
+  102: 'ChooseHeroSkillSubmenu',
+  103: 'EnterBuildingSubmenu',
+  119: 'ArrowKeyAction'
+
+  // old action names -
+
+  // 0x01: 'Pause',
+  // 0x02: 'Resume',
+  // 0x03: 'SetSpeed',
+  // 0x04: 'IncreaseSpeed',
+  // 0x05: 'DecreaseSpeed',
+  // 0x06: 'SaveGame',
+  // 0x07: 'SaveGameDone',
+  // 0x10: 'UseAbilityNoTarget',
+  // 0x11: 'UseAbilityWithTarget',
+  // 0x12: 'UseAbilityWithTargetAndObjectId',
+  // 0x13: 'GiveOrDropItem',
+  // 0x14: 'UseAbilityTwoTargets',
+  // 0x16: 'ChangeSelection',
+  // 0x17: 'AssignGroupHotkey',
+  // 0x18: 'SelectGroupHotkey',
+  // 0x19: 'SelectSubgroup',
+  // 0x20: 'SinglePlayerCheat-1',
+  // 0x22: 'SinglePlayerCheat-2',
+  // 0x23: 'SinglePlayerCheat-3',
+  // 0x24: 'SinglePlayerCheat-4',
+  // 0x25: 'SinglePlayerCheat-5',
+  // 0x26: 'SinglePlayerCheat-6',
+  // 0x27: 'SinglePlayerCheat-7',
+  // 0x28: 'SinglePlayerCheat-8',
+  // 0x29: 'SinglePlayerCheat-9',
+  // 0x2A: 'SinglePlayerCheat-10',
+  // 0x2B: 'SinglePlayerCheat-11',
+  // 0x2C: 'SinglePlayerCheat-12',
+  // 0x2D: 'SinglePlayerCheat-13',
+  // 0x2E: 'SinglePlayerCheat-14',
+  // 0x2F: 'SinglePlayerCheat-15',
+  // 0x2C: 'SinglePlayerCheat-16',
+  // 0x30: 'SinglePlayerCheat-17',
+  // 0x31: 'SinglePlayerCheat-18',
+  // 0x32: 'SinglePlayerCheat-19',
+  // 0x1A: 'UpdateSubgroup',
+  // 0x1B: 'Unknown',
+  // 0x1C: 'SelectGroundItem',
+  // 0x1D: 'CancelHeroRevival',
+  // 0x1E: 'RemoveFromQueue',
+  // 0x50: 'ChangeAllys',
+  // 0x51: 'TransferResources',
+  // 0x60: 'ChatTrigger',
+  // 0x61: 'EscapePressed',
+  // 0x62: 'ScenarioTrigger',
+  // 0x66: 'SelectHeroSkill',
+  // 0x67: 'ChooseBuilding',
+  // 0x68: 'MinimapSignal',
+  // 0x69: 'ContinueGame',
+  // 0x6A: 'Unknown',
+  // 0x7B: 'Unknown'
+};
+
+module.exports = {
+  ActionBlockNames: ActionBlockNames
+};
