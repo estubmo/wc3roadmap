@@ -15,6 +15,7 @@ import {
   // are RED. Existing NodeSummarySchema / NodeFrontmatterSchema tests are unaffected.
   CitationSchema,
   QuizSchema,
+  ReplayCriteriaSchema,
 } from "./node";
 
 // ---------------------------------------------------------------------------
@@ -592,5 +593,106 @@ describe("NodeFrontmatterSchema — D-04 graceful default (quiz omitted)", () =>
       quiz: makeQuestions(3),
     });
     expect(result.success).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ReplayCriteriaSchema — REPLAY-06/08, D-09/D-11
+// ---------------------------------------------------------------------------
+
+describe("ReplayCriteriaSchema — signal variants", () => {
+  it("accepts a valid buildOrderTiming criterion", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "buildOrderTiming",
+      beforeMs: 300000,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid eapm criterion", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "eapm",
+      gte: 150,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid controlGroupUsage criterion", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "controlGroupUsage",
+      gte: 20,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid heroTiming criterion", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "heroTiming",
+      beforeMs: 60000,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid expansionTiming criterion", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "expansionTiming",
+      beforeMs: 420000,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects an unknown signal discriminant", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "supplyBlock",
+      gte: 5,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a criterion missing its signal field", () => {
+    const result = ReplayCriteriaSchema.safeParse({ gte: 150 });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a buildOrderTiming criterion with a negative beforeMs", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "buildOrderTiming",
+      beforeMs: -1,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an eapm criterion using the wrong field name (beforeMs instead of gte)", () => {
+    const result = ReplayCriteriaSchema.safeParse({
+      signal: "eapm",
+      beforeMs: 150,
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("NodeFrontmatterSchema — replayCriteria (REPLAY-06/08)", () => {
+  it("accepts a MECHANIC node with a valid replayCriteria", () => {
+    const result = NodeFrontmatterSchema.safeParse({
+      ...validFrontmatter,
+      nodeType: "MECHANIC",
+      replayCriteria: { signal: "eapm", gte: 150 },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a node with replayCriteria omitted (graceful default)", () => {
+    // replayCriteria is optional — nodes without it parse fine and never
+    // advance from replay.
+    const result = NodeFrontmatterSchema.safeParse(validFrontmatter);
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a node with an invalid replayCriteria signal", () => {
+    const result = NodeFrontmatterSchema.safeParse({
+      ...validFrontmatter,
+      replayCriteria: { signal: "unknownSignal", gte: 5 },
+    });
+    expect(result.success).toBe(false);
   });
 });

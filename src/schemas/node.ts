@@ -267,6 +267,75 @@ export const AutoDetectCriteriaSchema = z.discriminatedUnion("signal", [
 export type AutoDetectCriteria = z.infer<typeof AutoDetectCriteriaSchema>;
 
 // ---------------------------------------------------------------------------
+// ReplayCriteriaSchema — per-node replay-mastery criterion (REPLAY-06/08, D-09)
+// ---------------------------------------------------------------------------
+
+// PARALLEL-SCHEMA SYNC NOTE: ReplayCriteriaSchema is intentionally defined
+// twice:
+//   1. Here in src/schemas/node.ts   — runtime/test surface.
+//   2. Inline in content-collections.ts — build-time surface.
+// Both definitions MUST stay field-for-field identical. Any change here must
+// be mirrored in content-collections.ts (plan 08-07) and vice versa.
+
+/**
+ * Per-node replay-mastery criterion (D-09, D-11): a single signal + threshold
+ * that, once met from parsed `.w3g` replay signals, lets a MECHANIC node
+ * advance directly to `mastered` (D-02 — replay is the only source strong
+ * enough to reach `mastered` from a signal). Eligibility lives in content —
+ * not a central rule table — mirroring the `autoDetect` convention (D-01)
+ * so authors add/tune eligible nodes without touching detection code.
+ *
+ * Discriminated union over `signal` (single signal+threshold only, NOT a
+ * compound rule engine — D-02 precedent carries over):
+ *   signal: "buildOrderTiming"  — beforeMs is a target timestamp (ms) for a
+ *                                  keyed opening build step.
+ *   signal: "eapm"               — gte is a minimum effective-APM threshold.
+ *   signal: "controlGroupUsage"  — gte is a minimum control-group/hotkey
+ *                                  usage threshold.
+ *   signal: "heroTiming"         — beforeMs is a target hero-buy timestamp (ms).
+ *   signal: "expansionTiming"    — beforeMs is a target expansion timestamp (ms).
+ *
+ * Consumed by the pure threshold detector (08-09, reads node.replayCriteria).
+ * Mirrors the AutoDetectCriteriaSchema discriminated-union + parallel-schema-
+ * sync pattern exactly.
+ */
+export const ReplayCriteriaSchema = z.discriminatedUnion("signal", [
+  z.object({
+    /** Discriminator — opening build-order timing signal. */
+    signal: z.literal("buildOrderTiming"),
+    /** Target timestamp (ms) the build step must occur before. */
+    beforeMs: z.number().int().positive(),
+  }),
+  z.object({
+    /** Discriminator — effective-APM signal. */
+    signal: z.literal("eapm"),
+    /** Minimum effective-APM threshold. */
+    gte: z.number().int().positive(),
+  }),
+  z.object({
+    /** Discriminator — control-group/hotkey usage signal. */
+    signal: z.literal("controlGroupUsage"),
+    /** Minimum control-group usage threshold. */
+    gte: z.number().int().positive(),
+  }),
+  z.object({
+    /** Discriminator — hero buy-timing signal. */
+    signal: z.literal("heroTiming"),
+    /** Target timestamp (ms) the hero must be bought before. */
+    beforeMs: z.number().int().positive(),
+  }),
+  z.object({
+    /** Discriminator — expansion (second base) timing signal. */
+    signal: z.literal("expansionTiming"),
+    /** Target timestamp (ms) the expansion must be started before. */
+    beforeMs: z.number().int().positive(),
+  }),
+]);
+
+/** Inferred TypeScript type for a per-node replay-mastery criterion. */
+export type ReplayCriteria = z.infer<typeof ReplayCriteriaSchema>;
+
+// ---------------------------------------------------------------------------
 // NodeFrontmatterSchema — full validated schema (extends NodeSummarySchema)
 // ---------------------------------------------------------------------------
 
@@ -346,6 +415,16 @@ export const NodeFrontmatterSchema = NodeSummarySchema.extend({
    * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
    */
   autoDetect: AutoDetectCriteriaSchema.optional(),
+  /**
+   * Optional per-node replay-mastery criterion for MECHANIC nodes (REPLAY-06/08,
+   * D-09/D-11). When present: a single signal+threshold (buildOrderTiming, eapm,
+   * controlGroupUsage, heroTiming, or expansionTiming) that, once met from parsed
+   * `.w3g` replay signals, advances the node directly to `mastered` (D-02).
+   * When absent (undefined): the node never advances from replay (graceful
+   * default, same convention as `quiz`/`autoDetect`).
+   * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
+   */
+  replayCriteria: ReplayCriteriaSchema.optional(),
 });
 
 /** Inferred TypeScript type for the full node frontmatter. */
