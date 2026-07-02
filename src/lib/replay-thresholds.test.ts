@@ -106,6 +106,7 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
   const node: ReplayThresholdInput = {
     id: "build-order-human",
     nodeType: "MECHANIC",
+    race: "human",
     replayCriteria: { signal: "buildOrderTiming", beforeMs: 120000 },
   };
 
@@ -180,10 +181,11 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
     ]);
   });
 
-  it("resolves the correct opener across all four races without a node.race field", () => {
+  it("resolves the opener for the node's own race (orc grunt for the orc node)", () => {
     const orcNode: ReplayThresholdInput = {
       id: "build-order-orc",
       nodeType: "MECHANIC",
+      race: "orc",
       replayCriteria: { signal: "buildOrderTiming", beforeMs: 100000 },
     };
     const signals: ReplaySignals = {
@@ -199,6 +201,7 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
     const orcNode: ReplayThresholdInput = {
       id: "build-order-orc",
       nodeType: "MECHANIC",
+      race: "orc",
       replayCriteria: { signal: "buildOrderTiming", beforeMs: 100000 },
     };
     const signals: ReplaySignals = {
@@ -207,6 +210,30 @@ describe("detectReplaySignals — buildOrderTiming (patch-aware, REPLAY-08)", ()
     };
     const results = detectReplaySignals([orcNode], signals, PATCH_ID);
     expect(results[0]).toMatchObject({ met: true, actual: 80000, signal: "buildOrderTiming" });
+  });
+
+  it("race-gates: an orc opener never advances another race's build-order node (08-12 fix)", () => {
+    // An orc player's replay (headhunter opener) evaluated against ALL four
+    // race build-order nodes. Only the ORC node may be met — the human /
+    // undead / nightelf nodes must report actual:null, met:false (no false
+    // cross-race mastery). undead's 130000 target would have wrongly matched
+    // the 80000 opener before this fix.
+    const nodes: ReplayThresholdInput[] = [
+      { id: "build-order-human", nodeType: "MECHANIC", race: "human", replayCriteria: { signal: "buildOrderTiming", beforeMs: 120000 } },
+      { id: "build-order-orc", nodeType: "MECHANIC", race: "orc", replayCriteria: { signal: "buildOrderTiming", beforeMs: 100000 } },
+      { id: "build-order-undead", nodeType: "MECHANIC", race: "undead", replayCriteria: { signal: "buildOrderTiming", beforeMs: 130000 } },
+      { id: "build-order-nightelf", nodeType: "MECHANIC", race: "nightelf", replayCriteria: { signal: "buildOrderTiming", beforeMs: 120000 } },
+    ];
+    const signals: ReplaySignals = {
+      ...emptySignals,
+      buildOrder: [{ unitOrBuildingId: "ohun", ms: 80000 }],
+    };
+    const results = detectReplaySignals(nodes, signals, PATCH_ID);
+    const met = results.filter((r) => r.met).map((r) => r.nodeId);
+    expect(met).toEqual(["build-order-orc"]);
+    // Non-orc nodes are still REPORTED (met:false, actual:null) — never advanced.
+    const undead = results.find((r) => r.nodeId === "build-order-undead");
+    expect(undead).toMatchObject({ met: false, actual: null });
   });
 });
 

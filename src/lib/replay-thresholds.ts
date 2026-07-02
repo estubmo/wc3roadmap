@@ -28,10 +28,14 @@
  *     any monotonic-max comparison via `mastery-ordinal.ts`).
  *   - Patch-aware (REPLAY-08): `buildOrderTiming` resolves the replay's own
  *     "opener"-kind object via `objectIdMapVersionForPatch(patchId)` +
- *     `resolveObjectId`, never a raw id list duplicated in this module. A
- *     player's own build order only ever contains their own race's units, so
- *     a bare `kind === "opener"` match already identifies the correct object
- *     — no per-node `race` field is needed on `ReplayThresholdInput`.
+ *     `resolveObjectId`, never a raw id list duplicated in this module.
+ *   - Race-gated (08-12 fix): a `buildOrderTiming` node only advances when the
+ *     resolved opener's race matches the NODE's race. An earlier revision
+ *     matched a bare `kind === "opener"`, assuming each player's node set was
+ *     pre-filtered to their race — but `detectReplaySignals` evaluates ALL
+ *     nodes against one replay, so a fast opener would falsely advance every
+ *     race's build-order node (e.g. an orc opener "mastering" the undead
+ *     node). The node's `race` field is therefore required for correctness.
  *
  * NO I/O: this module imports NOTHING from db, fetch, or auth layers. Its
  * only runtime dependency is the pure `./object-id-maps` registry (which
@@ -40,7 +44,7 @@
  * type-only imports (erased at build time — no runtime dependency).
  */
 
-import { objectIdMapVersionForPatch, resolveObjectId } from "./object-id-maps";
+import { objectIdMapVersionForPatch, resolveObjectId, type ObjectRace } from "./object-id-maps";
 import type { ReplayCriteria } from "../schemas/node";
 import type { ReplaySignals } from "./replay-signals";
 import type { MasteryState } from "../schemas/progress";
@@ -56,6 +60,15 @@ export interface ReplayThresholdInput {
   id: string;
   /** First-class node category (DATA-01). Only "MECHANIC" is replay-evaluable. */
   nodeType: "MECHANIC" | "CONCEPTUAL";
+  /**
+   * The node's race (schemas/node.ts). REQUIRED for `buildOrderTiming`
+   * race-gating: a build-order node only advances when the replay's resolved
+   * opener is of the SAME race, so an orc player never "masters" the undead
+   * build-order node. Absent / "agnostic" nodes match no race-specific opener
+   * (buildOrderTiming yields actual:null for them). Ignored by race-agnostic
+   * signals (eapm/controlGroupUsage/heroTiming/expansionTiming).
+   */
+  race?: ObjectRace | "agnostic";
   /**
    * Optional per-node replay-mastery criterion (D-09/D-11, schemas/node.ts).
    * Absent => the node never advances from replay (graceful default, same
@@ -120,7 +133,7 @@ export function detectReplaySignals(
   for (const node of nodes) {
     if (node.nodeType !== "MECHANIC") continue;
     if (node.replayCriteria === undefined) continue;
-    const evaluated = meetsReplayThreshold(node.replayCriteria, signals, patchId);
+    const evaluated = meetsReplayThreshold(node.replayCriteria, signals, patchId, node.race);
     results.push({
       nodeId: node.id,
       targetState: "mastered",
@@ -159,10 +172,11 @@ export function meetsReplayThreshold(
   criteria: ReplayCriteria,
   signals: ReplaySignals,
   patchId: string,
+  race?: ObjectRace | "agnostic",
 ): CriteriaEvaluation {
   switch (criteria.signal) {
     case "buildOrderTiming": {
-      const actual = firstOpenerMs(signals.buildOrder, patchId);
+      const actual = firstOpenerMs(signals.buildOrder, patchId, race);
       return {
         met: actual !== null && actual < criteria.beforeMs,
         actual,
@@ -199,15 +213,24 @@ export function meetsReplayThreshold(
 }
 
 /**
- * Find the ms of the FIRST "opener"-kind build-order entry, resolved via the
- * replay's own patch-aware `objectIdMapVersion` (REPLAY-08). `signals.buildOrder`
- * is already ms-sorted (replay-signals.ts), so `.find` naturally returns the
- * earliest match. Returns null when no opener-kind entry was ever queued.
+ * Find the ms of the FIRST "opener"-kind build-order entry OF THE NODE'S RACE,
+ * resolved via the replay's own patch-aware `objectIdMapVersion` (REPLAY-08).
+ * `signals.buildOrder` is already ms-sorted (replay-signals.ts), so `.find`
+ * naturally returns the earliest match. Returns null when no opener-kind entry
+ * of `race` was ever queued — including when `race` is undefined/"agnostic"
+ * (no race-specific opener can match), which race-gates cross-race false
+ * advances (08-12 fix).
  */
-function firstOpenerMs(buildOrder: ReplaySignals["buildOrder"], patchId: string): number | null {
+function firstOpenerMs(
+  buildOrder: ReplaySignals["buildOrder"],
+  patchId: string,
+  race?: ObjectRace | "agnostic",
+): number | null {
+  if (race === undefined || race === "agnostic") return null;
   const version = objectIdMapVersionForPatch(patchId);
-  const openerEntry = buildOrder.find(
-    (entry) => resolveObjectId(entry.unitOrBuildingId, version)?.kind === "opener",
-  );
+  const openerEntry = buildOrder.find((entry) => {
+    const resolved = resolveObjectId(entry.unitOrBuildingId, version);
+    return resolved?.kind === "opener" && resolved.race === race;
+  });
   return openerEntry ? openerEntry.ms : null;
 }
