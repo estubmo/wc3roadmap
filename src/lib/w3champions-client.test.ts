@@ -29,6 +29,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import {
   fetchW3championsSignals,
   classifyW3championsResponse,
+  fetchReplayBytes,
   W3C_BASE_URL,
 } from "./w3champions-client";
 import { tierForMmr } from "./mmr-tiers";
@@ -271,5 +272,82 @@ describe("classifyW3championsResponse", () => {
     expect(
       classifyW3championsResponse({ kind: "http", status: 500 }).status,
     ).toBe("unreachable");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// fetchReplayBytes — auto-pull download primitive (REPLAY-05, T-08-08a/b)
+// ---------------------------------------------------------------------------
+
+describe("fetchReplayBytes", () => {
+  it("200 octet-stream -> ok with a Buffer of the raw bytes", async () => {
+    const raw = new Uint8Array([1, 2, 3, 4]);
+    const mock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      arrayBuffer: async () => raw.buffer,
+    }));
+    vi.stubGlobal("fetch", mock);
+
+    const result = await fetchReplayBytes("valid-id");
+
+    expect(result.status).toBe("ok");
+    expect(result.bytes).toBeInstanceOf(Buffer);
+    expect(Array.from(result.bytes ?? [])).toEqual([1, 2, 3, 4]);
+  });
+
+  it("429 -> rate-limited, no bytes, no upstream string surfaced", async () => {
+    const mock = vi.fn(async () => ({
+      ok: false,
+      status: 429,
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
+    vi.stubGlobal("fetch", mock);
+
+    const result = await fetchReplayBytes("throttled-id");
+
+    expect(result).toEqual({ status: "rate-limited" });
+  });
+
+  it("404 -> no-data", async () => {
+    const mock = vi.fn(async () => ({
+      ok: false,
+      status: 404,
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
+    vi.stubGlobal("fetch", mock);
+
+    const result = await fetchReplayBytes("missing-id");
+
+    expect(result).toEqual({ status: "no-data" });
+  });
+
+  it("network throw -> unreachable", async () => {
+    const mock = vi.fn(async () => {
+      throw new Error("network down");
+    });
+    vi.stubGlobal("fetch", mock);
+
+    const result = await fetchReplayBytes("any-id");
+
+    expect(result).toEqual({ status: "unreachable" });
+  });
+
+  it("outbound URL is exactly the hardcoded host + encoded gameId, nothing else", async () => {
+    const mock = vi.fn(async (url: string) => {
+      expect(url).toBe(
+        `${W3C_BASE_URL}/api/replays/${encodeURIComponent("weird id/with#chars")}`,
+      );
+      return {
+        ok: true,
+        status: 200,
+        arrayBuffer: async () => new ArrayBuffer(0),
+      };
+    });
+    vi.stubGlobal("fetch", mock);
+
+    await fetchReplayBytes("weird id/with#chars");
+
+    expect(mock).toHaveBeenCalledTimes(1);
   });
 });
