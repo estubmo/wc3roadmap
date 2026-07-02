@@ -325,6 +325,8 @@ Plans:
 **Plans**: 13 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 08-01-PLAN.md — Wave 0: w3gjs legitimacy checkpoint + install + parse/endpoint spike (ADR 011)
 - [ ] 08-02-PLAN.md — mastery-ordinal helper + progress source enum +replay (D-01)
 - [ ] 08-03-PLAN.md — parseReplay w3gjs Buffer wrapper (fail-safe)
@@ -333,10 +335,22 @@ Plans:
 - [ ] 08-06-PLAN.md — replayAnalysis cache table + [BLOCKING] drizzle-kit push (D-17)
 - [ ] 08-07-PLAN.md — replayCriteria frontmatter + content-collections mirror
 - [ ] 08-08-PLAN.md — fetchReplayBytes SSRF-guarded download + replay-keys
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 08-09-PLAN.md — pure patch-aware threshold detector (feedback data)
 - [ ] 08-10-PLAN.md — 4 canonical build-order MECHANIC nodes, one per race (D-10)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 08-11-PLAN.md — server orchestration: upload/pull/read + monotonic-max write (D-03/D-04)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
 - [ ] 08-12-PLAN.md — /replays route + upload/pull hooks + actionable report
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
 - [ ] 08-13-PLAN.md — wc3v advanced-analysis layer (isolatable/descopable, D-06/D-07)
 
 ### Phase 9: Guided Pathways & Launch
