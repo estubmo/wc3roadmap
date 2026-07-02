@@ -2,12 +2,13 @@
 // Copyright (C) 2026 WC3 Roadmap contributors
 
 /**
- * Wave-0 server-fn tests for the replay convergence module (REPLAY-04,
- * ADR-007/009, D-02/D-03/D-04/D-14/D-15). These encode the load-bearing
- * invariants of `uploadReplayHandler` (08-11 Task 1):
+ * Wave-0 server-fn tests for the replay convergence module (REPLAY-04/05,
+ * ADR-007/009, D-02/D-03/D-04/D-14/D-15/D-17). These encode the load-bearing
+ * invariants of `uploadReplayHandler` (08-11 Task 1) and `pullReplaysHandler`
+ * (08-11 Task 2):
  *
- *   - "authorization" (ADR 007): the handler keys the write by
- *     `context.principal` only — no userId body channel.
+ *   - "authorization" (ADR 007): every handler keys reads/writes by
+ *     `context.principal` only — no userId/gameId ownership channel.
  *
  *   - "monotonic-max" (D-03/D-04): the replay write only ever raises
  *     masteryState and re-stamps source:"replay" only when it actually
@@ -18,7 +19,11 @@
  *     clan-tag-tolerant BattleTag matching; no match -> `no-player-match`.
  *
  *   - "1v1 gate" (D-15): a team/FFA fixture returns signals but advances
- *     zero nodes.
+ *     zero nodes, both on a fresh parse (uploadReplay) and on a cache hit
+ *     (pullReplays' `isSolo` cache-payload flag).
+ *
+ *   - "cache gate" (D-17): a known gameId in `replayAnalysis` is never
+ *     re-parsed (fetchReplayBytes/parseReplay are never called on a hit).
  *
  *   - "upload size backstop" (T-08-11d, ADR 011 §3): an oversized upload is
  *     rejected server-side BEFORE parsing.
@@ -28,7 +33,8 @@
  * (unmocked): patches (CURRENT_PATCH); drizzle-orm's `eq`/`sql` are recorded
  * as inert stand-ins (matching the established convention). Mocked: db,
  * db/schema, replay-parser, replay-signals, replay-thresholds,
- * content-collections, auth chain.
+ * w3champions-client, content-collections, auth chain, global fetch (for the
+ * recent-gameId resolver).
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -96,6 +102,9 @@ interface TestMocks {
   deriveReplaySignals: ReturnType<typeof vi.fn>;
   isSoloMatch: ReturnType<typeof vi.fn>;
   detectReplaySignals: ReturnType<typeof vi.fn>;
+  findFirstReplayAnalysis: ReturnType<typeof vi.fn>;
+  fetchReplayBytes: ReturnType<typeof vi.fn>;
+  fetchGlobal: ReturnType<typeof vi.fn>;
   insertCalls: InsertRecord[];
   /** Controls what `.returning()` resolves to for a given insert record (default: "raised"). */
   returningImpl: (rec: InsertRecord) => unknown[];
@@ -106,6 +115,11 @@ let mocks: TestMocks;
 /** All nodeProgress insert records issued during a handler call. */
 function nodeProgressInserts(): InsertRecord[] {
   return mocks.insertCalls.filter((r) => r.table === "node_progress");
+}
+
+/** All replayAnalysis (cache) insert records issued during a handler call. */
+function replayAnalysisInserts(): InsertRecord[] {
+  return mocks.insertCalls.filter((r) => r.table === "replay_analysis");
 }
 
 /** Build a FormData carrying a `.w3g`-ish file under the "file" field. */
@@ -120,12 +134,29 @@ function makeUploadFormData(sizeBytes = 128): FormData {
 
 beforeEach(() => {
   vi.resetModules();
+  vi.unstubAllGlobals();
 
   const insertCalls: InsertRecord[] = [];
   const parseReplay = vi.fn().mockResolvedValue(makeParsedFixture());
   const deriveReplaySignals = vi.fn().mockReturnValue({ eapm: 100 });
   const isSoloMatch = vi.fn().mockReturnValue(true);
   const detectReplaySignals = vi.fn().mockReturnValue(defaultNodeResults);
+  const findFirstReplayAnalysis = vi.fn().mockResolvedValue(null);
+  const fetchReplayBytes = vi
+    .fn()
+    .mockResolvedValue({ status: "ok", bytes: Buffer.from("fake-w3g-bytes") });
+  const fetchGlobal = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      matches: [
+        {
+          id: "gid-1",
+          teams: [{ players: [{ battleTag: "Player#1234" }] }],
+        },
+      ],
+    }),
+  });
 
   const defaultReturningImpl = (rec: InsertRecord): unknown[] => {
     if (rec.table === "node_progress") return [{ nodeId: rec.values?.nodeId }];
@@ -163,9 +194,14 @@ beforeEach(() => {
     deriveReplaySignals,
     isSoloMatch,
     detectReplaySignals,
+    findFirstReplayAnalysis,
+    fetchReplayBytes,
+    fetchGlobal,
     insertCalls,
     returningImpl: defaultReturningImpl,
   };
+
+  vi.stubGlobal("fetch", fetchGlobal);
 
   // ---------------------------------------------------------------------------
   // Module mocks (vi.doMock — NOT hoisted; closures capture above variables)
@@ -194,13 +230,28 @@ beforeEach(() => {
       source: "__np_source",
       patchId: "__np_patchId",
     },
+    replayAnalysis: {
+      __table: "replay_analysis",
+      id: "__ra_id",
+      gameId: "__ra_gameId",
+      signals: "__ra_signals",
+      patchId: "__ra_patchId",
+      buildNumber: "__ra_buildNumber",
+    },
   }));
 
   vi.doMock("#/lib/db", () => ({
     db: {
-      query: {},
+      query: {
+        replayAnalysis: { findFirst: findFirstReplayAnalysis },
+      },
       insert: mockInsert,
     },
+  }));
+
+  vi.doMock("#/lib/w3champions-client", () => ({
+    W3C_BASE_URL: "https://website-backend.w3champions.com",
+    fetchReplayBytes,
   }));
 
   vi.doMock("#/lib/replay-parser", () => {
@@ -370,5 +421,101 @@ describe("uploadReplayHandler — monotonic-max write (D-02/D-03/D-04)", () => {
     expect(result).toEqual({ status: "parse-failed", signals: [], advanced: [] });
     expect(mocks.parseReplay).not.toHaveBeenCalled();
     expect(nodeProgressInserts()).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// pullReplaysHandler — gameId cache-gate (D-17) + monotonic-max write
+// ---------------------------------------------------------------------------
+
+describe("pullReplaysHandler — gameId cache-gate (D-17)", () => {
+  it("a known gameId in replayAnalysis is never re-parsed (fetchReplayBytes/parseReplay not called)", async () => {
+    mocks.findFirstReplayAnalysis.mockResolvedValue({
+      gameId: "gid-1",
+      signals: JSON.stringify({ signals: { eapm: 999 }, isSolo: true }),
+      patchId: CURRENT_PATCH.id,
+      buildNumber: 6117,
+    });
+
+    const { pullReplaysHandler } = await importReplay();
+    const result = await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(mocks.fetchReplayBytes).not.toHaveBeenCalled();
+    expect(mocks.parseReplay).not.toHaveBeenCalled();
+    expect(result.status).toBe("cached");
+    expect(replayAnalysisInserts()).toHaveLength(0);
+  });
+
+  it("a cache hit only writes mastery when the cached isSolo flag is true (D-15 structural gate)", async () => {
+    mocks.findFirstReplayAnalysis.mockResolvedValue({
+      gameId: "gid-1",
+      signals: JSON.stringify({ signals: { eapm: 999 }, isSolo: false }),
+      patchId: CURRENT_PATCH.id,
+      buildNumber: 6117,
+    });
+
+    const { pullReplaysHandler } = await importReplay();
+    const result = await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(result.advanced).toEqual([]);
+    expect(nodeProgressInserts()).toHaveLength(0);
+    expect(result.signals.length).toBeGreaterThan(0);
+  });
+
+  it("a cache miss fetches, parses, derives, caches signals+patchId+buildNumber, and writes (1v1 only)", async () => {
+    const { pullReplaysHandler } = await importReplay();
+    const result = await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(mocks.fetchReplayBytes).toHaveBeenCalledWith("gid-1");
+    expect(mocks.parseReplay).toHaveBeenCalledTimes(1);
+
+    const cacheWrite = replayAnalysisInserts()[0];
+    expect(cacheWrite?.values?.gameId).toBe("gid-1");
+    expect(cacheWrite?.values?.patchId).toBe(CURRENT_PATCH.id);
+    expect(cacheWrite?.values?.buildNumber).toBe(6117);
+    const cachedPayload = JSON.parse(cacheWrite?.values?.signals as string);
+    expect(cachedPayload.isSolo).toBe(true);
+
+    expect(result.status).toBe("ok");
+    expect(result.advanced).toContain("creep-routing");
+  });
+
+  it("a 429 from fetchReplayBytes returns 'rate-limited' with zero writes", async () => {
+    mocks.fetchReplayBytes.mockResolvedValue({ status: "rate-limited" });
+
+    const { pullReplaysHandler } = await importReplay();
+    const result = await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(result.status).toBe("rate-limited");
+    expect(nodeProgressInserts()).toHaveLength(0);
+    expect(replayAnalysisInserts()).toHaveLength(0);
+  });
+
+  it("unreachable/no-data fetch buckets return their bucket with zero writes", async () => {
+    mocks.fetchReplayBytes.mockResolvedValue({ status: "unreachable" });
+
+    const { pullReplaysHandler } = await importReplay();
+    const result = await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(result.status).toBe("unreachable");
+    expect(nodeProgressInserts()).toHaveLength(0);
+  });
+
+  it("all writes are principal-keyed regardless of which gameId supplied the signals", async () => {
+    const { pullReplaysHandler } = await importReplay();
+    await pullReplaysHandler({ context: { principal: principalA } });
+
+    for (const rec of nodeProgressInserts()) {
+      expect(rec.values?.userId).toBe(principalA.id);
+    }
+  });
+
+  it("resolves candidate gameIds from the principal's own battleTag, never from client input", async () => {
+    const { pullReplaysHandler } = await importReplay();
+    await pullReplaysHandler({ context: { principal: principalA } });
+
+    expect(mocks.fetchGlobal).toHaveBeenCalledWith(
+      expect.stringContaining("/api/matches?gameMode=1"),
+    );
   });
 });

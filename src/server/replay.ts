@@ -46,15 +46,30 @@
  * fields (per D-12) means a future, more precise buildNumber -> patch
  * resolution can be added without re-parsing any cached replay.
  *
+ * Recent-gameId resolution ([ASSUMED], pullReplaysHandler only): the
+ * w3champions API exposes a global, unauthenticated "recent matches" feed
+ * (`GET /api/matches?gameMode=1&offset&pageSize`, confirmed live during this
+ * plan — the same endpoint 08-01's fixture-sourcing spike used) but no
+ * verified player-scoped server-side filter parameter was found in this
+ * session (unlike the RESEARCH-cited `/api/replays/{gameId}` download
+ * endpoint). `resolveRecentGameIds` queries the general feed and filters
+ * CLIENT-SIDE for matches containing the principal's own BattleTag (reusing
+ * the same normalized-comparison discipline as the player-slot match below)
+ * — correct regardless of whether the upstream endpoint's query params do
+ * any server-side filtering, at the cost of only searching the most recent
+ * page of the global feed. If this proves too shallow in practice, a future
+ * plan should re-verify the upstream API for a proper player-scoped search
+ * endpoint.
+ *
  * Exported handlers follow the same testability pattern as
  * `syncW3championsHandler` / `recordQuizPassHandler`: named async functions
  * exported so tests can call them directly without the TanStack Start
  * runtime.
  */
 
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "#/lib/db";
-import { nodeProgress } from "#/db/schema";
+import { nodeProgress, replayAnalysis } from "#/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { authMiddleware, type AuthedContext } from "#/lib/auth-middleware";
 import { CURRENT_PATCH } from "#/lib/patches";
@@ -70,8 +85,10 @@ import {
   type ReplayNodeResult,
   type ReplayThresholdInput,
 } from "#/lib/replay-thresholds";
+import { W3C_BASE_URL, fetchReplayBytes } from "#/lib/w3champions-client";
 import type { ReplayCriteria } from "#/schemas/node";
 import { allNodes } from "content-collections";
+import { z } from "zod";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -126,6 +143,24 @@ export interface ReplayReport {
 
 /** The minimal node shape this module needs from content-collections — a structural subset of NodeFrontmatter. */
 type ReplayContentNode = ReplayThresholdInput;
+
+/**
+ * The JSON payload stored in `replayAnalysis.signals` (D-17 cache, Task 2).
+ *
+ * Extends the column's documented "JSON-stringified `ReplaySignals`" shape
+ * (schema.ts, 08-06) with a sibling `isSolo` flag — WITHOUT a schema/column
+ * change (out of this plan's file scope) — so the D-15 1v1 gate can be
+ * enforced STRUCTURALLY on a cache HIT too (Pitfall 7: "must be enforced
+ * structurally, not just at threshold-check time"), not just on the
+ * fresh-parse path where `isSoloMatch(parsed)` is directly available. A
+ * cache-hit has no raw `ParserOutput` to re-check `players.length` against
+ * — this flag is the only way to avoid ever writing mastery from a cached
+ * team/FFA replay's signals.
+ */
+interface CachedReplayPayload {
+  signals: ReplaySignals;
+  isSolo: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // writeMonotonicMax — D-03/D-04 monotonic-max upsert (the phase's ONE new write semantic)
@@ -348,3 +383,166 @@ export const uploadReplay = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((data: FormData) => data)
   .handler(uploadReplayHandler);
+
+// ---------------------------------------------------------------------------
+// pullReplaysHandler — auto-pull from w3champions (REPLAY-05, D-17 cache gate)
+// ---------------------------------------------------------------------------
+
+/** How many most-recent 1v1 matches to scan for the principal (see module doc). */
+const RECENT_MATCHES_PAGE_SIZE = 25;
+
+/** Minimal Zod shape read from the general `/api/matches` feed (see module doc, "Recent-gameId resolution"). */
+const RecentMatchSchema = z.object({
+  id: z.string(),
+  teams: z.array(
+    z.object({
+      players: z.array(z.object({ battleTag: z.string() })),
+    }),
+  ),
+});
+const RecentMatchesResponseSchema = z.object({
+  matches: z.array(RecentMatchSchema),
+});
+
+/**
+ * Resolve candidate gameIds for the principal from the general w3champions
+ * "recent matches" feed, filtered client-side by BattleTag (see module doc —
+ * no verified player-scoped upstream filter was found this session). Never
+ * accepts a gameId from client input (ADR 007) — `battleTag` is the only
+ * input, always sourced from `context.principal`.
+ */
+async function resolveRecentGameIds(
+  battleTag: string,
+): Promise<{ status: ReplayStatus; gameIds: string[] }> {
+  const target = normalizePlayerName(battleTag);
+
+  try {
+    const res = await fetch(
+      `${W3C_BASE_URL}/api/matches?gameMode=1&offset=0&pageSize=${RECENT_MATCHES_PAGE_SIZE}`,
+    );
+    if (res.status === 429) return { status: "rate-limited", gameIds: [] };
+    if (!res.ok) return { status: "no-data", gameIds: [] };
+
+    const parsed = RecentMatchesResponseSchema.parse(await res.json());
+    const gameIds = parsed.matches
+      .filter((m) =>
+        m.teams.some((t) => t.players.some((p) => normalizePlayerName(p.battleTag) === target)),
+      )
+      .map((m) => m.id);
+
+    return { status: gameIds.length > 0 ? "ok" : "no-data", gameIds };
+  } catch {
+    // Network throw or hostile/malformed upstream JSON — never leak detail (T-07-06c precedent).
+    return { status: "unreachable", gameIds: [] };
+  }
+}
+
+/**
+ * Auto-pull the principal's recent 1v1 replays from w3champions, applying
+ * the D-17 gameId cache gate (a known gameId is NEVER re-parsed) and the
+ * monotonic-max write for each solo match found.
+ *
+ * Exported as a named function for unit testability.
+ */
+export async function pullReplaysHandler({ context }: AuthedContext): Promise<ReplayReport> {
+  const { principal } = context;
+
+  const resolved = await resolveRecentGameIds(principal.battleTag ?? "");
+  if (resolved.gameIds.length === 0) {
+    // No candidates found at all — surface the resolver's own bucket
+    // (rate-limited/unreachable/no-data), zero writes.
+    return { status: resolved.status, signals: [], advanced: [] };
+  }
+
+  const signals: ReplaySignalItem[] = [];
+  const advanced: string[] = [];
+  let anyFresh = false;
+  let anyCached = false;
+  let lastFailureStatus: ReplayStatus | null = null;
+
+  for (const gameId of resolved.gameIds) {
+    // D-17 cache gate: a known gameId is NEVER re-parsed — reuse cached signals.
+    const cached = await db.query.replayAnalysis.findFirst({
+      where: eq(replayAnalysis.gameId, gameId),
+    });
+
+    if (cached) {
+      anyCached = true;
+      const payload = JSON.parse(cached.signals) as CachedReplayPayload;
+      const nodeResults = detectReplaySignals(contentNodes(), payload.signals, cached.patchId);
+      signals.push(...toSignalItems(nodeResults));
+      // D-15 / Pitfall 7: structural gate on the cached flag — a cache hit
+      // has no raw ParserOutput to re-derive player count from.
+      if (payload.isSolo) {
+        const raised = await writeMonotonicMax(nodeResults, principal, cached.patchId);
+        advanced.push(...raised);
+      }
+      continue;
+    }
+
+    const download = await fetchReplayBytes(gameId);
+    if (download.status !== "ok" || !download.bytes) {
+      lastFailureStatus = download.status;
+      continue;
+    }
+
+    let parsed: ParserOutput;
+    try {
+      parsed = await parseReplay(download.bytes);
+    } catch (err) {
+      if (err instanceof ReplayParseError) {
+        lastFailureStatus = "parse-failed";
+        continue;
+      }
+      throw err;
+    }
+
+    const player = findPrincipalPlayer(parsed.players, principal.battleTag ?? "");
+    if (!player) {
+      lastFailureStatus = "no-player-match";
+      continue;
+    }
+
+    const patchId = CURRENT_PATCH.id; // D-12 — see module doc "Patch resolution"
+    const derivedSignals = deriveReplaySignals(parsed, player);
+    const solo = isSoloMatch(parsed); // Pitfall 7: derived BEFORE any threshold evaluation
+
+    // Cache the signals (+ the D-15 isSolo flag, see CachedReplayPayload)
+    // BEFORE writing mastery (D-17) — a raced concurrent pull for the same
+    // gameId defensively no-ops on the cache row.
+    await db
+      .insert(replayAnalysis)
+      .values({
+        id: crypto.randomUUID(),
+        gameId,
+        signals: JSON.stringify({ signals: derivedSignals, isSolo: solo } satisfies CachedReplayPayload),
+        patchId,
+        buildNumber: parsed.buildNumber,
+      })
+      .onConflictDoNothing();
+
+    anyFresh = true;
+    const nodeResults = detectReplaySignals(contentNodes(), derivedSignals, patchId);
+    signals.push(...toSignalItems(nodeResults));
+
+    if (solo) {
+      const raised = await writeMonotonicMax(nodeResults, principal, patchId);
+      advanced.push(...raised);
+    }
+    // D-15: non-solo matches still report signals but never advance (no write call above).
+  }
+
+  if (anyFresh) return { status: "ok", signals, advanced };
+  if (anyCached) return { status: "cached", signals, advanced };
+  return { status: lastFailureStatus ?? "no-data", signals, advanced };
+}
+
+/**
+ * Auto-pull the authenticated user's recent 1v1 replays from w3champions.
+ *
+ * Takes no client input — gameId candidates are resolved server-side from
+ * `context.principal.battleTag` only (ADR 007).
+ */
+export const pullReplays = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .handler(pullReplaysHandler);
