@@ -46,6 +46,15 @@ describe("object-id-maps registry", () => {
       expect(resolveObjectId("earc", 1)).toMatchObject({ race: "nightelf", kind: "opener" });
     });
 
+    it("resolves the broadened opening combat units per race (08-12 fix)", () => {
+      // Real ladder builds open with more than the single canonical opener;
+      // these were added so rifle/headhunter/fiend/huntress games advance.
+      expect(resolveObjectId("hrif", 1)).toMatchObject({ race: "human", kind: "opener" });
+      expect(resolveObjectId("ohun", 1)).toMatchObject({ race: "orc", kind: "opener" });
+      expect(resolveObjectId("ucry", 1)).toMatchObject({ race: "undead", kind: "opener" });
+      expect(resolveObjectId("esen", 1)).toMatchObject({ race: "nightelf", kind: "opener" });
+    });
+
     it("returns null (never throws) for an unknown object id at a known version", () => {
       expect(() => resolveObjectId("zzzz", 1)).not.toThrow();
       expect(resolveObjectId("zzzz", 1)).toBeNull();
