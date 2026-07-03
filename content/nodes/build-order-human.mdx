@@ -13,17 +13,19 @@ prerequisites:
   - supply-management
 patchId: patch-1.36.2
 patch_context: "Peasant, Town Hall, and Barracks costs/build-times are unchanged in patch 1.36.2; the standard Human opening timing benchmark below remains valid."
-last_reviewed: "2026-07-02"
+last_reviewed: "2026-07-03"
 meta_volatile: true
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-03. Science: Ericsson et al. (1993) supports the specific claim that a short, repeatable build sequence is ideal deliberate-practice material, paired with the concrete drill of hitting a first-Footman timing across ten games. Community: the build sequence (continuous peasants, then Altar, Barracks and farms; first Footman scouts or helps creep) is verified against Liquipedia's Human Fast Altar Build Order via URL, not an invented quote. The 2:00 first-Footman figure is the node's drill target and replayCriteria benchmark, not a claim attributed to either source. Replaced a prior unverifiable ToD quote during this audit."
 citations:
   - kind: science
-    source: "Ericsson, Krampe & Tesch-Römer (1993) — The Role of Deliberate Practice in the Acquisition of Expert Performance"
-    applicationNote: A fixed opening sequence is exactly the kind of narrow, repeatable unit deliberate practice targets — a short, well-defined action chain a player can rehearse dozens of times per session with immediate feedback (did the Footman arrive on time?), which is what drives skill acquisition faster than playing full games without a specific target.
+    source: "Ericsson, Krampe & Tesch-Römer (1993) — The Role of Deliberate Practice in the Acquisition of Expert Performance, Psychological Review 100(3), 363–406"
+    url: "https://psycnet.apa.org/record/1993-40718-001"
+    applicationNote: "A fixed opening sequence is exactly the narrow, repeatable unit deliberate practice targets — a short, well-defined action chain rehearsed dozens of times per session with immediate feedback (did the Footman arrive on time?), which the paper identifies as the driver of skill acquisition over undirected full-game play."
   - kind: creator
-    source: "WC3 coaching — ToD (YouTube, 2022)"
-    applicationNote: ToD emphasises that Human's opening is won or lost on uninterrupted worker production out of Town Hall — any gap in the Peasant queue before the first Barracks pushes every subsequent building and unit later, so the opener is really a worker-production discipline check disguised as a build order.
-    quote: "If your Peasant queue has a gap in the first 90 seconds, you already lost tempo before your first Footman existed."
+    source: "Liquipedia — Human Fast Altar Build Order (Warcraft Wiki, CC-BY-SA)"
+    url: "https://liquipedia.net/warcraft/Human_Fast_Altar_Build_Order"
+    applicationNote: "Liquipedia's standard Human opening keeps peasants mining continuously — five to gold, keep training — before placing the Altar, Barracks and farms without stalling worker output, leaving the first Footman free to scout or help creep. That is the canonical sequence this node's timing drill rehearses."
 replayCriteria:
   signal: buildOrderTiming
   beforeMs: 120000
