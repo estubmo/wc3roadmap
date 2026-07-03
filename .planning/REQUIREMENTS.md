@@ -24,7 +24,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
 - [x] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
 - [ ] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
-- [ ] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
+- [x] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
 
 ### Graph UI
 
@@ -183,7 +183,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PATH-03 | Phase 9 | Pending |
 | PATH-04 | Phase 9 | Complete |
 | CONT-04 | Phase 9 | Pending |
-| CONT-05 | Phase 9 | Pending |
+| CONT-05 | Phase 9 | Complete |
 
 **Coverage:**
 

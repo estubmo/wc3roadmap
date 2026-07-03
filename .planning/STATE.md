@@ -6,15 +6,15 @@ current_phase: 09
 current_phase_name: guided-pathways-launch
 status: executing
 stopped_at: Phase 9 UI-SPEC approved
-last_updated: "2026-07-03T13:42:55.681Z"
+last_updated: "2026-07-03T13:46:24.815Z"
 last_activity: 2026-07-03
 last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 9
   completed_phases: 8
   total_plans: 88
-  completed_plans: 76
-  percent: 86
+  completed_plans: 77
+  percent: 88
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 09 (guided-pathways-launch) — EXECUTING
-Plan: 2 of 13
+Plan: 3 of 13
 Status: Ready to execute
 Last activity: 2026-07-03 — Phase 09 execution started
 
@@ -128,6 +128,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P09 | 12min | 1 tasks | 2 files |
 | Phase 08 P11 | 40min | 3 tasks | 2 files |
 | Phase 09 P01 | 2min | 2 tasks | 2 files |
+| Phase 09 P02 | 1m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -245,6 +246,7 @@ Recent decisions affecting current work:
 - [Phase ?]: getReplayAnalysis actual field is always null — no per-principal last-report store exists; detailed report is the direct uploadReplay/pullReplays return value
 - [Phase ?]: [Phase 09-01]: computePathwayProgress pure deep module — MasteryState type only; masteredCount counts only 'mastered' (D-02), nextStepId first non-mastered in order (D-04), null when all mastered
 - [Phase ?]: [Phase 09-01]: pathway-progress.test.ts uses relative imports — vitest.config.ts has no #/ alias resolver
+- [Phase ?]: [Phase 09-02]: isStale single-source staleness predicate — metaVolatile && patchId !== currentPatchId (D-06); zero imports, currentPatchId passed as param so callers use CURRENT_PATCH.id
 
 ### Pending Todos
 
@@ -269,6 +271,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T13:42:26.933Z
+Last session: 2026-07-03T13:45:45.918Z
 Stopped at: Phase 9 UI-SPEC approved
 Resume file: .planning/phases/09-guided-pathways-launch/09-UI-SPEC.md
