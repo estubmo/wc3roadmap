@@ -33,6 +33,9 @@ import { RoadmapGraph } from "#/components/graph/RoadmapGraph";
 import { FilterBar } from "#/components/graph/FilterBar";
 import { NodeDetailPanel } from "#/components/graph/NodeDetailPanel";
 import { ProgressProvider } from "#/components/graph/ProgressProvider";
+import { PathwayIntroOverlay } from "#/components/graph/PathwayIntroOverlay";
+import { isStale } from "#/lib/staleness";
+import { CURRENT_PATCH } from "#/lib/patches";
 // Pathway JSON — bundled by Vite at build time; works in SSR + client contexts.
 // Validated at runtime via PathwaySchema.safeParse (T-02-16 mitigation).
 import pathwayRaw from "../../pathways/beginner-fundamentals.json";
@@ -48,6 +51,14 @@ export const Route = createFileRoute("/")({
     // (ADR 002: no citations / patch_context / body on the graph layer).
     // Invalid projections are filtered out rather than crashing the loader.
     const nodes: GraphDisplayNode[] = allNodes
+      // Launched-graph exclusion (CONT-04 / D-12): the production graph must
+      // never surface non-launch_ready (draft) content. The gate is
+      // environment-scoped (RESEARCH Open Question 2 / A3): under
+      // import.meta.env.PROD only launch_ready nodes survive; in local dev the
+      // filter is bypassed so all nodes stay visible and the pathway/overlay
+      // can be verified before the content workstream flips nodes to
+      // launch_ready. (T-09-10: draft-node exposure mitigated in prod.)
+      .filter((n) => !import.meta.env.PROD || n.launch_ready === true)
       .map((n) => {
         const result = GraphDisplayNodeSchema.safeParse({
           id: n.id,
@@ -58,6 +69,10 @@ export const Route = createFileRoute("/")({
           difficulty: n.difficulty,
           skillType: n.skillType, // ADR-006: GRAPH-04 skill-type filtering (D-11)
           tags: n.tags,           // ADR-006: GRAPH-04 tag search (D-11)
+          // ADR 013 / D-09: only the derived staleness boolean crosses the
+          // content→graph boundary — meta_volatile and patchId never do. The
+          // single isStale predicate (src/lib/staleness.ts) owns the rule.
+          stale: isStale(n.meta_volatile, n.patchId, CURRENT_PATCH.id),
         });
         return result.success ? result.data : null;
       })
@@ -184,6 +199,13 @@ function Home() {
         <ClientOnly fallback={null}>
           <NodeDetailPanel />
         </ClientOnly>
+
+        {/* First-visit intro overlay (PATH-03 / D-05). Self-gates on the
+            localStorage seen-flag and defaults CLOSED (SSR-safe, Pitfall 3),
+            so no ClientOnly wrapper is required. Shown to every first-time
+            visitor regardless of sign-in — not auth-gated. It overlays the
+            spotlighted pathway to orient novices before the raw graph. */}
+        <PathwayIntroOverlay />
       </main>
     </ProgressProvider>
   );
