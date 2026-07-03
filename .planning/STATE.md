@@ -6,14 +6,14 @@ current_phase: 09
 current_phase_name: guided-pathways-launch
 status: executing
 stopped_at: Completed 09-09-PLAN.md
-last_updated: "2026-07-03T14:27:05.187Z"
+last_updated: "2026-07-03T14:30:58.999Z"
 last_activity: 2026-07-03
 last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 9
   completed_phases: 8
   total_plans: 88
-  completed_plans: 85
+  completed_plans: 86
   percent: 89
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 09 (guided-pathways-launch) — EXECUTING
-Plan: 11 of 13
+Plan: 12 of 13
 Status: Ready to execute
 Last activity: 2026-07-03 — Phase 09 execution started
 
@@ -137,6 +137,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09 P08 | 2 min | 3 tasks | 4 files |
 | Phase 09 P09 | 12min | 2 tasks | 2 files |
 | Phase 09 P10 | 2min | 2 tasks | 1 files |
+| Phase 09 P12 | 4m | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -266,6 +267,7 @@ Recent decisions affecting current work:
 - [Phase 09]: Launch-gate checks enforced only under LAUNCH_GATE=1, not always-on validate — keeps CI green while content flips nodes to launch_ready
 - [Phase ?]: 09-09: computePathwayProgress called once in a memo, feeding both PathwayBanner props and per-node transient stepIndex/isNextStep/stale data (single source of truth)
 - [Phase 09-10]: launch_ready filter is PROD-only (import.meta.env.PROD); dev bypasses it so all nodes stay visible pre-content-audit (D-12/A3); stale projected via single isStale field (ADR 013/D-09); PathwayIntroOverlay mounted bare, self-gating (PATH-03/D-05)
+- [Phase ?]: [Phase 09-12]: Panel staleness strip uses controlled Radix Tooltip (open + onOpenChange + onClick toggle) for hover/focus/tap; neutral text 0.85 opacity clears 4.5:1 on obsidian-800; CURRENT_PATCH.id in copy, no new PatchEntry.label (CONT-05, D-06/D-07)
 
 ### Pending Todos
 
@@ -290,6 +292,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T14:26:29.219Z
+Last session: 2026-07-03T14:30:30.453Z
 Stopped at: Completed 09-09-PLAN.md
 Resume file: .planning/phases/09-guided-pathways-launch/09-UI-SPEC.md
