@@ -19,6 +19,12 @@ created: 2026-07-03
 the exact typography/spacing scale locked in Phase 2. Every new element below cites the existing
 convention it extends.
 
+**Primary focal point (main pathway view):** the "Next" node cue is the single strongest visual pull on
+load — entrance animation `0.25s ease-out`, positioned directly above the first incomplete pathway step.
+It draws the player's eye immediately after the intro overlay dismisses (first visit) or on landing
+(returning visitor), answering "what do I do next?" before anything else on the canvas competes for
+attention.
+
 ---
 
 ## Design System
@@ -65,20 +71,27 @@ Exceptions (new this phase, all deliberate non-4px UI element sizes — not spac
 
 ## Typography
 
-Inherited scale (Phase 2, unchanged) plus one new size for standalone pages (404 / about) that never
-appears inside the graph canvas or panel chrome.
+**Locked baseline — carried unchanged from Phase 2, not a new declaration by this phase.** The 6 sizes
+below constitute the approved design-system type scale (`02-UI-SPEC.md §Typography`, plus the
+already-established `NodePanelContent.tsx` body-prose convention). **Phase 9 introduces zero net-new font
+sizes** — every role this phase needs maps onto one of these 6 locked values; no size outside this table
+appears anywhere in Phase 9.
 
 | Role | Size | Weight | Line Height | Font | Usage |
 |------|------|--------|-------------|------|-------|
 | Micro label | 10px | 600 (semibold) | 1.2 | Outfit | Step-number badge numeral, "Next" pill label (uppercase, `letter-spacing: 0.05em`) |
-| Badge | 11px | 600 (semibold) | 1.2 | Outfit | Mastery badge (unchanged), staleness pill label |
-| Label | 13px | 400 / 600 (regular / semibold) | 1.4 | Outfit | Progress bar count text ("N of 8 mastered" — 600 for live-status emphasis, matching the count it replaces); pathway subline (400, unchanged) |
+| Badge | 11px | 600 (semibold) | 1.2 | Outfit | Mastery badge (unchanged, Phase 2), staleness pill label |
+| Label | 13px | 400 / 600 (regular / semibold) | 1.4 | Outfit | Progress bar count text ("N of 8 mastered" — 600 for live-status emphasis, matching the count it replaces); pathway subline (400, unchanged, Phase 2) |
+| Body prose | 14px | 400 (regular) | 1.65 | Outfit | Intro overlay body copy, about/privacy page body, 404 body — reuses the exact panel-body convention (`NodePanelContent.tsx`) |
 | Node title | 15px | 600 (semibold) | 1.25 | Outfit | Unchanged (Phase 2) |
-| Body prose | 14px | 400 (regular) | 1.65 | Outfit | Intro overlay body copy, about/privacy page body — reuses the exact panel-body convention (`NodePanelContent.tsx`) |
-| Pathway heading | 22px | 600 (semibold) | 1.2 | Space Grotesk | Pathway banner title (unchanged); intro overlay dialog title; about page section heading |
-| Page display | 28px | 600 (semibold) | 1.2 | Space Grotesk | 404 heading only — the single new size this phase, used exclusively on the standalone error page where no graph/panel chrome competes for hierarchy |
+| Pathway heading | 22px | 600 (semibold) | 1.2 | Space Grotesk | Pathway banner title (unchanged, Phase 2); intro overlay dialog title; about page section heading; **404 `<h1>`** (reused — see fix note below) |
 
 Two weights only, unchanged: **400 (regular)** and **600 (semibold)**. No new weight introduced.
+
+**404 heading fix (revision):** the 404 `<h1>` reuses the existing 22px `pathway-heading` role instead of
+introducing a standalone "page display" size. This keeps the standalone error page visually consistent
+with the rest of the app (same weight + font as the pathway banner and about-page heading) and holds
+Phase 9 at zero net-new font sizes, per the locked-baseline rule above.
 
 ---
 
@@ -270,7 +283,7 @@ New route (planner decides exact TanStack Router not-found convention — `notFo
 | Element | Spec |
 |---------|------|
 | Layout | Centered column, `min-height: 100dvh`, `background: var(--color-obsidian-950)` (page dominant, unchanged) |
-| Heading | "Page not found" — 28px/600, Space Grotesk (the one new Page-display size) |
+| Heading | "Page not found" — `<h1>`, 22px/600, Space Grotesk (reuses the locked `pathway-heading` role — no new size, see Typography) |
 | Body | "This node doesn't exist on the map." — 14px/400/1.65, Outfit, `opacity: 0.7` |
 | CTA | Button, gold-CTA treatment (same family as accent item 12): "Back to the roadmap" → links to `/` |
 | Vertical rhythm | `gap: 16px` between heading/body/CTA, `padding-top: 64px` on the column |
