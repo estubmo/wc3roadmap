@@ -5,12 +5,20 @@
  * Cross-document content validation orchestrator.
  *
  * Imports the generated node corpus (from the "content-collections" module)
- * and runs four validators:
+ * and runs four always-on validators:
  *   1. validatePrerequisiteIds — every prereq ID must reference an existing node
  *   2. validatePatchIds        — every patchId must be in the registry
  *   3. detectCycles            — the prerequisite graph must be a DAG
  *   4. validatePathwayStepIds  — every step in pathways/beginner-fundamentals.json
  *                                must reference an existing node (T-02-07 / T-02-08)
+ *
+ * Three additional LAUNCH-GATE validators run ONLY when the LAUNCH_GATE env
+ * flag is set (via `npm run validate:launch`, the release/deploy gate). The
+ * always-on `npm run validate` (per-PR CI) skips them, so the codebase stays
+ * mergeable while the parallel content workstream flips nodes to launch_ready:
+ *   5. validateLaunchGate                 — >= 25 launch_ready nodes (CONT-04)
+ *   6. validatePathwayStepsAreLaunchReady — every pathway step is launch_ready (PATH-02)
+ *   7. validateAuditTrail                 — every launch_ready node has an auditNote (CONT-05)
  *
  * IMPORTANT BUILD ORDERING: This script imports from the "content-collections"
  * module alias which resolves to .content-collections/generated/index.js.
@@ -31,6 +39,11 @@ import { PATCH_IDS } from "../src/lib/patches";
 import { detectCycles } from "./lib/detectCycles";
 import { validatePrerequisiteIds, validatePatchIds } from "./lib/validators";
 import { validatePathwayStepIds } from "./validate-pathway";
+import {
+  validateAuditTrail,
+  validateLaunchGate,
+  validatePathwayStepsAreLaunchReady,
+} from "./validate-launch-gate";
 
 function main(): void {
   const errors: string[] = [];
@@ -59,6 +72,22 @@ function main(): void {
     const nodeIds = new Set(allNodes.map((n) => n.id));
     const pathwayErrors = validatePathwayStepIds(pathwayResult.data, nodeIds);
     errors.push(...pathwayErrors);
+  }
+
+  // 5/6/7. Launch-readiness gate — enforced ONLY at the deploy gate (LAUNCH_GATE=1).
+  // Skipped by the always-on per-PR validate script so CI stays green while the
+  // parallel content workstream flips nodes to launch_ready (D-11/D-12).
+  if (process.env.LAUNCH_GATE) {
+    // 5. >= 25 launch_ready nodes (CONT-04)
+    errors.push(...validateLaunchGate(allNodes));
+    // 6. every beginner-fundamentals pathway step is itself launch_ready (PATH-02 / Pitfall 5)
+    if (pathwayResult.success) {
+      errors.push(
+        ...validatePathwayStepsAreLaunchReady(pathwayResult.data, allNodes)
+      );
+    }
+    // 7. every launch_ready node carries its recorded audit verdict (CONT-05 / D-13)
+    errors.push(...validateAuditTrail(allNodes));
   }
 
   if (errors.length > 0) {
