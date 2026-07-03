@@ -33,7 +33,7 @@ import { memo } from "react";
 import { motion } from "motion/react";
 import type { NodeProps } from "@xyflow/react";
 import { Handle, Position } from "@xyflow/react";
-import { Sword, BookOpen, Clock } from "lucide-react";
+import { Sword, BookOpen, Clock, ChevronDown } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { cn } from "#/lib/utils";
 import type { GraphDisplayNode } from "#/schemas/graph";
@@ -199,7 +199,7 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
   // Transient pathway/staleness fields set per-node by RoadmapGraph (09-09).
   // stepIndex/pathwayTotal/isNextStep exist only for pathway-step nodes;
   // stale exists only for meta-volatile out-of-patch nodes (09-04, ADR 013).
-  const { stepIndex, pathwayTotal, stale } = d;
+  const { stepIndex, pathwayTotal, isNextStep, stale } = d;
   const isPathwayStep = stepIndex !== undefined;
 
   // Subscribe to sourceMap for this node (D-14 canvas visual — ADR 002/005).
@@ -319,6 +319,59 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
         >
           <Clock size={10} aria-hidden="true" />
         </span>
+      )}
+
+      {/* "Next" cue (PATH-01/D-04): the single strongest visual pull on the
+          pathway view. Renders ONLY on the first non-mastered pathway step
+          (isNextStep). A rune-gold-bordered pill centered above the node
+          (top -28px clears the step badge) with a ChevronDown pointing at it.
+          Entrance-only animation (no loop — Phase 2 rule + PROG-05): fade +
+          upward settle, played once when the cue lands on a node. The pill
+          carries aria-label so the signal is never color-only. Because the
+          next node is by definition never mastered, its step badge stays
+          default (non-gold) — no accent conflict. */}
+      {isNextStep === true && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            top: "-28px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "1px",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            aria-label="Next recommended step"
+            style={{
+              fontSize: "10px",
+              fontWeight: 600,
+              lineHeight: 1,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              color: "var(--color-rune-400)",
+              backgroundColor: "var(--color-obsidian-800)",
+              border: "1px solid var(--color-rune-600)",
+              borderRadius: "9999px",
+              padding: "2px 8px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Next
+          </span>
+          <ChevronDown
+            size={10}
+            style={{ color: "var(--color-rune-400)" }}
+            aria-hidden="true"
+          />
+        </motion.div>
       )}
 
       {/* React Flow handles — invisible, at top and bottom edges */}
