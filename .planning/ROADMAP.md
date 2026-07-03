@@ -366,7 +366,7 @@ Plans:
   4. A citation review audit confirms every citation on every launched node supports a specific verifiable claim and pairs it with a concrete WC3 drill — any node failing this audit is withheld from launch
   5. Meta-volatile nodes that have not been reviewed against the current WC3 patch display a visible staleness indicator in their detail panel so users can calibrate their trust appropriately
 
-**Plans**: 7/13 plans executed
+**Plans**: 8/13 plans executed
 
 Plans:
 **Wave 1**
@@ -381,7 +381,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 09-08-PLAN.md — launch-gate CI validators (≥25 + pathway-steps + audit-trail) + env-gated wiring + validate:launch (CONT-04/PATH-02) [wave 2]
+- [x] 09-08-PLAN.md — launch-gate CI validators (≥25 + pathway-steps + audit-trail) + env-gated wiring + validate:launch (CONT-04/PATH-02) [wave 2]
 - [ ] 09-09-PLAN.md — PathwayBanner progress bar + RoadmapGraph stepIndex/isNextStep/stale wiring (PATH-04/PATH-01) [wave 2]
 - [ ] 09-10-PLAN.md — index.tsx loader: prod-gated launch_ready filter + stale projection + mount intro overlay (CONT-04/PATH-03) [wave 2]
 
@@ -411,4 +411,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
 | 7. w3champions Auto-Detection | 8/8 | Complete    | 2026-07-01 |
 | 8. Replay Parsing | 13/13 | Complete    | 2026-07-02 |
-| 9. Guided Pathways & Launch | 7/13 | In Progress|  |
+| 9. Guided Pathways & Launch | 8/13 | In Progress|  |

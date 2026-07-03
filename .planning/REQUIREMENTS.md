@@ -23,7 +23,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 - [x] **CONT-01**: Each relevant node has visible inline citations to real peer-reviewed / scientific sources (motor learning, deliberate practice, sport/competitive psychology) linking to the source
 - [x] **CONT-02**: Every node has a required, concrete "How to apply this in your next game" section (practical foreground, theory background)
 - [x] **CONT-03**: Node content distills wisdom from recognized WC3 players/guides/content-creators
-- [ ] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
+- [x] **CONT-04**: Race-agnostic fundamentals core is authored to the minimum publishable gate (~25 nodes) before launch
 - [x] **CONT-05**: Citations are real and correctly applied (a review pass guards against pseudo-intellectual/misapplied science)
 
 ### Graph UI
@@ -38,7 +38,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 ### Guided Pathways
 
 - [ ] **PATH-01**: Guided Pathways overlay highlights an ordered subset of nodes on the graph
-- [ ] **PATH-02**: At least one "Beginner Fundamentals" pathway ships at launch
+- [x] **PATH-02**: At least one "Beginner Fundamentals" pathway ships at launch
 - [x] **PATH-03**: The default landing view is a guided pathway, not the full sprawling graph (novice anti-overwhelm)
 - [x] **PATH-04**: Pathway shows completion progress as the user masters its nodes
 
@@ -179,10 +179,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REPLAY-07 | Phase 8 | Complete |
 | REPLAY-08 | Phase 8 | Complete |
 | PATH-01 | Phase 9 | Pending |
-| PATH-02 | Phase 9 | Pending |
+| PATH-02 | Phase 9 | Complete |
 | PATH-03 | Phase 9 | Complete |
 | PATH-04 | Phase 9 | Complete |
-| CONT-04 | Phase 9 | Pending |
+| CONT-04 | Phase 9 | Complete |
 | CONT-05 | Phase 9 | Complete |
 
 **Coverage:**
