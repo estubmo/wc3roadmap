@@ -37,7 +37,7 @@ v1 content scope = **race-agnostic fundamentals core, fully fleshed** (race-spec
 
 ### Guided Pathways
 
-- [ ] **PATH-01**: Guided Pathways overlay highlights an ordered subset of nodes on the graph
+- [x] **PATH-01**: Guided Pathways overlay highlights an ordered subset of nodes on the graph
 - [x] **PATH-02**: At least one "Beginner Fundamentals" pathway ships at launch
 - [x] **PATH-03**: The default landing view is a guided pathway, not the full sprawling graph (novice anti-overwhelm)
 - [x] **PATH-04**: Pathway shows completion progress as the user masters its nodes
@@ -178,7 +178,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REPLAY-06 | Phase 8 | Complete |
 | REPLAY-07 | Phase 8 | Complete |
 | REPLAY-08 | Phase 8 | Complete |
-| PATH-01 | Phase 9 | Pending |
+| PATH-01 | Phase 9 | Complete |
 | PATH-02 | Phase 9 | Complete |
 | PATH-03 | Phase 9 | Complete |
 | PATH-04 | Phase 9 | Complete |
