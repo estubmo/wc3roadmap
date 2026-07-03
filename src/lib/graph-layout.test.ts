@@ -33,6 +33,7 @@ const nodes: GraphDisplayNode[] = [
     difficulty: "beginner",
     skillType: "macro",
     tags: [],
+    stale: false,
   },
   {
     id: "b",
@@ -43,6 +44,7 @@ const nodes: GraphDisplayNode[] = [
     difficulty: "beginner",
     skillType: "micro",
     tags: [],
+    stale: false,
   },
   {
     id: "c",
@@ -53,6 +55,7 @@ const nodes: GraphDisplayNode[] = [
     difficulty: "intermediate",
     skillType: "mental",
     tags: [],
+    stale: false,
   },
   {
     id: "d",
@@ -63,6 +66,7 @@ const nodes: GraphDisplayNode[] = [
     difficulty: "advanced",
     skillType: "macro",
     tags: [],
+    stale: false,
   },
 ];
 

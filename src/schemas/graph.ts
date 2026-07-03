@@ -12,6 +12,7 @@
  *   - `difficulty` — visual encoding and GRAPH-04 filtering (ADR 005)
  *   - `skillType`  — GRAPH-04 skill-type filtering (ADR 006, D-11)
  *   - `tags`       — GRAPH-04 tag search (ADR 006, D-11)
+ *   - `stale`      — on-canvas staleness marker (ADR 013, D-09)
  *
  * The graph engine MUST import only this type. Importing content-surface
  * types or fields is strictly prohibited (ADR 002). Any further field
@@ -36,6 +37,7 @@ import { NodeSummarySchema } from "./node";
  * Fields added beyond NodeSummary (each required a dedicated ADR):
  *   - `difficulty` — ADR 005
  *   - `skillType`, `tags` — ADR 006 (D-11, GRAPH-04)
+ *   - `stale` — ADR 013 (D-09)
  *
  * Any further field addition requires a new ADR (ADR 005 / ADR 006 rule).
  */
@@ -57,6 +59,18 @@ export const GraphDisplayNodeSchema = NodeSummarySchema.extend({
    * search. An empty array is valid — tags are additive metadata only.
    */
   tags: z.array(z.string()),
+  /**
+   * Computed staleness flag for the on-canvas staleness marker (D-09, D-08).
+   * Derived in the index.tsx loader (09-10) via the single `isStale` predicate
+   * (src/lib/staleness.ts) — `metaVolatile && patchId !== CURRENT_PATCH.id`.
+   *
+   * This is a deliberate, ADR-gated widening of the ADR-002 content/graph
+   * boundary (ADR 013): only the derived boolean crosses the boundary — the
+   * source content fields (`meta_volatile`, `patchId`) never do. It lets the
+   * graph face render a staleness marker without pulling content fields onto
+   * the graph layer.
+   */
+  stale: z.boolean(),
 });
 
 /** Inferred TypeScript type for the graph-display node projection. */
