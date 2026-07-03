@@ -47,6 +47,7 @@ import { GraphNode } from "./GraphNode";
 import { GraphEdge } from "./GraphEdge";
 import { PathwayBanner } from "./PathwayBanner";
 import { computeLayout } from "#/lib/graph-layout";
+import { computePathwayProgress } from "#/lib/pathway-progress";
 import { useGraphStore } from "#/lib/graph-store";
 import type { MasteryState } from "#/schemas/progress";
 import { matchesFilter, isFilterActive } from "#/lib/filter-utils";
@@ -145,6 +146,29 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
   const masteryMap = useGraphStore(useShallow((s) => s.masteryMap));
 
   // ------------------------------------------------------------------
+  // Pathway progress derivation (PATH-04, PATH-01)
+  //
+  // computePathwayProgress is the single source of truth (09-01): called once
+  // here and shared by both the displayNodes memo (nextStepId → isNextStep)
+  // and the PathwayBanner (masteredCount / total). D-02: mastered-only count.
+  //
+  // stepIndexMap maps a pathway-step node id → its 1-based position, so the
+  // GraphNode step-badge (09-11) can render "Step {n} of {total}". These are
+  // transient node.data values — NOT schema fields (09-RESEARCH Anti-Patterns).
+  // ------------------------------------------------------------------
+
+  const pathwayProgress = useMemo(
+    () => computePathwayProgress(pathway.steps, masteryMap),
+    [pathway.steps, masteryMap]
+  );
+
+  const stepIndexMap = useMemo(() => {
+    const map = new Map<string, number>();
+    pathway.steps.forEach((id, i) => map.set(id, i + 1));
+    return map;
+  }, [pathway.steps]);
+
+  // ------------------------------------------------------------------
   // Derived nodes with mastery state + pathway dim applied
   //
   // Keep in useMemo keyed on [layoutNodes, pathwaySet, exploring] so
@@ -156,9 +180,19 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
   // ------------------------------------------------------------------
 
   const displayNodes: Node[] = useMemo(() => {
+    const pathwayTotal = pathway.steps.length;
     return layoutNodes.map((n) => {
       const masteryState: MasteryState = masteryMap[n.id] ?? "untouched";
       const isPathwayNode = pathwaySet.has(n.id);
+
+      // Transient pathway overlay data (consumed by GraphNode overlays, 09-11):
+      //   stepIndex   — 1-based pathway position (pathway-step nodes only)
+      //   pathwayTotal — denominator for the "Step {n} of {total}" badge aria
+      //   isNextStep  — first non-mastered step in order (D-04)
+      //   stale       — GraphDisplayNode.stale passthrough (09-04, ADR 013)
+      const stepIndex = stepIndexMap.get(n.id);
+      const isNextStep = n.id === pathwayProgress.nextStepId;
+      const stale = rawNodes.find((r) => r.id === n.id)?.stale ?? false;
 
       // Dim non-pathway nodes when not exploring (D-08, D-09)
       const style =
@@ -168,11 +202,27 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
 
       return {
         ...n,
-        data: { ...n.data, masteryState },
+        data: {
+          ...n.data,
+          masteryState,
+          stepIndex,
+          pathwayTotal,
+          isNextStep,
+          stale,
+        },
         style,
       };
     });
-  }, [layoutNodes, pathwaySet, exploring, masteryMap]);
+  }, [
+    layoutNodes,
+    pathwaySet,
+    exploring,
+    masteryMap,
+    pathway.steps,
+    stepIndexMap,
+    pathwayProgress,
+    rawNodes,
+  ]);
 
   // ------------------------------------------------------------------
   // On-mount fitView: scope to pathway nodes (Pitfall 3 — call in
@@ -318,7 +368,8 @@ function GraphCanvas({ nodes: rawNodes, pathway, initialExploring }: RoadmapGrap
       {/* Pathway banner — fixed overlay with pathway identity + explore CTA */}
       <PathwayBanner
         pathway={pathway}
-        totalNodes={rawNodes.length}
+        masteredCount={pathwayProgress.masteredCount}
+        total={pathwayProgress.total}
         exploring={exploring}
         onToggleExplore={handleExplore}
       />
