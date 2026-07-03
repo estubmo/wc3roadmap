@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 9
-current_phase_name: Guided Pathways & Launch
+current_phase: 09
+current_phase_name: guided-pathways-launch
 status: executing
 stopped_at: Phase 9 UI-SPEC approved
-last_updated: "2026-07-03T11:19:26.829Z"
-last_activity: 2026-07-02
-last_activity_desc: Phase 08 complete, transitioned to Phase 9
+last_updated: "2026-07-03T13:42:55.681Z"
+last_activity: 2026-07-03
+last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 9
   completed_phases: 8
-  total_plans: 75
-  completed_plans: 75
-  percent: 89
+  total_plans: 88
+  completed_plans: 76
+  percent: 86
 ---
 
 # Project State
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-28)
 
 **Core value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy
-**Current focus:** Phase 08 — replay-parsing
+**Current focus:** Phase 09 — guided-pathways-launch
 
 ## Current Position
 
-Phase: 9 — Guided Pathways & Launch
-Plan: Not started
+Phase: 09 (guided-pathways-launch) — EXECUTING
+Plan: 2 of 13
 Status: Ready to execute
-Last activity: 2026-07-02 — Phase 08 complete, transitioned to Phase 9
+Last activity: 2026-07-03 — Phase 09 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -127,6 +127,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 08 P10 | 12min | 2 tasks | 4 files |
 | Phase 08 P09 | 12min | 1 tasks | 2 files |
 | Phase 08 P11 | 40min | 3 tasks | 2 files |
+| Phase 09 P01 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -242,6 +243,8 @@ Recent decisions affecting current work:
 - [Phase ?]: patchId resolves to CURRENT_PATCH.id for every replay write (no buildNumber->patch-boundary mapping table exists yet); raw buildNumber stored alongside for future re-resolution (D-12)
 - [Phase ?]: pullReplays resolves candidate gameIds via w3champions general /api/matches?gameMode=1 feed filtered client-side by BattleTag — no verified player-scoped search endpoint found live
 - [Phase ?]: getReplayAnalysis actual field is always null — no per-principal last-report store exists; detailed report is the direct uploadReplay/pullReplays return value
+- [Phase ?]: [Phase 09-01]: computePathwayProgress pure deep module — MasteryState type only; masteredCount counts only 'mastered' (D-02), nextStepId first non-mastered in order (D-04), null when all mastered
+- [Phase ?]: [Phase 09-01]: pathway-progress.test.ts uses relative imports — vitest.config.ts has no #/ alias resolver
 
 ### Pending Todos
 
@@ -266,6 +269,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T11:19:26.808Z
+Last session: 2026-07-03T13:42:26.933Z
 Stopped at: Phase 9 UI-SPEC approved
 Resume file: .planning/phases/09-guided-pathways-launch/09-UI-SPEC.md
