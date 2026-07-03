@@ -366,7 +366,7 @@ Plans:
   4. A citation review audit confirms every citation on every launched node supports a specific verifiable claim and pairs it with a concrete WC3 drill — any node failing this audit is withheld from launch
   5. Meta-volatile nodes that have not been reviewed against the current WC3 patch display a visible staleness indicator in their detail panel so users can calibrate their trust appropriately
 
-**Plans**: 11/13 plans executed
+**Plans**: 12/13 plans executed
 
 Plans:
 **Wave 1**
@@ -387,7 +387,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 09-11-PLAN.md — GraphNode step-number badge + Next cue + stale marker (PATH-01) [wave 3]
+- [x] 09-11-PLAN.md — GraphNode step-number badge + Next cue + stale marker (PATH-01) [wave 3]
 - [x] 09-12-PLAN.md — NodePanelContent staleness strip + touch tooltip (D-07, criterion 5) [wave 3]
 
 **Wave 4** *(blocked on Wave 3)*
@@ -411,4 +411,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
 | 7. w3champions Auto-Detection | 8/8 | Complete    | 2026-07-01 |
 | 8. Replay Parsing | 13/13 | Complete    | 2026-07-02 |
-| 9. Guided Pathways & Launch | 11/13 | In Progress|  |
+| 9. Guided Pathways & Launch | 12/13 | In Progress|  |
