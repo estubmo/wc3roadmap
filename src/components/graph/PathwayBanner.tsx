@@ -5,8 +5,10 @@
  * PathwayBanner — pathway identity overlay with explore/back CTA.
  *
  * Renders the pathway title (Space Grotesk 22px/600, UI-SPEC §Typography
- * §Pathway heading), subtitle, and a step-count label "{N} of {total} nodes"
- * (UI-SPEC §Copywriting Contract).
+ * §Pathway heading), subtitle, and a mastery-tied completion progress bar
+ * (rune-500 fill over obsidian-700 track, "{N} of {total} mastered" label;
+ * "Fundamentals complete" at 100% — no fanfare, PROG-05/D-03). UI-SPEC
+ * §Pathway Completion Progress Bar + §Copywriting Contract.
  *
  * CTA button:
  *   exploring=false → "Explore full map"
@@ -19,6 +21,7 @@
  * The `onToggleExplore` handler is wired by the canvas/route layer (plan 10).
  */
 
+import { AnimatePresence, motion } from "motion/react";
 import { Button } from "#/components/ui/button";
 import type { Pathway } from "#/schemas/pathway";
 
@@ -29,8 +32,13 @@ import type { Pathway } from "#/schemas/pathway";
 interface PathwayBannerProps {
   /** Active pathway providing title, subtitle, and step IDs. */
   pathway: Pathway;
-  /** Total number of nodes in the graph (denominator of the step-count label). */
-  totalNodes: number;
+  /**
+   * Number of pathway steps in the `mastered` state (D-02: excludes
+   * in-progress/untouched). Drives the progress-bar fill + label numerator.
+   */
+  masteredCount: number;
+  /** Total number of pathway steps (progress-bar denominator = pathway.steps.length). */
+  total: number;
   /**
    * Whether the "Explore full map" mode is currently active.
    * - false → button shows "Explore full map"
@@ -56,10 +64,14 @@ interface PathwayBannerProps {
  */
 export function PathwayBanner({
   pathway,
-  totalNodes,
+  masteredCount,
+  total,
   exploring,
   onToggleExplore,
 }: PathwayBannerProps) {
+  const isComplete = total > 0 && masteredCount === total;
+  const fillPercent = total > 0 ? (masteredCount / total) * 100 : 0;
+
   return (
     <div
       style={{
@@ -107,17 +119,66 @@ export function PathwayBanner({
           {pathway.subtitle}
         </p>
 
-        <p
+        {/* Mastery-tied completion progress bar (PATH-04, D-01/D-02/D-03).
+            Replaces the former static "{N} of {total} nodes" line. */}
+        <div
           style={{
-            fontSize: "13px",
-            fontWeight: 400,
-            lineHeight: 1.4,
-            margin: 0,
-            opacity: 0.5,
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            maxWidth: "240px",
+            marginTop: "2px",
           }}
         >
-          {pathway.steps.length} of {totalNodes} nodes
-        </p>
+          {/* Track (6px, obsidian-700) + rune-500 animated fill. */}
+          <div
+            role="progressbar"
+            aria-label="Pathway completion"
+            aria-valuenow={masteredCount}
+            aria-valuemin={0}
+            aria-valuemax={total}
+            style={{
+              height: "6px",
+              borderRadius: "9999px",
+              backgroundColor: "var(--color-obsidian-700)",
+              overflow: "hidden",
+            }}
+          >
+            <motion.div
+              initial={false}
+              animate={{ width: `${fillPercent}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              style={{
+                height: "100%",
+                borderRadius: "9999px",
+                backgroundColor: "var(--color-rune-500)",
+              }}
+            />
+          </div>
+
+          {/* Label below the bar — live status (13px/600/opacity 0.85).
+              At 100% swaps to "Fundamentals complete" (rune-400, no fanfare). */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p
+              key={isComplete ? "complete" : "progress"}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isComplete ? 1 : 0.85 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                fontSize: "13px",
+                fontWeight: 600,
+                lineHeight: 1.4,
+                margin: 0,
+                color: isComplete ? "var(--color-rune-400)" : "inherit",
+              }}
+            >
+              {isComplete
+                ? "Fundamentals complete"
+                : `${masteredCount} of ${total} mastered`}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Right: explore / back CTA — rune-500 ring per UI-SPEC accent item 7 */}
