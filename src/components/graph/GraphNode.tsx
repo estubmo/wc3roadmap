@@ -33,7 +33,7 @@ import { memo } from "react";
 import { motion } from "motion/react";
 import type { NodeProps } from "@xyflow/react";
 import { Handle, Position } from "@xyflow/react";
-import { Sword, BookOpen } from "lucide-react";
+import { Sword, BookOpen, Clock } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { cn } from "#/lib/utils";
 import type { GraphDisplayNode } from "#/schemas/graph";
@@ -45,9 +45,23 @@ import { MasteryBadge } from "./MasteryBadge";
 // Types
 // ---------------------------------------------------------------------------
 
-/** Node data type: GraphDisplayNode fields + masteryState from mock-mastery. */
+/**
+ * Node data type: GraphDisplayNode fields + masteryState from mock-mastery,
+ * plus the transient pathway/staleness fields set per-node by RoadmapGraph
+ * (09-09). These are node.data — NOT schema fields — so they are optional and
+ * only present for pathway-step nodes (stepIndex/pathwayTotal/isNextStep) or
+ * stale nodes (stale).
+ */
 type GraphNodeData = GraphDisplayNode & {
   masteryState: MasteryState;
+  /** 1-based position in pathway.steps[]; present only for pathway-step nodes. */
+  stepIndex?: number;
+  /** Denominator for the "Step {n} of {total}" badge aria; pathway nodes only. */
+  pathwayTotal?: number;
+  /** The single first-non-mastered pathway step (D-04). */
+  isNextStep?: boolean;
+  /** GraphDisplayNode.stale passthrough (09-04, ADR 013). */
+  stale?: boolean;
 };
 
 // ---------------------------------------------------------------------------
@@ -182,6 +196,12 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
   const d = data as GraphNodeData;
   const { masteryState, nodeType, difficulty, race, title } = d;
 
+  // Transient pathway/staleness fields set per-node by RoadmapGraph (09-09).
+  // stepIndex/pathwayTotal/isNextStep exist only for pathway-step nodes;
+  // stale exists only for meta-volatile out-of-patch nodes (09-04, ADR 013).
+  const { stepIndex, pathwayTotal, stale } = d;
+  const isPathwayStep = stepIndex !== undefined;
+
   // Subscribe to sourceMap for this node (D-14 canvas visual — ADR 002/005).
   // Source MUST be read from the store only; never from the graph projection.
   const masterySource = useGraphStore((s) => s.sourceMap[d.id]);
@@ -236,6 +256,69 @@ export const GraphNode = memo(function GraphNode({ data }: NodeProps) {
             backgroundColor: factionTint,
           }}
         />
+      )}
+
+      {/* Step-number badge (PATH-01/D-04): a 20px circle overlapping the
+          top-left corner, carrying the node's 1-based pathway position. Renders
+          ONLY for pathway-step nodes (stepIndex defined). Default obsidian
+          styling; mastered steps get the rune-gold fill (accent item 10). The
+          "next" node is never mastered, so its badge always stays default. */}
+      {isPathwayStep && (
+        <span
+          aria-label={
+            pathwayTotal !== undefined
+              ? `Step ${stepIndex} of ${pathwayTotal}`
+              : `Step ${stepIndex}`
+          }
+          style={{
+            position: "absolute",
+            top: "-8px",
+            left: "-8px",
+            width: "20px",
+            height: "20px",
+            borderRadius: "9999px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "var(--font-sans)",
+            fontSize: "10px",
+            fontWeight: 600,
+            lineHeight: 1,
+            zIndex: 1,
+            ...(masteryState === "mastered"
+              ? {
+                  backgroundColor: "var(--color-rune-500)",
+                  color: "var(--color-obsidian-950)",
+                }
+              : {
+                  backgroundColor: "var(--color-obsidian-800)",
+                  border: "1px solid var(--color-obsidian-600)",
+                  color: "color-mix(in oklab, #e9e8ee 80%, transparent)",
+                }),
+          }}
+        >
+          {stepIndex}
+        </span>
+      )}
+
+      {/* Staleness graph-node marker (CONT-05/D-08): a 10px Clock in the
+          previously-empty bottom-right corner. Neutral #e9e8ee at 55% — never
+          rune-gold (staleness is a trust signal, not a skill signal). Renders
+          ONLY when data.stale === true; no reserved space otherwise. */}
+      {stale === true && (
+        <span
+          role="img"
+          aria-label="Content may be outdated for the current patch"
+          style={{
+            position: "absolute",
+            bottom: "4px",
+            right: "4px",
+            lineHeight: 0,
+            color: "color-mix(in oklab, #e9e8ee 55%, transparent)",
+          }}
+        >
+          <Clock size={10} aria-hidden="true" />
+        </span>
       )}
 
       {/* React Flow handles — invisible, at top and bottom edges */}
