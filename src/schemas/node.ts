@@ -425,6 +425,26 @@ export const NodeFrontmatterSchema = NodeSummarySchema.extend({
    * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
    */
   replayCriteria: ReplayCriteriaSchema.optional(),
+  /**
+   * Publishability flag for the launched graph (D-12/D-15, CONT-04).
+   * REQUIRED boolean with NO default — every MDX file must declare it explicitly.
+   * When false: the node is excluded from the launched graph (09-10 loader filter).
+   * The human citation audit (CONT-05) flips it to true once the node's science
+   * claims are verified. No schema default is intentional: an omission fails the
+   * content build loudly, making the D-10 upgrade-review pass visible per-file.
+   * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
+   */
+  launch_ready: z.boolean(),
+  /**
+   * Optional citation-audit-trail note (D-13, CONT-05). Records the per-node
+   * citation-audit verdict + rationale — the auditable no-decorative-science
+   * trail. Optional at the schema layer; the launch-time requirement (auditNote
+   * must be present when launch_ready is true) is enforced by the CI validator
+   * in plan 09-08, NOT here, to avoid coupling the always-on content build to
+   * launch state.
+   * MUST stay mirrored field-for-field in content-collections.ts (parallel-schema-sync).
+   */
+  auditNote: z.string().optional(),
 });
 
 /** Inferred TypeScript type for the full node frontmatter. */

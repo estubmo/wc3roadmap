@@ -152,6 +152,27 @@ const nodes = defineCollection({
         }),
       ])
       .optional(),
+    // PARALLEL-SCHEMA SYNC NOTE: mirror of launch_ready in src/schemas/node.ts
+    // (plan 09-03). Keep field-for-field identical — REQUIRED boolean, NO default.
+    // Both definitions MUST stay in sync: this enforces at build time; node.ts at
+    // runtime/test.
+    /**
+     * Publishability flag for the launched graph (D-12/D-15, CONT-04).
+     * REQUIRED boolean with NO default — every MDX file must declare it explicitly.
+     * When false: excluded from the launched graph (09-10 loader filter). The human
+     * citation audit (CONT-05) flips it to true. No default is intentional: an
+     * omission fails the content build loudly (D-10 re-audit visible per-file).
+     */
+    launch_ready: z.boolean(),
+    // PARALLEL-SCHEMA SYNC NOTE: mirror of auditNote in src/schemas/node.ts
+    // (plan 09-03). Keep field-for-field identical — optional string. Both
+    // definitions MUST stay in sync.
+    /**
+     * Optional citation-audit-trail note (D-13, CONT-05) — the auditable
+     * no-decorative-science trail. Optional here; auditNote-required-when-launch_ready
+     * is enforced by the CI validator in plan 09-08, not by this build schema.
+     */
+    auditNote: z.string().optional(),
   }),
   transform: async (document, context) => {
     // QUIZ-01 belt-and-suspenders count guard: Zod schema enforces 3–5 questions at parse
