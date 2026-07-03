@@ -6,14 +6,14 @@ current_phase: 09
 current_phase_name: guided-pathways-launch
 status: executing
 stopped_at: Completed 09-04-PLAN.md
-last_updated: "2026-07-03T13:57:07.953Z"
+last_updated: "2026-07-03T14:02:32.271Z"
 last_activity: 2026-07-03
 last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 9
   completed_phases: 8
   total_plans: 88
-  completed_plans: 79
+  completed_plans: 80
   percent: 89
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-06-28)
 ## Current Position
 
 Phase: 09 (guided-pathways-launch) — EXECUTING
-Plan: 5 of 13
+Plan: 6 of 13
 Status: Ready to execute
 Last activity: 2026-07-03 — Phase 09 execution started
 
@@ -131,6 +131,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09 P02 | 1m | 2 tasks | 2 files |
 | Phase 09 P03 | 2min | 2 tasks | 19 files |
 | Phase 09 P04 | 2m | 2 tasks | 3 files |
+| Phase 09 P05 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -253,6 +254,8 @@ Recent decisions affecting current work:
 - [Phase ?]: auditNote is z.string().optional() (09-03); auditNote-required-when-launch_ready enforced by 09-08 CI validator
 - [Phase ?]: All 17 nodes migrated to launch_ready: false (09-03); flipping to true is the human citation audit CONT-05
 - [Phase ?]: [Phase 09-04]: GraphDisplayNodeSchema widened with single stale boolean under ADR 013 (D-09) — first projection widening since ADR 006; only the isStale-derived boolean crosses the boundary, source content fields never do
+- [Phase 09-05]: Single app-wide TooltipProvider mounted high in __root.tsx (Pitfall 1) — first Tooltip use, unblocks 09-12 staleness tooltip; no second provider deeper
+- [Phase 09-05]: 404 via framework-native notFoundComponent on root route; og:image is placeholder /og-image.png (asset out of scope, content/design workstream)
 
 ### Pending Todos
 
@@ -277,6 +280,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T13:57:01.120Z
+Last session: 2026-07-03T14:01:35.221Z
 Stopped at: Completed 09-04-PLAN.md
 Resume file: .planning/phases/09-guided-pathways-launch/09-UI-SPEC.md
