@@ -28,6 +28,7 @@ const validGraphNode = {
   difficulty: "beginner" as const,
   skillType: "macro" as const,
   tags: [] as string[],
+  stale: false,
 };
 
 // ---------------------------------------------------------------------------

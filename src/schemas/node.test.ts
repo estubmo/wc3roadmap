@@ -41,6 +41,7 @@ const validFrontmatter = {
   patch_context: "Supply limit unchanged in this patch; timing windows are current.",
   last_reviewed: "2026-06-28",
   meta_volatile: false,
+  launch_ready: false,
   citations: [
     {
       kind: "science" as const,
