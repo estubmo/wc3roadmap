@@ -32,19 +32,30 @@
  * JS client-side (Pitfall 4 from 03-RESEARCH.md). Never mount this component
  * during SSR.
  *
- * Does NOT surface meta_volatile / last_reviewed / patch_context (D-15;
- * staleness UI is deferred to Phase 9).
+ * Phase 9 addition (D-06/D-07, CONT-05):
+ *   - Staleness strip below the header (above the scrollable body) renders only
+ *     for meta-volatile nodes whose authored patch no longer matches CURRENT_PATCH
+ *     (isStale). It carries a touch-capable shadcn Tooltip (hover + focus + tap)
+ *     with the full "last reviewed for patch …" explanation. Replaces the former
+ *     deferred D-15 hook — the staleness UI is now implemented, not deferred.
  */
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MDXContent } from "@content-collections/mdx/react";
-import { X } from "lucide-react";
+import { Clock, X } from "lucide-react";
 import { allNodes } from "content-collections";
 import { useShallow } from "zustand/shallow";
 import { motion, AnimatePresence } from "motion/react";
 import { nodeContentQueryOptions } from "#/lib/node-content-query";
 import { useGraphStore } from "#/lib/graph-store";
+import { isStale } from "#/lib/staleness";
+import { CURRENT_PATCH } from "#/lib/patches";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "#/components/ui/tooltip";
 import { CitationList } from "./CitationList";
 import { MasteryBadge } from "./MasteryBadge";
 import { MasteryControls } from "./MasteryControls";
@@ -223,8 +234,9 @@ function PanelErrorState({ message }: { message: string }) {
  * appears BEFORE the conceptual body — players see the actionable guidance
  * first, theory second. This is the project's core content value proposition.
  *
- * D-15: meta_volatile / last_reviewed / patch_context are intentionally absent
- * — staleness UI is deferred to Phase 9.
+ * D-06/D-07: meta_volatile / patchId now drive the staleness strip rendered
+ * below the header for stale nodes — the staleness UI is implemented (CONT-05),
+ * replacing the previously deferred D-15 hook.
  *
  * D-14: PrerequisiteChips are rendered at the bottom of the panel. Activating
  * a chip calls setSelectedNode(prereqId) via the graph store, swapping panel
@@ -249,6 +261,18 @@ export function NodePanelContent({ nodeId, onClose }: NodePanelContentProps) {
 
   // Phase 6: local quiz-open state — drives the AnimatePresence body swap (D-09).
   const [quizOpen, setQuizOpen] = useState(false);
+
+  // Phase 9 (D-07): controlled open state for the staleness tooltip. Radix Tooltip
+  // opens on hover/focus but has NO default touch support (09-RESEARCH Pitfall 2),
+  // so we drive `open` ourselves and toggle it on click to give tap-to-open on
+  // touch devices while keeping hover/focus behaviour intact.
+  const [staleTooltipOpen, setStaleTooltipOpen] = useState(false);
+
+  // Phase 9 (D-06): a node is stale only when it is meta-volatile AND its authored
+  // patch no longer matches the current patch. Single-source predicate (isStale).
+  const showStaleStrip =
+    node !== undefined &&
+    isStale(node.meta_volatile, node.patchId, CURRENT_PATCH.id);
 
   return (
     <div
@@ -329,6 +353,59 @@ export function NodePanelContent({ nodeId, onClose }: NodePanelContentProps) {
           <X size={18} aria-hidden="true" />
         </button>
       </div>
+
+      {/* -------------------------------------------------------------- */}
+      {/* Staleness strip (D-06/D-07, CONT-05) — below header, above body */}
+      {/* Renders ONLY for stale meta-volatile nodes. The whole strip is a  */}
+      {/* touch-capable tooltip trigger (hover + focus + tap).             */}
+      {/* -------------------------------------------------------------- */}
+      {showStaleStrip && node && (
+        <Tooltip open={staleTooltipOpen} onOpenChange={setStaleTooltipOpen}>
+          <TooltipTrigger asChild>
+            <div
+              role="note"
+              tabIndex={0}
+              // Tap-to-toggle for touch (Radix has no default touch open — Pitfall 2).
+              onClick={() => setStaleTooltipOpen((prev) => !prev)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "6px 20px",
+                backgroundColor: "var(--color-obsidian-800)",
+                borderBottom: "1px solid var(--color-obsidian-700)",
+                flexShrink: 0,
+                cursor: "help",
+                outline: "none",
+              }}
+            >
+              <Clock
+                size={12}
+                aria-hidden="true"
+                style={{ color: "#e9e8ee", opacity: 0.65, flexShrink: 0 }}
+              />
+              <span
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  // Neutral tone (not rune-gold, per UI-SPEC Color rationale).
+                  // opacity 0.85 keeps the near-white #e9e8ee text well above the
+                  // 4.5:1 contrast floor on obsidian-800 (Accessibility Baseline).
+                  color: "#e9e8ee",
+                  opacity: 0.85,
+                }}
+              >
+                Unreviewed for {CURRENT_PATCH.id}
+              </span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            Last reviewed for patch {node.patchId} — current patch is{" "}
+            {CURRENT_PATCH.id}. This content may be out of date.
+          </TooltipContent>
+        </Tooltip>
+      )}
 
       {/* -------------------------------------------------------------- */}
       {/* Panel body — scrollable content area                           */}
