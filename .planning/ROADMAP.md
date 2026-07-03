@@ -366,7 +366,34 @@ Plans:
   4. A citation review audit confirms every citation on every launched node supports a specific verifiable claim and pairs it with a concrete WC3 drill — any node failing this audit is withheld from launch
   5. Meta-volatile nodes that have not been reviewed against the current WC3 patch display a visible staleness indicator in their detail panel so users can calibrate their trust appropriately
 
-**Plans**: TBD
+**Plans**: 13 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 09-01-PLAN.md — computePathwayProgress pure module + test (PATH-04) [wave 1]
+- [ ] 09-02-PLAN.md — isStale staleness predicate + test (D-06, single source of truth) [wave 1]
+- [ ] 09-03-PLAN.md — launch_ready + auditNote schema (node.ts + content-collections mirror) + migrate 17 MDX to false [wave 1]
+- [ ] 09-04-PLAN.md — GraphDisplayNode.stale field + ADR 013 (projection boundary widening) [wave 1]
+- [ ] 09-05-PLAN.md — __root TooltipProvider + OG/Twitter meta + notFoundComponent + NotFoundPage (D-16) [wave 1]
+- [ ] 09-06-PLAN.md — About/Privacy route with OG override (D-16) [wave 1]
+- [ ] 09-07-PLAN.md — PathwayIntroOverlay client-only Dialog, one-time localStorage flag (D-05) [wave 1]
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 09-08-PLAN.md — launch-gate CI validators (≥25 + pathway-steps + audit-trail) + env-gated wiring + validate:launch (CONT-04/PATH-02) [wave 2]
+- [ ] 09-09-PLAN.md — PathwayBanner progress bar + RoadmapGraph stepIndex/isNextStep/stale wiring (PATH-04/PATH-01) [wave 2]
+- [ ] 09-10-PLAN.md — index.tsx loader: prod-gated launch_ready filter + stale projection + mount intro overlay (CONT-04/PATH-03) [wave 2]
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 09-11-PLAN.md — GraphNode step-number badge + Next cue + stale marker (PATH-01) [wave 3]
+- [ ] 09-12-PLAN.md — NodePanelContent staleness strip + touch tooltip (D-07, criterion 5) [wave 3]
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 09-13-PLAN.md — CONTEXT.md domain terms + end-of-phase human verification of the 5 success criteria [wave 4]
+
 **UI hint**: yes
 
 ## Progress
