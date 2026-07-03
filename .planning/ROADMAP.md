@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Self-Assessment Quizzes** - Recall-based quizzes for CONCEPTUAL nodes driving mastery state (completed 2026-07-01)
 - [x] **Phase 7: w3champions Auto-Detection** - Coarse ladder signal sync, MECHANIC node auto-advance, DB cache with rate-limit guard (completed 2026-07-01)
 - [x] **Phase 8: Replay Parsing** - w3gjs parser + semantic signal layer, manual upload + w3champions auto-pull, patch-aware mastery thresholds (completed 2026-07-02)
-- [ ] **Phase 9: Guided Pathways & Launch** - Pathway overlay with Beginner Fundamentals track, staleness UI, ~25-node content gate, citation review
+- [x] **Phase 9: Guided Pathways & Launch** - Pathway overlay with Beginner Fundamentals track, staleness UI, ~25-node content gate, citation review (completed 2026-07-03)
 
 ## Phase Details
 
@@ -366,7 +366,7 @@ Plans:
   4. A citation review audit confirms every citation on every launched node supports a specific verifiable claim and pairs it with a concrete WC3 drill — any node failing this audit is withheld from launch
   5. Meta-volatile nodes that have not been reviewed against the current WC3 patch display a visible staleness indicator in their detail panel so users can calibrate their trust appropriately
 
-**Plans**: 12/13 plans executed
+**Plans**: 13/13 plans complete
 
 Plans:
 **Wave 1**
@@ -392,7 +392,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 09-13-PLAN.md — CONTEXT.md domain terms + end-of-phase human verification of the 5 success criteria [wave 4]
+- [x] 09-13-PLAN.md — CONTEXT.md domain terms + end-of-phase human verification of the 5 success criteria [wave 4]
 
 **UI hint**: yes
 
@@ -411,4 +411,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Self-Assessment Quizzes | 11/11 | Complete    | 2026-07-01 |
 | 7. w3champions Auto-Detection | 8/8 | Complete    | 2026-07-01 |
 | 8. Replay Parsing | 13/13 | Complete    | 2026-07-02 |
-| 9. Guided Pathways & Launch | 12/13 | In Progress|  |
+| 9. Guided Pathways & Launch | 13/13 | Complete   | 2026-07-03 |
