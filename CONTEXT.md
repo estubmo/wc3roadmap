@@ -5,7 +5,7 @@
 > project's **ubiquitous domain language** — use them exactly in code,
 > comments, PRs, and documentation.
 >
-> Last updated: Phase 06
+> Last updated: Phase 09
 
 ---
 
@@ -433,6 +433,70 @@ alone, so it is captured from Phase 6 onward.
 
 ---
 
+## Guided Pathways & Launch Terms (Phase 09)
+
+### pathway progress
+
+A player's completion of a pathway measured as the count of its `steps[]` nodes
+whose `masteryState` is `"mastered"` — **mastered-only** (D-02). `in-progress`
+nodes keep their own gold ring on the canvas but do **not** fill the bar; the bar
+means "skills genuinely mastered." Computed by `computePathwayProgress` (the pure
+deep module in `src/lib/pathway-progress.ts`, `MasteryState` in only) which
+returns `masteredCount`, `total`, and `nextStepId`. Rendered as the slim
+rune-gold fill bar + "N of 8 mastered" text in `PathwayBanner` (D-01). At full
+completion (8/8) the pathway shows the quiet **"Fundamentals complete"** state —
+skill-framed, no confetti/streaks/XP (D-03, PROG-05).
+
+### next step
+
+The first non-mastered node in a pathway's `steps[]` order — the "do this next"
+cue (D-04). Exposed as `nextStepId` from `computePathwayProgress` (null when every
+step is mastered). Drives the subtle current-node highlight on the canvas so the
+pathway reads as a guide, not just a highlighted set. Paired with the step numbers
+(1–8) that mirror the pathway JSON `steps[]` order, making "ordered" (criterion 1)
+unambiguous.
+
+### staleness
+
+The property of a `meta_volatile` node whose `patchId` no longer matches the
+current patch. The single source-of-truth predicate is `isStale` in
+`src/lib/staleness.ts`: **`metaVolatile === true && patchId !== currentPatchId`**
+(D-06), with `currentPatchId` passed in by callers as `CURRENT_PATCH.id`
+(`src/lib/patches.ts`). A stale node surfaces in two places: an "Unreviewed for
+{patch}" strip + tooltip near the node title in the detail panel (D-07,
+`NodePanelContent.tsx`) and a small marker on the graph node itself (D-08). To
+feed the on-canvas marker, `GraphDisplayNode` carries a single derived
+`stale: boolean` field, computed field-by-field in the index-route loader
+projection — a deliberate, ADR 013 widening of the ADR-002 graph/content
+projection boundary (the only staleness-derived boolean crosses; source content
+fields never do).
+
+### launch_ready
+
+A required per-node `z.boolean()` publishability flag (`NodeSummarySchema` /
+`NodeFrontmatterSchema` in `src/schemas/node.ts`, mirrored in
+`content-collections.ts` per parallel-schema-sync) that gates a node's inclusion
+in the launched graph (CONT-04, D-12). Non-`launch_ready` nodes are excluded from
+the production graph (the PROD-only filter; dev bypasses it so all nodes stay
+visible pre-audit). No schema default — omission fails the content build loudly so
+the D-10 re-audit is visible per file. All 17 existing nodes were migrated to
+`launch_ready: false`; flipping to `true` is the human citation audit (CONT-05).
+A launch CI gate (`validate:launch`, active under `LAUNCH_GATE=1`) blocks deploy
+until ≥25 `launch_ready` nodes exist — the authored content itself is supplied by
+the parallel content workstream (D-11), not by Phase 9 code.
+
+### audit note
+
+The recorded per-node citation-audit verdict and rationale — the auditable trail
+that makes "no decorative science" (CONT-05, core value) verifiable (D-13). Stored
+as the optional `auditNote` string field on the node schema (`src/schemas/node.ts`,
+mirrored in `content-collections.ts`); the launch CI validator
+(`validateAuditTrail`) requires `auditNote` to be present whenever
+`launch_ready === true`. The audit is a per-node human pass: a failing citation
+audit keeps (or flips) `launch_ready = false`, withholding the node from launch.
+
+---
+
 ## Appendix: Phase-Tracked Additions
 
 | Term | Introduced | Notes |
@@ -475,3 +539,8 @@ alone, so it is captured from Phase 6 onward.
 | pass threshold | Phase 06 | The minimum correct-answer count required to pass a quiz: 3/3 (100%) for 3-question quizzes, 3/4 (75%) for 4-question quizzes, 4/5 (80%) for 5-question quizzes; defined in PASS_THRESHOLD in src/lib/quiz-grading.ts (D-05, QUIZ-02) |
 | quiz mastery | Phase 06 | The state where a CONCEPTUAL node's masteryState is "mastered" with source "quiz"; set only by passing the assessment; visually distinct from manual mastery via the quiz-source badge and canvas marker (D-14) |
 | lapse | Phase 06 | A failed quiz attempt after the node has previously been quiz-mastered (source "quiz"); recorded as lapseCount increment in quizProgress; a forward-designed FSRS signal for the deferred spaced-repetition scheduler (D-07/D-08) |
+| pathway progress | Phase 09 | Mastered-only completion of a pathway's steps[]; computePathwayProgress returns masteredCount/total/nextStepId; rendered as the rune-gold bar + "N of 8 mastered" in PathwayBanner (PATH-04, D-01/D-02/D-03) |
+| next step | Phase 09 | First non-mastered node in a pathway's steps[] order — the "do this next" cue (nextStepId from computePathwayProgress); drives the current-node highlight + step numbers (D-04) |
+| staleness | Phase 09 | meta_volatile node whose patchId != CURRENT_PATCH.id; single isStale predicate in src/lib/staleness.ts (D-06); surfaces as panel strip+tooltip (D-07) and canvas marker via GraphDisplayNode.stale (D-08/D-09, ADR 013) |
+| launch_ready | Phase 09 | Required per-node publishability flag gating inclusion in the launched graph; PROD-only filter; ≥25 gated by validate:launch under LAUNCH_GATE=1; content supplied by parallel workstream (CONT-04, D-11/D-12) |
+| audit note | Phase 09 | Recorded per-node citation-audit verdict/rationale (auditNote field); validateAuditTrail requires it when launch_ready is true; a failing audit withholds the node from launch (CONT-05, D-13) |
