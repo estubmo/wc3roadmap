@@ -11,16 +11,18 @@ prerequisites:
   - hotkey-discipline
 patchId: patch-1.36.2
 patch_context: "Unit collision and pathfinding behaviour is unchanged in 1.36.2; positioning principles remain valid."
-last_reviewed: "2026-06-28"
+last_reviewed: "2026-07-05"
 meta_volatile: false
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-05. Science: Schmidt & Lee (2011) supports the claim that automated lower-level actions (control groups, hotkeys) free working memory for the positioning choice. Community: Warcraft Gym's 'Body Blocking and Surrounding Units' documents the positioning techniques, and Liquipedia's Definitions notes concave/flanking formations. Replaced a prior url-less ToD attribution with a specific Warcraft Gym URL during this audit."
 citations:
   - kind: science
     source: "Schmidt & Lee (2011) — Motor Control and Learning: A Behavioral Emphasis"
     applicationNote: Positioning decisions made under time pressure require automated lower-level actions (control groups, hotkeys) to free working memory for the positioning choice itself — confirming that hotkey discipline is a prerequisite for conscious positioning improvement.
   - kind: creator
-    source: "WC3 coaching — ToD (YouTube, 2022)"
-    applicationNote: ToD credits understanding the "concave vs convex" formation concept as a turning point in his competitive development — players who understand formation control win skirmishes their opponent should statistically win on paper.
+    source: "Warcraft Gym — Body Blocking and Surrounding Units"
+    url: "https://warcraft-gym.com/body-blocking-and-surrounding-units/"
+    applicationNote: "Warcraft Gym's positioning guide covers body-blocking and surrounding — the concave and flank shapes that decide fights. Pausing a half-second to arrive in a wide arc rather than a clump is how you win skirmishes the raw numbers say you should lose."
 ---
 
 # Army Positioning
