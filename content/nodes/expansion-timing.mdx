@@ -11,16 +11,18 @@ prerequisites:
   - creep-routing
 patchId: patch-1.36.2
 patch_context: "Expansion costs and gold income rates are unchanged in 1.36.2; expansion timing windows remain valid across matchups."
-last_reviewed: "2026-06-28"
+last_reviewed: "2026-07-05"
 meta_volatile: false
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-05. Science: Newell & Simon (1972) supports framing expansion timing as a planning problem solved by pattern-matching game states. Community: Liquipedia's Expansion page documents fast-expand economics and the defensive tradeoff. Replaced a prior url-less Happy attribution with a specific Liquipedia URL during this audit."
 citations:
   - kind: science
     source: "Newell & Simon (1972) — Human Problem Solving"
     applicationNote: Expansion timing is a strategic planning problem — deciding when to commit resources to a long-term investment (higher income) vs. short-term safety (bigger army) requires mental simulation of opponent responses. Expert players solve this faster by pattern-matching to recognised game states rather than evaluating fresh each time.
   - kind: creator
-    source: "WC3 coaching — Happy (YouTube, 2023)"
-    applicationNote: Happy identifies expansion timing as the highest-variance macro decision in WC3 — expanding one minute too early when the opponent is aggressive is catastrophic, while expanding one minute too late when the opponent is passive gives away significant economic advantage.
+    source: "Liquipedia — Expansion (Warcraft Wiki, CC-BY-SA)"
+    url: "https://liquipedia.net/warcraft/Expansion"
+    applicationNote: "Liquipedia's Expansion page describes fast-expanding for economic advantage and the tower-reliant defence it forces. That tradeoff — early income versus a thinner army — is the high-variance timing read this node trains against opponent aggression."
 ---
 
 # Expansion Timing
