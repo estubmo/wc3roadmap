@@ -13,16 +13,18 @@ prerequisites:
   - supply-management
 patchId: patch-1.36.2
 patch_context: "Peon, Great Hall, and Barracks costs/build-times are unchanged in patch 1.36.2; the standard Orc opening timing benchmark below remains valid."
-last_reviewed: "2026-07-02"
+last_reviewed: "2026-07-03"
 meta_volatile: true
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-03. Science: Newell & Rosenbloom (1981) power-law-of-practice supports the claim that the earliest reps of a fixed sequence yield the fastest execution-time gains, paired with the drill of hitting a first-Grunt timing across games. Community: the peon-to-Altar-to-Burrow-to-Barracks-to-first-Grunt (~17/18 supply) sequence is verified against Liquipedia's Orc Fast Altar Build Order via URL. The timing figure is the node's drill / replayCriteria benchmark, not a source claim. Replaced a prior url-less Grubby attribution during this audit."
 citations:
   - kind: science
-    source: "Newell & Rosenbloom (1981) — Mechanisms of Skill Acquisition and the Law of Practice"
-    applicationNote: The power law of practice predicts that execution time on a fixed action sequence drops fastest during the earliest repetitions — exactly the payoff shape of drilling a short opening build order, where the first ten reps close most of the gap to a consistent, fast Grunt timing.
+    source: "Newell & Rosenbloom (1981) — Mechanisms of Skill Acquisition and the Law of Practice (in Anderson, ed., Cognitive Skills and Their Acquisition)"
+    applicationNote: "The power law of practice predicts that execution time on a fixed action sequence drops fastest during the earliest repetitions — exactly the payoff shape of drilling a short opening build order, where the first ten reps close most of the gap to a consistent, fast Grunt timing."
   - kind: creator
-    source: "WC3 coaching — Grubby (YouTube, 2021)"
-    applicationNote: Grubby identifies Orc's early tempo — reaching the first Grunt fast enough to threaten or execute an early aggression window — as the race's core identity; a slow opener forfeits Orc's biggest structural advantage before the mid-game even starts.
+    source: "Liquipedia — Orc Fast Altar Build Order (Warcraft Wiki, CC-BY-SA)"
+    url: "https://liquipedia.net/warcraft/Orc_Fast_Altar_Build_Order"
+    applicationNote: "Liquipedia's standard Orc opener sends four peons to gold, raises the Altar of Storms and a Burrow, then the Barracks around supply 8 and the first Grunt near 17/18 supply — the fastest Altar and Barracks without skipping peons, with the spare peon free to scout. That is the tempo sequence this node's timing drill rehearses."
 replayCriteria:
   signal: buildOrderTiming
   beforeMs: 100000

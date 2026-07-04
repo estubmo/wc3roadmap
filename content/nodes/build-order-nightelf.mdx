@@ -13,16 +13,18 @@ prerequisites:
   - supply-management
 patchId: patch-1.36.2
 patch_context: "Wisp, Tree of Life, and Ancient of War costs/growth-times are unchanged in patch 1.36.2; the standard Night Elf opening timing benchmark below remains valid."
-last_reviewed: "2026-07-02"
+last_reviewed: "2026-07-03"
 meta_volatile: true
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-03. Science: Fitts & Posner (1967) cognitive-stage motor learning supports distinguishing the fixed Ancient-of-War growth timer from the skill parts (wisp use, placement, creeping), paired with the drill of using the growth window well. Community: the wisp-to-Altar-to-Ancient-of-War-to-Moon-Well sequence and creeping as the hero leaves the altar with one archer (often uprooting the Ancient of War for a harder camp) is verified against Liquipedia's Night Elf Fast Altar Build Order via URL. The timing figure is the node's drill / replayCriteria benchmark, not a source claim. Replaced a prior url-less Moon attribution during this audit."
 citations:
   - kind: science
-    source: "Fitts & Posner (1967) — Learning and Skilled Performance"
+    source: "Fitts & Posner (1967) — Human Performance (Learning and Skilled Performance)"
     applicationNote: "Night Elf's opener has an unusually long fixed-duration step — the Ancient of War's growth time — that cannot be rushed by player skill. Fitts & Posner's cognitive stage of motor learning describes exactly the useful behaviour here: recognising which parts of a sequence are fixed timers to plan around versus which parts (Wisp production, Ancient placement) are the actual skill to drill."
   - kind: creator
-    source: "WC3 coaching — Moon (YouTube community resources, 2021)"
-    applicationNote: "Moon notes that Night Elf players commonly waste the Ancient of War's growth window by leaving Wisps idle instead of using that dead time to scout or pre-position for creeping — the opener's real skill test is what you do while the building grows, not just when you started it."
+    source: "Liquipedia — Night Elf Fast Altar Build Order (Warcraft Wiki, CC-BY-SA)"
+    url: "https://liquipedia.net/warcraft/Night_elf_fast_altar_build_order"
+    applicationNote: "Liquipedia's standard Night Elf opener sends four wisps to gold, raises the Altar of Elders and the Ancient of War, then a Moon Well, and starts creeping as soon as the hero leaves the altar with one archer — often uprooting the Ancient of War to take a harder camp to speed hero levels. This node's drill is about using the Ancient's growth time well."
 replayCriteria:
   signal: buildOrderTiming
   beforeMs: 140000

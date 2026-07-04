@@ -13,16 +13,18 @@ prerequisites:
   - supply-management
 patchId: patch-1.36.2
 patch_context: "Acolyte, Necropolis, and Crypt costs/build-times are unchanged in patch 1.36.2; the standard Undead opening timing benchmark below remains valid."
-last_reviewed: "2026-07-02"
+last_reviewed: "2026-07-03"
 meta_volatile: true
-launch_ready: false
+launch_ready: true
+auditNote: "Audited 2026-07-03. Science: Anderson (1982) ACT skill-acquisition model supports the claim that drilling the fixed opener compiles a step-by-step procedure into an automatic one, paired with the first-Ghoul timing drill. Community: the Acolyte dual-role sequence (mine gold while one is pulled to raise the Altar and Ziggurat together, then the Crypt at 200 gold) is verified against Liquipedia's Undead Ghoul Build Order via URL. The timing figure is the node's drill / replayCriteria benchmark, not a source claim. Replaced a prior url-less TeD attribution during this audit."
 citations:
   - kind: science
-    source: "Anderson (1982) — Acquisition of Cognitive Skill"
-    applicationNote: Anderson's ACT model describes early skill acquisition as moving from a declarative, step-by-step recall of a procedure ("Acolyte, Acolyte, Crypt, Acolyte...") to a compiled, automatic production — the exact transition a player makes by drilling the same fixed Undead opener until it no longer requires conscious sequencing.
+    source: "Anderson (1982) — Acquisition of Cognitive Skill, Psychological Review 89(4), 369–406"
+    applicationNote: "Anderson's ACT model describes early skill acquisition as moving from a declarative, step-by-step recall of a procedure (Acolyte, Acolyte, Crypt, Acolyte...) to a compiled, automatic production — the exact transition a player makes by drilling the same fixed Undead opener until it no longer requires conscious sequencing."
   - kind: creator
-    source: "WC3 coaching — TeD (YouTube, 2022)"
-    applicationNote: TeD stresses that Undead's opener is deceptively fragile because Acolytes are needed for both gold and lumber gathering AND for building the Crypt — a single misordered Acolyte assignment silently pushes the first Ghoul back by several seconds without the player noticing until the replay is reviewed.
+    source: "Liquipedia — Undead Ghoul Build Order (Warcraft Wiki, CC-BY-SA)"
+    url: "https://liquipedia.net/warcraft/Undead_Ghoul_Build_Order"
+    applicationNote: "Liquipedia's Undead opener has Acolytes doing double duty — mining gold while one is pulled to raise the Altar and Ziggurat together, then the Crypt at 200 gold — which is exactly why a single misordered Acolyte silently delays the first Ghoul. This node's drill targets that fragile sequence."
 replayCriteria:
   signal: buildOrderTiming
   beforeMs: 130000
