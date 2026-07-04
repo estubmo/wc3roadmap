@@ -45,6 +45,9 @@ node topics today (3 already `launch_ready`); the 5 **proposed** rows at the bot
   - Race hubs: [Night Elf](https://warcraft-gym.com/learn-warcraft-3/learn-night-elf/) · [Orc](https://warcraft-gym.com/learn-warcraft-3/learn-orc/) · [Undead](https://warcraft-gym.com/learn-warcraft-3/learn-undead/) · Human guides linked per-row below
 - Liquipedia Warcraft: https://liquipedia.net/warcraft/
   - [Common build orders](https://liquipedia.net/warcraft/Common_build_orders) · [Definitions](https://liquipedia.net/warcraft/Definitions) · [Expansion](https://liquipedia.net/warcraft/Expansion) · [Buildings](https://liquipedia.net/warcraft/Buildings)
+- wc3.no — "Ape Science / WC3 Research Facility" (community tools + data + the GNL league; same ecosystem as Warcraft Gym)
+  - [Creep Routes](https://wc3.no/#/creeproutes) · [Build Orders](https://wc3.no/#/buildorders) · [Ladder / Season profile](https://wc3.no/#/season) (stats tooling)
+  - Caveat: wc3.no is a hash-routed single-page app (`/#/...`). The links work in a browser but are JS-rendered, so they are weaker citation `url`s than Liquipedia's server-rendered pages — prefer Liquipedia for the `url` field and use wc3.no as a cross-check / secondary source.
 
 ---
 
@@ -52,11 +55,11 @@ node topics today (3 already `launch_ready`); the 5 **proposed** rows at the bot
 
 | Node | skillType | Science | Warcraft Gym | Liquipedia |
 |------|-----------|---------|--------------|------------|
-| `build-order-human` | macro | `peak-2016` / `ericsson-1993` | [Human base building](https://warcraft-gym.com/human-base-building-guide/), [Archmage 1-creep→expo](https://warcraft-gym.com/archmage-first-one-creep-camp-into-expansion/) | [Human Fast Altar BO](https://liquipedia.net/warcraft/Human_Fast_Altar_Build_Order) |
-| `build-order-orc` | macro | `peak-2016` / `ericsson-1993` | [Learn Orc](https://warcraft-gym.com/learn-warcraft-3/learn-orc/) | [Orc Fast Altar BO](https://liquipedia.net/warcraft/Orc_Fast_Altar_Build_Order), [Headhunter BO](https://liquipedia.net/warcraft/Orc_Headhunter_Build_Order) |
-| `build-order-undead` | macro | `peak-2016` / `ericsson-1993` | [Learn Undead](https://warcraft-gym.com/learn-warcraft-3/learn-undead/) | [Undead Ghoul BO](https://liquipedia.net/warcraft/Undead_Ghoul_Build_Order), [Fiend BO](https://liquipedia.net/warcraft/Undead_Fiend_Build_Order) |
-| `build-order-nightelf` | macro | `peak-2016` / `ericsson-1993` | [Learn Night Elf](https://warcraft-gym.com/learn-warcraft-3/learn-night-elf/) | [NE Fast Altar BO](https://liquipedia.net/warcraft/Night_elf_fast_altar_build_order), [Fast Huntress BO](https://liquipedia.net/warcraft/Night_Elf_Fast_Huntress_Build_Order) |
-| `creep-routing` ✔ | macro | `schmidt-lee` | [Creep routes](https://warcraft-gym.com/learn-warcraft-3/warcraft-3-creep-routes/) | [Common build orders](https://liquipedia.net/warcraft/Common_build_orders) |
+| `build-order-human` | macro | `peak-2016` / `ericsson-1993` | [Human base building](https://warcraft-gym.com/human-base-building-guide/), [Archmage 1-creep→expo](https://warcraft-gym.com/archmage-first-one-creep-camp-into-expansion/) · [wc3.no BOs](https://wc3.no/#/buildorders) | [Human Fast Altar BO](https://liquipedia.net/warcraft/Human_Fast_Altar_Build_Order) |
+| `build-order-orc` | macro | `peak-2016` / `ericsson-1993` | [Learn Orc](https://warcraft-gym.com/learn-warcraft-3/learn-orc/) · [wc3.no BOs](https://wc3.no/#/buildorders) | [Orc Fast Altar BO](https://liquipedia.net/warcraft/Orc_Fast_Altar_Build_Order), [Headhunter BO](https://liquipedia.net/warcraft/Orc_Headhunter_Build_Order) |
+| `build-order-undead` | macro | `peak-2016` / `ericsson-1993` | [Learn Undead](https://warcraft-gym.com/learn-warcraft-3/learn-undead/) · [wc3.no BOs](https://wc3.no/#/buildorders) | [Undead Ghoul BO](https://liquipedia.net/warcraft/Undead_Ghoul_Build_Order), [Fiend BO](https://liquipedia.net/warcraft/Undead_Fiend_Build_Order) |
+| `build-order-nightelf` | macro | `peak-2016` / `ericsson-1993` | [Learn Night Elf](https://warcraft-gym.com/learn-warcraft-3/learn-night-elf/) · [wc3.no BOs](https://wc3.no/#/buildorders) | [NE Fast Altar BO](https://liquipedia.net/warcraft/Night_elf_fast_altar_build_order), [Fast Huntress BO](https://liquipedia.net/warcraft/Night_Elf_Fast_Huntress_Build_Order) |
+| `creep-routing` ✔ | macro | `schmidt-lee` | [Creep routes](https://warcraft-gym.com/learn-warcraft-3/warcraft-3-creep-routes/) · [wc3.no creep routes](https://wc3.no/#/creeproutes) | [Common build orders](https://liquipedia.net/warcraft/Common_build_orders) |
 | `supply-management` | macro | `fitts-posner-1967` | [Game mechanics](https://warcraft-gym.com/learn-warcraft-3/game-mechanics/) | [Buildings](https://liquipedia.net/warcraft/Buildings) |
 | `map-control` | macro | `chase-simon-1973` | [Game mechanics](https://warcraft-gym.com/learn-warcraft-3/game-mechanics/) | [Definitions](https://liquipedia.net/warcraft/Definitions) |
 | `hero-leveling` | macro | `ericsson-1993` | [Creep routes](https://warcraft-gym.com/learn-warcraft-3/warcraft-3-creep-routes/) | [Common build orders](https://liquipedia.net/warcraft/Common_build_orders) |
