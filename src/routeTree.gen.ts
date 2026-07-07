@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReplaysRouteImport } from './routes/replays'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PreviewPathwayRouteImport } from './routes/preview/pathway'
 import { Route as PreviewMobileRouteImport } from './routes/preview/mobile'
@@ -21,6 +22,11 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 const ReplaysRoute = ReplaysRouteImport.update({
   id: '/replays',
   path: '/replays',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,6 +67,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
@@ -82,6 +90,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/replays': typeof ReplaysRoute
   '/preview/auto-advance': typeof PreviewAutoAdvanceRoute
   '/preview/full-map': typeof PreviewFullMapRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/replays'
     | '/preview/auto-advance'
     | '/preview/full-map'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ReplaysRoute: typeof ReplaysRoute
   PreviewAutoAdvanceRoute: typeof PreviewAutoAdvanceRoute
   PreviewFullMapRoute: typeof PreviewFullMapRoute
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/replays'
       fullPath: '/replays'
       preLoaderRoute: typeof ReplaysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,6 +217,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ReplaysRoute: ReplaysRoute,
   PreviewAutoAdvanceRoute: PreviewAutoAdvanceRoute,
   PreviewFullMapRoute: PreviewFullMapRoute,
