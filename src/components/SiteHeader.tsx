@@ -23,10 +23,39 @@
  */
 
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useSession } from "#/lib/auth-client";
 import { SignInButton } from "#/components/auth/SignInButton";
 import { RegionSelector } from "#/components/auth/RegionSelector";
 import { UserDropdown } from "#/components/auth/UserDropdown";
+
+// ---------------------------------------------------------------------------
+// Primary navigation styling
+// ---------------------------------------------------------------------------
+
+/** Brand wordmark — always gold, links to the roadmap graph. */
+const wordmarkStyle: React.CSSProperties = {
+  color: "var(--color-rune-400)",
+  fontFamily: "var(--font-sans)",
+  fontWeight: 600,
+  fontSize: "15px",
+  letterSpacing: "-0.01em",
+  textDecoration: "none",
+};
+
+/** Secondary nav link — muted until hovered/active. */
+const navLinkStyle: React.CSSProperties = {
+  color: "#b8b7c0",
+  fontFamily: "var(--font-sans)",
+  fontWeight: 400,
+  fontSize: "14px",
+  textDecoration: "none",
+};
+
+/** Applied by TanStack Router <Link> when its route is active. */
+const navLinkActiveStyle: React.CSSProperties = {
+  color: "var(--color-rune-400)",
+};
 
 // ---------------------------------------------------------------------------
 // SiteHeader — named export
@@ -95,8 +124,35 @@ export function SiteHeader() {
           justifyContent: "flex-end",
         }}
       >
-        {/* Left region — reserved for future wordmark */}
-        <div style={{ flex: 1 }} />
+        {/* Left region — brand wordmark + primary nav (routes were otherwise
+            unreachable in-app; v1.0 milestone audit blocker fix). */}
+        <nav
+          aria-label="Primary"
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <Link to="/" style={wordmarkStyle}>
+            WC3 Roadmap
+          </Link>
+          <Link
+            to="/replays"
+            style={navLinkStyle}
+            activeProps={{ style: navLinkActiveStyle }}
+          >
+            Replays
+          </Link>
+          <Link
+            to="/about"
+            style={navLinkStyle}
+            activeProps={{ style: navLinkActiveStyle }}
+          >
+            About
+          </Link>
+        </nav>
 
         {/* Right region — auth slot */}
         <div>{rightContent}</div>
