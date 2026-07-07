@@ -2,11 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 09
-status: "Phase 09 shipped — pushed to origin/main (branching_strategy: none, no PR)"
+current_phase: 0
+status: Awaiting next milestone
 stopped_at: Completed 09-09-PLAN.md
-last_updated: "2026-07-07T07:39:54.331Z"
+last_updated: "2026-07-07T08:45:11.432Z"
 last_activity: 2026-07-07
+last_activity_desc: Milestone v1.0 completed and archived
 progress:
   total_phases: 9
   completed_phases: 9
@@ -20,19 +21,17 @@ current_phase_name: guided-pathways-launch
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-28)
+See: .planning/PROJECT.md (updated 2026-07-07 after v1.0 milestone)
 
 **Core value:** The learning content actually makes people better at WC3 — science-backed, effective, and trustworthy
-**Current focus:** Phase 09 — guided-pathways-launch
+**Current focus:** v1.0 MVP shipped & archived — planning next milestone (`/gsd-new-milestone`)
 
 ## Current Position
 
-Phase: 09
-Plan: Not started
-Status: Phase 09 shipped — pushed to origin/main (branching_strategy: none, no PR)
-Last activity: 2026-07-07
-
-Progress: [░░░░░░░░░░] 0%
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-07 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -278,11 +277,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 7 (w3champions): API feasibility must be confirmed with w3champions team before integration code begins; manual fallback (Phase 5) ships regardless
-- Phase 8 (replay parsing): Two spikes required before planning — (1) w3gjs parse time/memory on Vercel serverless; (2) w3champions replay endpoint functional test from external server + API token request
-- Phase 4 (auth): better-auth + Battle.net OAuth has no community-validated examples as of June 2026; budget discovery time for region-specific OAuth host edge cases
-- Plan 08-13 (wc3v advanced-analysis, REPLAY-03): PAUSED at Task 1 go/no-go checkpoint. Time-boxed spike finding: RECOMMEND NO-GO -- wc3v lib/ modules (ResourceSeries/BuildingBackfill/BattleDetector/Player/World) require PlayerManager-built game state (eventStream, unit.path, spawnTime, lostState); PlayerManager.js itself hard-imports w3gjs's non-exported internal ActionParser at node_modules/w3gjs/dist/lib/parsers/ActionParser -- a path absent from installed w3gjs@4.1.0 (dist/cjs/dist/esm only). wc3v.js's own StatefulBufferParser EOF-patch targets the same xistent dist/lib path. Awaiting human GO/NO-GO.
-- Plan 08-13 (wc3v REPLAY-03): human chose GO; vendored full lib/+helpers/+config (76 files) and FIXED the w3gjs 4.1.0 internals patch (Pitfall 2, verified). Real run then found TWO NEW independent blockers: (A) helpers/UnitBalance.json (per-unit cost data) is gitignored upstream, generated from WC3 SLK data, never in public git history; (B) per-map binary pathing grids (mapdata/) also gitignored upstream, not derivable from .w3g bytes. Both are external data-sourcing gaps, not code-porting gaps. Descoped REPLAY-03 to Phase 8.x per D-07; did not wire Task 3 (server fn/UI) since no real replay can produce output. Base w3gjs loop (08-01..12) unaffected, all tests pass. See docs/adr/012 + src/lib/wc3v/README.md.
+_All v1.0 blockers resolved at milestone close (2026-07-07). Phase 4 auth, Phase 7 w3champions API, and Phase 8 replay spikes all validated and shipped._
+
+**Carried into v1.x:**
+- **REPLAY-03 (wc3v advanced analysis) — descoped, external data wall.** The base w3gjs replay loop ships complete. The wc3v advanced layer was blocked by two external data-sourcing gaps (not code): `helpers/UnitBalance.json` per-unit cost data (gitignored upstream, generated from WC3 SLK data) and per-map binary pathing grids (`mapdata/`, gitignored, not derivable from `.w3g` bytes). Re-attempting REPLAY-03 in v1.x requires sourcing that WC3 data first. See `docs/adr/012` + `src/lib/wc3v/README.md`.
+- **Community adoption / pro validation not yet done.** v1.0 is live but unpromoted; the "build it and they will come" failure mode is unmitigated until a community + high-level-player validation pass happens (v1.x Active item).
 
 ## Deferred Items
 
@@ -298,3 +297,7 @@ None yet.
 Last session: 2026-07-03T14:40:05.104Z
 Stopped at: Completed 09-09-PLAN.md
 Resume file: .planning/phases/09-guided-pathways-launch/09-UI-SPEC.md
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

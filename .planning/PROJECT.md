@@ -25,39 +25,49 @@ The learning content actually makes people better at WC3 — science-backed, eff
 
 <!-- Shipped and confirmed valuable. -->
 
-- [x] User accounts via Battle.net OAuth (returns BattleTag identity) — *Validated in Phase 4: Auth & Database (live sign-in confirmed; UUID-keyed identity, session-derived authorization)*
+- ✓ User accounts via Battle.net OAuth (returns BattleTag identity) — v1.0 (Phase 4; live sign-in, UUID-keyed identity, session-derived authorization)
+- ✓ Interactive node-graph UI for navigating WC3/RTS learning concepts (pan/zoom, non-linear) — v1.0 (Phases 2–3; React Flow canvas, memoized nodes, filter/search)
+- ✓ Race-agnostic fundamentals as the graph core, structured for race-specific branches — v1.0 (25-node agnostic core; race branches deferred to v1.x by design)
+- ✓ Per-node learning content with visible citations to peer-reviewed / scientific sources — v1.0 (Phases 3/9; 25 launch-ready nodes, verified per-node citations)
+- ✓ Every citation paired with a concrete "how to apply in your next game" section — v1.0 (enforced by content schema; audited)
+- ✓ Node content distills wisdom from recognized WC3 creators — v1.0 (Warcraft Gym / Liquipedia / named creators, URL-verified)
+- ✓ Comprehensive content at launch — v1.0 *(scoped to the fully-authored race-agnostic core, 25 nodes; breadth into race branches is v1.x)*
+- ✓ Content stored as decoupled, version-controlled MDX independent of the graph engine — v1.0 (Phases 1/3; ADR 002 content/engine decoupling)
+- ✓ Patch-version awareness across the ENTIRE system (content, build orders, thresholds, replays, progress) — v1.0 (single patch registry; ADR 003; staleness UI)
+- ✓ Guided Pathways / Learning Tracks overlay — v1.0 (Phase 9; Beginner Fundamentals ordered spotlight + mastery-tied progress)
+- ✓ Progress tracking per node (mark / show mastery state) — v1.0 (Phase 5; server-persisted, localStorage merge on sign-in, no gamification)
+- ✓ Coarse auto-detection from the w3champions API (games volume, MMR tier) — v1.0 (Phase 7; DB-cached, rate-limit-guarded)
+- ✓ `.w3g` replay parsing for fine mechanical signals — v1.0 *(Phase 8; w3gjs base loop ships complete. Forked-wc3v advanced analysis (REPLAY-03) descoped to v1.x — blocked by external proprietary data, not code; ADR 012)*
+- ✓ Replay ingest both ways: manual `.w3g` upload + auto-pull from w3champions — v1.0 (Phase 8)
+- ✓ Auto-detect mastery scoped to foundational/mechanic nodes; conceptual nodes never auto-detected — v1.0 (Phases 7/8; structural filter)
+- ✓ Manual check-off + self-assessment quizzes for conceptual/strategic nodes — v1.0 (Phase 6; SME-approved, no score)
+- ✓ Easily extensible content + data model — v1.0 (schema + content-collections; add nodes/sources from frontmatter)
 
 ### Active
 
-<!-- Current scope. Building toward these. Hypotheses until shipped. -->
+<!-- Next milestone (v1.x) candidates. Not yet scoped — define via /gsd-new-milestone. -->
 
-- [ ] Interactive node-graph UI for navigating WC3/RTS learning concepts (pan/zoom, explore non-linearly)
-- [ ] Race-agnostic fundamentals as the graph core, with structure for race-specific branches
-- [ ] Per-node learning content with visible citations to peer-reviewed / scientific sources
-- [ ] Every citation paired with a concrete "how to apply this in your next game" section (practical in foreground, theory in background)
-- [ ] Node content distills wisdom from recognized WC3 players/guides/content-creators
-- [ ] Comprehensive content at launch (most nodes have real, researched content)
-- [ ] Content stored as decoupled, version-controlled data (JSON/MDX) independent of the graph/UI engine — easy to update as the meta shifts
-- [ ] Patch-version awareness across the ENTIRE system — content nodes, build orders, mastery thresholds, replays, and progress are all tagged with the WC3 patch they apply to, so the system stays correct across balance patches
-- [ ] Guided Pathways / Learning Tracks overlay on the graph (e.g. "Beginner Basics") that highlight an ordered subset of nodes — a guided on-ramp over free-form exploration
-- [x] Progress tracking per node (mark / show mastery state) — *Validated in Phase 5: Progress Tracking (live: manual mark persists server-side, localStorage merges on first sign-in, server is source of truth, no gamification)*
-- [ ] Coarse auto-detection from the w3champions API (games-played volume, MMR tier, matchup W/L trends) — the only signals that API exposes
-- [ ] `.w3g` replay parsing (w3gjs base + forked wc3v analysis) to extract fine-grained mechanical signals (build-order timings, expansion timing, APM/eAPM, hotkey/control-group use, hero/item builds, supply/economy curves) for objective mechanical-node mastery
-- [ ] Replay ingest both ways: manual `.w3g` upload and auto-pull from the w3champions replay endpoint
-- [ ] Auto-detect mastery scoped to foundational/mechanic nodes (coarse from API + fine from replays); conceptual nodes never auto-detected
-- [x] Manual check-off + short self-assessment quizzes for conceptual/strategic nodes (avoids gaming a noisy metric) — *Validated in Phase 6: Self-Assessment Quizzes (live: CONCEPTUAL nodes offer 3–5Q recall quizzes gated to concept nodes; passing drives mastery to mastered with source "quiz" and no page reload; SME-approved that questions test understanding, not surface recall; no score/gamification)*
-- [ ] Easily extensible content + data model (add nodes, races, sources, pathways over time)
+- [ ] Race-specific branch nodes (Human / Orc / Undead / Night Elf) layered on the agnostic core
+- [ ] Forked-wc3v advanced replay analysis (REPLAY-03) — supply curves, battle detection, compare-to-pro *(needs external WC3 data sourcing: SLK-derived unit costs + per-map pathing grids)*
+- [ ] Community contribution UI + additional guided pathways beyond Beginner Fundamentals
+- [ ] Finer matchup-level auto-detection (per-race W/L trends)
+- [ ] Mobile-graph interaction (v1.0 renders mobile content readably but not the interactive canvas)
+- [ ] In-app navigation surfacing of `/replays` beyond the header link (e.g. contextual CTA from MECHANIC nodes)
+- [ ] Community + pro-player validation pass before wider promotion (adoption strategy)
 
 ### Out of Scope
 
 <!-- Explicit boundaries. Includes reasoning to prevent re-adding. -->
 
-- In-app AI tutor / chat assistant — TanStack AI was a misunderstanding; no committed AI product feature for v1. Revisit later if desired.
+- In-app AI tutor / chat assistant — TanStack AI was a misunderstanding; no committed AI product feature. Revisit later if desired.
 - Monetization / paid tiers — project is a free public good
-- Community wiki-style editing UI — content is curated by us for v1; data model leaves room to add contribution later
+- Gamification (XP, streaks, global leaderboards) — measures consumption/app-visits, not real WC3 improvement; actively harmful to the learning mission (v1.0 confirmed this stance in code — no gamification anywhere)
+- Hard prerequisite locking — WC3 learning is non-linear; soft edges + guided pathways instead
 
 ## Context
 
+- **Current state (v1.0, shipped 2026-07-07)**: Live at https://wc3roadmap.vercel.app. 9 phases / 88 plans / ~21.3k LOC TS/TSX / 541 tests. Stack in production: TanStack Start (React 19, Vite) on Vercel, @xyflow/react graph, better-auth (Battle.net OAuth), Drizzle + Neon Postgres, content-collections MDX (25 launch-ready nodes), Tailwind v4. Four mastery-detection sources live (manual, quiz, w3champions auto, `.w3g` replay). 13 ADRs, CONTEXT.md domain language, CI content-validation + LAUNCH_GATE. Not yet promoted to the community (adoption/validation pass is a v1.x Active item).
+- **Known tech debt / notes**: wc3v advanced replay analysis (REPLAY-03) descoped to v1.x (external data-sourcing wall, ADR 012); manual mastery writes are intentionally non-monotonic; mobile renders content but not the interactive graph canvas.
 - **Domain**: Competitive Warcraft III (Reforged / classic ladder via w3champions). Race-agnostic RTS fundamentals (macro, micro, mechanics, decision-making) plus the four races (Human, Orc, Undead, Night Elf).
 - **Evidence base**: Learning design grounded in motor-skill acquisition, deliberate practice, and competitive/sport psychology research — surfaced as clickable citations per node.
 - **Content sourcing**: Node content to be researched against peer-reviewed sources and authoritative WC3 creators (likely a `/deep-research`-driven authoring pipeline during build).
@@ -86,29 +96,29 @@ The learning content actually makes people better at WC3 — science-backed, eff
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Node-graph (free-form) layout, not linear path or skill-tree | User wants non-linear exploration of interconnected concepts | — Pending |
-| Race-agnostic core first, race branches layered on | Fundamentals apply to every race; biggest shared value first | — Pending |
-| TanStack Start + TanStack-centered stack | User preference for a cohesive, type-safe React stack | — Pending |
-| Battle.net / w3champions OAuth for accounts | Ties progress to real ladder identity; enables auto-detection | — Pending (feasibility unverified) |
-| Auto-detect mastery from w3champions, manual fallback | Real-performance feedback loop is the differentiator; degrade gracefully | — Pending (feasibility unverified) |
-| Visible per-node citations to scientific sources | Trust + the science-backed differentiator made tangible | — Pending |
-| Curated content for v1, community contribution later | Quality control now; extensibility preserved in data model | — Pending |
-| No AI product feature in v1 | TanStack AI was a misunderstanding; keep v1 focused | — Pending |
-| Auto-detect limited to foundational/mechanic nodes; conceptual nodes use manual + self-assessment quizzes | Ladder data is a weak, gameable proxy for conceptual mastery (Gemini critique #1) | — Pending |
-| Two-tier auto-detection: coarse from w3champions API + fine from `.w3g` replay parsing | w3champions API exposes outcome stats only (research finding); replay parsing is required for build-timing/APM/expansion signals — user accepted the added scope | — Pending |
-| Patch-version is a system-wide primitive (content, build orders, thresholds, replays, progress) | WC3 meta shifts on balance patches; tagging everything by patch keeps correctness across patches and lets the UI show staleness — user decision | — Pending |
-| Replay stack = w3gjs (MIT) base + forked wc3v (GPL-3.0) analysis | w3gjs gives ~80% of signals fast; wc3v adds the sophisticated "learn the most" analysis the user wants | — Pending |
-| Project licensed GPL-3.0 | Forking GPL-3.0 wc3v forces copyleft; user accepted — aligned with free OSS public-good goal | — Pending |
-| Replay ingest = manual upload + auto-pull from w3champions replay endpoint | w3champions DOES serve `.w3g` files (research-verified); both paths maximize coverage | — Pending |
-| v1 content = race-agnostic core fully fleshed; race branches deferred to v1.x | Avoid the "comprehensive at launch" shipping trap; depth over breadth | — Pending |
-| Minimum publishable gate: ~25 fully-authored nodes before launch | Gives content authoring a finish line; ~20-30 is where guided pathways become meaningful | — Pending |
-| Desktop-first, mobile-readable for v1 | Interactive React Flow graph is hard on touch; mobile renders content readably | — Pending |
-| Adopt deep-module architecture discipline (`improve-codebase-architecture`); maintain `CONTEXT.md` + `docs/adr/` | User wants the codebase testable, AI-navigable, low-coupling; applied across all phases, scaffolded in Phase 1 | — Pending |
-| Battle.net OAuth for identity; w3champions accessed as a BattleTag-keyed API lookup (not an OAuth provider) | Research finding: w3champions is not an OAuth provider; Battle.net returns BattleTag which keys the w3c API | — Pending |
-| Content decoupled from graph engine as version-controlled JSON/MDX, with node-level dating | WC3 meta shifts on balance patches; hard-coded content would be a maintenance trap (Gemini critique #2) | — Pending |
-| Add Guided Pathways / Learning Tracks overlay on the free-form graph | A sprawling graph overwhelms novices ("analysis paralysis"); guided tracks give structure without losing exploration (Gemini critique #3) | — Pending |
-| Every citation paired with "how to apply in your next game" | Science cited without tight, practical application reads as pseudo-intellectual (Gemini critique #5) | — Pending |
-| Engage community + get pro validation before MVP completion | Avoid the "zombie project" / build-it-and-they-will-come fallacy (Gemini critique #4) | — Pending |
+| Node-graph (free-form) layout, not linear path or skill-tree | User wants non-linear exploration of interconnected concepts | ✓ v1.0 |
+| Race-agnostic core first, race branches layered on | Fundamentals apply to every race; biggest shared value first | ✓ v1.0 |
+| TanStack Start + TanStack-centered stack | User preference for a cohesive, type-safe React stack | ✓ v1.0 |
+| Battle.net / w3champions OAuth for accounts | Ties progress to real ladder identity; enables auto-detection | ✓ Good — validated live in v1.0 |
+| Auto-detect mastery from w3champions, manual fallback | Real-performance feedback loop is the differentiator; degrade gracefully | ✓ Good — validated live in v1.0 |
+| Visible per-node citations to scientific sources | Trust + the science-backed differentiator made tangible | ✓ v1.0 |
+| Curated content for v1, community contribution later | Quality control now; extensibility preserved in data model | ✓ v1.0 |
+| No AI product feature in v1 | TanStack AI was a misunderstanding; keep v1 focused | ✓ v1.0 |
+| Auto-detect limited to foundational/mechanic nodes; conceptual nodes use manual + self-assessment quizzes | Ladder data is a weak, gameable proxy for conceptual mastery (Gemini critique #1) | ✓ v1.0 |
+| Two-tier auto-detection: coarse from w3champions API + fine from `.w3g` replay parsing | w3champions API exposes outcome stats only (research finding); replay parsing is required for build-timing/APM/expansion signals — user accepted the added scope | ✓ v1.0 |
+| Patch-version is a system-wide primitive (content, build orders, thresholds, replays, progress) | WC3 meta shifts on balance patches; tagging everything by patch keeps correctness across patches and lets the UI show staleness — user decision | ✓ v1.0 |
+| Replay stack = w3gjs (MIT) base + forked wc3v (GPL-3.0) analysis | w3gjs gives ~80% of signals fast; wc3v adds the sophisticated "learn the most" analysis the user wants | ⚠️ Partial — w3gjs base shipped v1.0; wc3v layer (REPLAY-03) descoped to v1.x, blocked by external proprietary data (ADR 012) |
+| Project licensed GPL-3.0 | Forking GPL-3.0 wc3v forces copyleft; user accepted — aligned with free OSS public-good goal | ✓ v1.0 |
+| Replay ingest = manual upload + auto-pull from w3champions replay endpoint | w3champions DOES serve `.w3g` files (research-verified); both paths maximize coverage | ✓ v1.0 |
+| v1 content = race-agnostic core fully fleshed; race branches deferred to v1.x | Avoid the "comprehensive at launch" shipping trap; depth over breadth | ✓ v1.0 |
+| Minimum publishable gate: ~25 fully-authored nodes before launch | Gives content authoring a finish line; ~20-30 is where guided pathways become meaningful | ✓ v1.0 |
+| Desktop-first, mobile-readable for v1 | Interactive React Flow graph is hard on touch; mobile renders content readably | ✓ v1.0 |
+| Adopt deep-module architecture discipline (`improve-codebase-architecture`); maintain `CONTEXT.md` + `docs/adr/` | User wants the codebase testable, AI-navigable, low-coupling; applied across all phases, scaffolded in Phase 1 | ✓ v1.0 |
+| Battle.net OAuth for identity; w3champions accessed as a BattleTag-keyed API lookup (not an OAuth provider) | Research finding: w3champions is not an OAuth provider; Battle.net returns BattleTag which keys the w3c API | ✓ v1.0 |
+| Content decoupled from graph engine as version-controlled JSON/MDX, with node-level dating | WC3 meta shifts on balance patches; hard-coded content would be a maintenance trap (Gemini critique #2) | ✓ v1.0 |
+| Add Guided Pathways / Learning Tracks overlay on the free-form graph | A sprawling graph overwhelms novices ("analysis paralysis"); guided tracks give structure without losing exploration (Gemini critique #3) | ✓ v1.0 |
+| Every citation paired with "how to apply in your next game" | Science cited without tight, practical application reads as pseudo-intellectual (Gemini critique #5) | ✓ v1.0 |
+| Engage community + get pro validation before MVP completion | Avoid the "zombie project" / build-it-and-they-will-come fallacy (Gemini critique #4) | ✓ v1.0 |
 
 ## Evolution
 
@@ -128,4 +138,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-01 after Phase 6 completion*
+*Last updated: 2026-07-07 after v1.0 MVP milestone*
